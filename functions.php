@@ -12,6 +12,7 @@
 |-----------------------------------------------------------------------------
 */
 
+use App\Core\Config;
 use App\Core\Redirect;
 use App\Core\Request;
 use App\Core\Route;
@@ -162,12 +163,33 @@ function request(): Request
 }
 
 /**
+ * Get the value of a configuration key or set a configuration value at runtime.
+ *
+ * @param string|array|null $key The configuration key or an array of key-value pairs to set (optional).
+ * @param mixed $default The default value to return if the key is not found (optional).
+ * @return mixed|array The value of the configuration key, the entire configuration array, or the default value.
+ */
+function config($key = null, $default = null)
+{
+    if ($key === null) {
+        return Config::all();
+    }
+
+    if (is_array($key)) {
+        Config::set_many($key);
+        return $key;
+    }
+
+    return Config::get($key, $default);
+}
+
+/**
  * Dump and die function for quick debugging.
  *
  * @param mixed $message The variable or message to be dumped.
  * @return void
  */
-function dd($message)
+function dump($message)
 {
     var_dump($message);
     die();

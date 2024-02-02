@@ -126,6 +126,8 @@ class DashboardController
      */
     public function create(): Redirect
     {
+        // make sure to add a request parameter for custom requests, so we can handle their rules better lol
+
         $validator = request()->validate(
             [
                 'domain' => 'string|required',
@@ -141,6 +143,8 @@ class DashboardController
                 ->with('message_content', 'Unable to add site due to invalid form submission')
                 ->with('message_type', 'error');
         }
+
+        // check whether the pagerule targets are valid urls
 
         $page_rules = [
             request()->input('pagerule_url'),
@@ -174,6 +178,14 @@ class DashboardController
         $site = $this->dashboard_service->add_site(
             [
                 'name' => request()->input('domain'),
+                'jump_start' => true,
+                'type' => 'full',
+                'account' => [
+                    'id' => config('api_client_id')
+                ],
+                'plan' => [
+                    'id' => 'free'
+                ]
             ]
         );
 

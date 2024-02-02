@@ -25,7 +25,7 @@ class DashboardService
         $this->http = app(Http::class)::set_headers(
             [
                 'Content-Type: application/json',
-                'Authorization: Bearer ' . API_TOKEN,
+                'Authorization: Bearer ' . config('api_token'),
             ]
         );
     }
@@ -37,7 +37,7 @@ class DashboardService
      */
     public function get_zones(): array
     {
-        return $this->http->get(API_URL . '/zones')->json();
+        return $this->http->get(config('api_url') . '/zones')->json();
     }
 
     /**
@@ -48,7 +48,7 @@ class DashboardService
      */
     public function get_zone_by_id(string $id): array
     {
-        return $this->http->get(API_URL . '/zones/' . $id)->json();
+        return $this->http->get(config('api_url') . '/zones/' . $id)->json();
     }
 
     /**
@@ -59,21 +59,7 @@ class DashboardService
      */
     public function add_site(array $options): array
     {
-        $options = array_merge(
-            [
-                'account' => [
-                    'id' => API_CLIENT_ID,
-                ],
-                'jump_start' => true,
-                'type' => 'full',
-                'plan' => [
-                    'id' => 'free',
-                ]
-            ],
-            $options
-        );
-
-        return $this->http->post(API_URL . '/zones/', $options)->json();
+        return $this->http->post(config('api_url') . '/zones/', $options)->json();
     }
 
     /**
@@ -85,7 +71,7 @@ class DashboardService
      */
     public function set_ssl(string $id, array $options): array
     {
-        return $this->http->patch(API_URL . '/zones/' . $id . '/settings/ssl', $options);
+        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/ssl', $options);
     }
 
     /**
@@ -97,7 +83,7 @@ class DashboardService
      */
     public function set_https(string $id, array $options): array
     {
-        return $this->http->patch(API_URL . '/zones/' . $id . '/settings/always_use_https', $options);
+        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/always_use_https', $options);
     }
 
     /**
@@ -109,7 +95,7 @@ class DashboardService
      */
     public function set_pseudo_ip(string $id, array $options): array
     {
-        return $this->http->patch(API_URL . '/zones/' . $id . '/settings/pseudo_ipv4', $options)->json();
+        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/pseudo_ipv4', $options)->json();
     }
 
     /**
@@ -144,7 +130,7 @@ class DashboardService
      */
     public function add_dns_record(string $id, array $options): array
     {
-        return $this->http->post(API_URL . '/zones/' . $id . '/dns_records', $options)->json();
+        return $this->http->post(config('api_url') . '/zones/' . $id . '/dns_records', $options)->json();
     }
 
     /**
@@ -156,7 +142,7 @@ class DashboardService
      */
     public function update_pagerule(string $id, array $options): array
     {
-        return $this->http->post(API_URL . '/zones/' . $id . '/pagerules', $options)->json();
+        return $this->http->post(config('api_url') . '/zones/' . $id . '/pagerules', $options)->json();
     }
 
     /**
@@ -167,6 +153,6 @@ class DashboardService
      */
     public function activation_check(string $id): array
     {
-        return $this->http->put(API_URL . '/zones/' . $id . '/activation_check')->json();
+        return $this->http->put(config('api_url') . '/zones/' . $id . '/activation_check')->json();
     }
 }

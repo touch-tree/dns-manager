@@ -22,7 +22,7 @@
 .center-wrap {
     display: flex;
     justify-content: center;
-    height: 100vh; /* Ensure the body takes up the full height of the viewport */
+    height: 100vh;
     margin: 0;
 }
 
