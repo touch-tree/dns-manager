@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Core\Redirect;
 use App\Core\View;
-use App\Services\DashboardService;
+use App\Services\CloudflareAPIService;
 use Exception;
 use ReflectionException;
 
 class DashboardController
 {
     /**
-     * DashboardService instance
+     * CloudflareAPIService instance
      *
-     * @var DashboardService
+     * @var CloudflareAPIService
      */
-    private DashboardService $dashboard_service;
+    private CloudflareAPIService $cloudflare_api_service;
 
     /**
      * DashboardController constructor
@@ -24,7 +24,7 @@ class DashboardController
      */
     public function __construct()
     {
-        $this->dashboard_service = app(DashboardService::class);
+        $this->cloudflare_api_service = app(CloudflareAPIService::class);
     }
 
     /**
@@ -34,7 +34,7 @@ class DashboardController
      */
     public function index(): View
     {
-        $response = $this->dashboard_service->get_zones();
+        $response = $this->cloudflare_api_service->get_zones();
 
         return view('dashboard.index')->with('domains', $response['result']);
     }
@@ -47,7 +47,7 @@ class DashboardController
      */
     public function edit(string $id): View
     {
-        $response = $this->dashboard_service->get_zone_by_id($id);
+        $response = $this->cloudflare_api_service->get_zone_by_id($id);
 
         if ($response['success'] === false) {
             return view('404');
@@ -89,7 +89,7 @@ class DashboardController
      */
     public function details(string $id): View
     {
-        $response = $this->dashboard_service->get_zone_by_id($id);
+        $response = $this->cloudflare_api_service->get_zone_by_id($id);
 
         if ($response['success'] === false) {
             return view('404');
@@ -175,7 +175,7 @@ class DashboardController
 
         // create new site
 
-        $site = $this->dashboard_service->add_site(
+        $site = $this->cloudflare_api_service->add_site(
             [
                 'name' => request()->input('domain'),
                 'jump_start' => true,
@@ -214,19 +214,21 @@ class DashboardController
         $id = $site['result']['id'];
         $warnings = [];
 
-        $this->dashboard_service->set_ssl($id,
+        // settings for site setup
+
+        $this->cloudflare_api_service->set_ssl($id,
             [
                 'value' => 'flexible'
             ]
         );
 
-        $this->dashboard_service->set_pseudo_ip($id,
+        $this->cloudflare_api_service->set_pseudo_ip($id,
             [
                 'value' => 'overwrite_header',
             ]
         );
 
-        $this->dashboard_service->set_https($id,
+        $this->cloudflare_api_service->set_https($id,
             [
                 'value' => 'on'
             ]
@@ -234,10 +236,10 @@ class DashboardController
 
         // remove scanned dns records to prevent conflicts when we're adding new ones in
 
-        $dns_records = $this->dashboard_service->get_dns_records($id);
+        $dns_records = $this->cloudflare_api_service->get_dns_records($id);
 
         foreach ($dns_records['result'] as $dns_record) {
-            $dns_response = $this->dashboard_service->delete_dns_record($id, $dns_record['id']);
+            $dns_response = $this->cloudflare_api_service->delete_dns_record($id, $dns_record['id']);
 
             if ($dns_response['success'] === false) {
                 $warnings[] = 'Unable to delete DNS record with id: ' . $dns_record['id'];
@@ -246,7 +248,7 @@ class DashboardController
 
         // preparing to set up the dns records
 
-        $dns_root = $this->dashboard_service->add_dns_record($id,
+        $dns_root = $this->cloudflare_api_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => '@',
@@ -260,7 +262,7 @@ class DashboardController
             $warnings[] = 'Unable to add CNAME ROOT';
         }
 
-        $dns_sub = $this->dashboard_service->add_dns_record($id,
+        $dns_sub = $this->cloudflare_api_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => 'www',
@@ -276,7 +278,7 @@ class DashboardController
 
         // pagerule setup
 
-        $pagerule_url = $this->dashboard_service->update_pagerule($id,
+        $pagerule_url = $this->cloudflare_api_service->update_pagerule($id,
             [
                 'targets' => [
                     [
@@ -303,7 +305,7 @@ class DashboardController
             $warnings[] = 'Unable to set value for PAGERULE URL';
         }
 
-        $pagerule_full_url = $this->dashboard_service->update_pagerule($id,
+        $pagerule_full_url = $this->cloudflare_api_service->update_pagerule($id,
             [
                 'targets' => [
                     [
@@ -351,7 +353,7 @@ class DashboardController
      */
     public function activation_check(string $id): Redirect
     {
-        $response = $this->dashboard_service->activation_check($id);
+        $response = $this->cloudflare_api_service->activation_check($id);
 
         if ($response['success'] === false) {
             $code = 0;

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Core\Http;
 use ReflectionException;
 
-class DashboardService
+class CloudflareAPIService
 {
     /**
      * Http instance
@@ -15,7 +15,7 @@ class DashboardService
     private Http $http;
 
     /**
-     * DashboardService constructor
+     * CloudflareAPIService constructor
      *
      * @throws ReflectionException
      */
