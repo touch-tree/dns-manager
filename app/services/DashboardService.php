@@ -5,10 +5,6 @@ namespace App\Services;
 use App\Core\Http;
 use ReflectionException;
 
-/**
- * Class DashboardService
- * @package App\Services
- */
 class DashboardService
 {
     /**

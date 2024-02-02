@@ -1,0 +1,68 @@
+
+.btn-primary, .page-item.active .page-link {
+    background-color: #686bfe;
+    border-color: #686bfe;
+}
+
+.btn-outline-primary {
+    border-color: #686bfe;
+    color: #686bfe;
+}
+
+.btn-cloudflare, .btn-cloudflare i {
+    color: #f48120 !important;
+    border-color: #f48120;
+    background-color: white;
+    transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
+}
+
+.btn-cloudflare:hover {
+    color: #ffffff !important;
+    border-color: #f48120 !important;
+    background-color: #f48120 !important;
+    transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
+}
+
+.btn-cloudflare:focus {
+    box-shadow: 0 0 0 0.2rem rgba(230, 163, 95, 0.5) !important;
+    border-color: #f48120 !important;
+}
+
+.btn-cloudflare:hover i {
+    color: #ffffff !important;
+    background-color: #f48120 !important;
+    transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
+}
+
+
+.btn-outline-primary i {
+    color: #686bfe;
+    margin-right: 5px;
+}
+
+.btn-outline-primary:hover i {
+    color: #fff !important;
+    transition: color 200ms ease-in-out;
+}
+
+.btn-outline-primary:hover {
+    color: #fff !important;
+    background-color: #5f61e6 !important;
+    border-color: #5f61e6 !important;
+}
+
+.btn-primary:hover {
+    color: #fff !important;
+    background-color: #5f61e6 !important;
+    border-color: #5f61e6 !important;
+}
+
+.btn-primary i {
+    color: white;
+    margin-right: 5px;
+}
+
+.btn-primary:focus, .page-item.active .page-link:focus, .form-control:focus, .options-icon:focus, .btn-outline-primary:focus, input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(95, 97, 230, 0.5) !important;
+    border-color: #aeaff1 !important;
+}
