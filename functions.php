@@ -5,9 +5,11 @@
 | Application Functions
 |-----------------------------------------------------------------------------
 |
-| This file contains functions commonly used in the application, such as
-| redirecting and rendering views. It defines the `redirect` and `view`
-| functions, creating instances of the Redirect and View core.
+| This file contains commonly used functions in the application. These
+| functions provide utility for common tasks such as redirection, view
+| rendering, session management, routing, URL generation, asset handling,
+| template retrieval, validation, request handling, configuration access,
+| and more.
 |
 |-----------------------------------------------------------------------------
 */
