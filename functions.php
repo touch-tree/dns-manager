@@ -113,9 +113,10 @@ function asset(string $path): string
 }
 
 /**
- * Retrieves the content of the header template file.
+ * Retrieves the content of the specified template file.
  *
- * @return string|null The content of the header template file if it exists, or null otherwise.
+ * @param string $file The relative file path of the template file.
+ * @return string|null The content of the template file if it exists, or null otherwise.
  */
 function get_template(string $file): ?string
 {
@@ -198,11 +199,12 @@ function dump($message)
 /**
  * Get an instance of the specified class from the service container.
  *
- * @param string $class_name The fully qualified class name to resolve.
- * @return object An instance of the specified class.
+ * @template T
+ * @param class-string<T> $class_name The fully qualified class name to resolve.
+ * @return T An instance of the specified class.
  * @throws ReflectionException If the class cannot be reflected.
  */
-function app(string $class_name): object
+function app(string $class_name)
 {
     return ServiceProvider::get($class_name);
 }
