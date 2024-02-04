@@ -72,7 +72,7 @@
                             <td class="options-action">
                                 <div class="options-action__container">
                                     <?php if (strtolower($status) === 'pending') { ?>
-                                        <a href="<?php echo route('activation_check', ['id' => $domain['id']]); ?>">
+                                        <a href="<?php echo route('nameservers.verify', ['id' => $domain['id']]); ?>">
                                             <button class="btn btn-outline-primary btn-activation-check">
                                                 <i class="fa-solid fa-check" aria-hidden="true"></i>
                                                 Check nameservers

@@ -6,10 +6,7 @@
 |-----------------------------------------------------------------------------
 |
 | This file contains commonly used functions in the application. These
-| functions provide utility for common tasks such as redirection, view
-| rendering, session management, routing, URL generation, asset handling,
-| template retrieval, validation, request handling, configuration access,
-| and more.
+| functions provide utility for our framework.
 |
 |-----------------------------------------------------------------------------
 */
@@ -86,24 +83,6 @@ function route(string $name, array $parameters = []): ?string
 }
 
 /**
- * Generate a URL for the given path and parameters.
- *
- * @param string $path The path for the URL.
- * @param array $parameters Associative array of parameters to include in the URL query string.
- * @return string The generated URL.
- */
-function url(string $path, array $parameters = []): string
-{
-    $url = (($_SERVER['HTTPS'] ?? 'off') === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . '/' . ltrim($path, '/');
-
-    if (!empty($parameters)) {
-        $url .= '?' . http_build_query($parameters);
-    }
-
-    return $url;
-}
-
-/**
  * Generates the URL for an asset based on the provided relative path.
  *
  * @param string $path The relative path to the asset.
@@ -111,7 +90,7 @@ function url(string $path, array $parameters = []): string
  */
 function asset(string $path): string
 {
-    return url('/resources/') . $path;
+    return '//' . $_SERVER['HTTP_HOST'] . '/' . ltrim($path, '/');
 }
 
 /**

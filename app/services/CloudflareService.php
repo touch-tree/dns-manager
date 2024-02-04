@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Core\Http;
 use ReflectionException;
 
-class CloudflareAPIService
+class CloudflareService
 {
     /**
      * Http instance
@@ -21,13 +21,16 @@ class CloudflareAPIService
      */
     public function __construct()
     {
-        // Set HTTP headers for API requests
         $this->http = app(Http::class)::set_headers(
             [
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . config('api_token'),
             ]
         );
+
+        if ($this->http->get(config('api_url') . '/zones')->get_response() === false) {
+            dump('API token does not work');
+        }
     }
 
     /**
@@ -46,7 +49,7 @@ class CloudflareAPIService
      * @param string $id Zone id
      * @return array
      */
-    public function get_zone_by_id(string $id): array
+    public function get_zone(string $id): array
     {
         return $this->http->get(config('api_url') . '/zones/' . $id)->json();
     }
@@ -106,7 +109,7 @@ class CloudflareAPIService
      */
     public function get_dns_records(string $id): array
     {
-        return $this->http->get('/zones/' . $id . '/dns_records')->json();
+        return $this->http->get(config('api_url') . '/zones/' . $id . '/dns_records')->json();
     }
 
     /**
@@ -118,7 +121,7 @@ class CloudflareAPIService
      */
     public function delete_dns_record(string $id, string $dns_record_id): array
     {
-        return $this->http->delete('/zones/' . $id . '/dns_records/' . $dns_record_id)->json();
+        return $this->http->delete(config('api_url') . '/zones/' . $id . '/dns_records/' . $dns_record_id)->json();
     }
 
     /**
@@ -146,12 +149,12 @@ class CloudflareAPIService
     }
 
     /**
-     * Check activation status for a zone
+     * Verify nameservers for a zone
      *
      * @param string $id Zone id
      * @return array
      */
-    public function activation_check(string $id): array
+    public function verify_nameservers(string $id): array
     {
         return $this->http->put(config('api_url') . '/zones/' . $id . '/activation_check')->json();
     }

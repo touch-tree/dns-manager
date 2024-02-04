@@ -23,7 +23,7 @@ class Http
      *
      * @var bool|string
      */
-    public $response;
+    private $response;
 
     /**
      * Set headers for the request.
@@ -37,6 +37,16 @@ class Http
         $instance->headers = $headers;
 
         return $instance;
+    }
+
+    /**
+     * Get response
+     *
+     * @return bool|string
+     */
+    public function get_response()
+    {
+        return $this->response;
     }
 
     /**

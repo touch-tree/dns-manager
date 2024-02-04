@@ -19,7 +19,7 @@ Route::get('/domain/add', ['App\Http\Controllers\DashboardController', 'add'])->
 Route::get('/domain/add/form', ['App\Http\Controllers\DashboardController', 'add_modal'])->name('domain.add_modal');
 Route::get('/domain/details/{id}', ['App\Http\Controllers\DashboardController', 'details'])->name('domain.details');
 Route::get('/domain/edit/{id}', ['App\Http\Controllers\DashboardController', 'edit'])->name('domain.edit');
-Route::get('/domain/{id}/activation_check', ['App\Http\Controllers\DashboardController', 'activation_check'])->name('activation_check');
+Route::get('/domain/{id}/nameservers/verify', ['App\Http\Controllers\DashboardController', 'verify_nameservers'])->name('nameservers.verify');
 
 Route::post('/domain/edit/{id}', ['App\Http\Controllers\DashboardController', 'update'])->name('domain.update');
 Route::post('/domain/create/{id}', ['App\Http\Controllers\DashboardController', 'create'])->name('domain.create');
