@@ -15,9 +15,8 @@ use App\Core\Config;
 use App\Core\Redirect;
 use App\Core\Request;
 use App\Core\Route;
-use App\Core\ServiceProvider;
+use App\Core\Container;
 use App\Core\Session;
-use App\Core\Validator;
 use App\Core\View;
 
 /**
@@ -49,9 +48,10 @@ function view(string $path, array $data = []): View
  * If both $key and $value are provided, it sets the session value.
  * If only $key is provided, it retrieves the session value.
  *
+ * @template T
  * @param string|null $key The key of the session value.
- * @param mixed|null $value The value to set for the session key.
- * @return Session|string|null
+ * @param T|null $value The value to set for the session key.
+ * @return Session|T|string|null
  */
 function session(?string $key = null, $value = null)
 {
@@ -83,53 +83,7 @@ function route(string $name, array $parameters = []): ?string
 }
 
 /**
- * Generates the URL for an asset based on the provided relative path.
- *
- * @param string $path The relative path to the asset.
- * @return string The full URL for the asset.
- */
-function asset(string $path): string
-{
-    return '//' . $_SERVER['HTTP_HOST'] . '/' . ltrim($path, '/');
-}
-
-/**
- * Retrieves the content of the specified template file.
- *
- * @param string $file The relative file path of the template file.
- * @return string|null The content of the template file if it exists, or null otherwise.
- */
-function get_template(string $file): ?string
-{
-    if (file_exists($path = ROOT_DIR . '/resources/templates/' . $file)) {
-        ob_start();
-        include $path;
-        return ob_get_clean();
-    }
-
-    return null;
-}
-
-/**
- * Create and return a new Validator instance for the given rules and request data.
- *
- * @param array|string $rules The validation rules to apply.
- * @return Validator A new Validator instance.
- */
-function validate(array $rules): Validator
-{
-    return new Validator(request()->all(), $rules);
-}
-
-/**
- * Get Request class.
- *
- * The Request class represents an HTTP request entity and provides methods
- * to work with query parameters. It is designed to simplify the extraction
- * of query parameters from a URL.
- *
- * This function ensures that only one instance of the Request class is created
- * and reused throughout the application.
+ * Get current request.
  *
  * @return Request The instance of the Request class.
  */
@@ -157,9 +111,10 @@ function request(): Request
  * If `$key` is an array, it sets multiple configuration values at runtime and
  * returns the array of key-value pairs that were set.
  *
- * @param string|array|null $key The configuration key or an array of key-value pairs to set (optional).
- * @param mixed $default The default value to return if the key is not found (optional).
- * @return mixed|array The value of the configuration key, the entire configuration array, or the default value.
+ * @template T
+ * @param string|array<T>|null $key The configuration key or an array of key-value pairs to set (optional).
+ * @param T $default The default value to return if the key is not found (optional).
+ * @return T|array The value of the configuration key, the entire configuration array, or the default value.
  */
 function config($key = null, $default = null)
 {
@@ -197,5 +152,50 @@ function dump($message)
  */
 function app(string $class_name)
 {
-    return ServiceProvider::get($class_name);
+    return Container::get($class_name);
+}
+
+/**
+ * Get the absolute path to the base directory of the application.
+ *
+ * @param string|null $path The relative path to append to the base path (optional).
+ * @return string The absolute path to the base directory of the application.
+ */
+function base_path(?string $path = null): string
+{
+    $_path = __DIR__;
+
+    if (!is_null($path)) {
+        $_path .= DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR);
+    }
+
+    return $_path;
+}
+
+/**
+ * Generates the URL for an asset based on the provided relative path.
+ *
+ * @param string $path The relative path to the asset.
+ * @return string The full URL for the asset.
+ */
+function asset(string $path): string
+{
+    return config('url') . '/public/' . trim($path, DIRECTORY_SEPARATOR);
+}
+
+/**
+ * Retrieves the content of the specified template file.
+ *
+ * @param string $file The relative file path of the template file.
+ * @return string|null The content of the template file if it exists, or null otherwise.
+ */
+function get_template(string $file): ?string
+{
+    if (file_exists($path = base_path('/public/templates/' . $file))) {
+        ob_start();
+        include $path;
+        return ob_get_clean();
+    }
+
+    return null;
 }

@@ -12,7 +12,7 @@ use RuntimeException;
  *
  * @package App\Core
  */
-class ServiceProvider
+class Container
 {
     /**
      * An array to store instances of resolved classes.

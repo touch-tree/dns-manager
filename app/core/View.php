@@ -73,9 +73,9 @@ class View
      */
     public function render(): ?string
     {
-        $path = realpath(ROOT_DIR . '/resources/views/' . str_replace('.', DIRECTORY_SEPARATOR, $this->path) . '.php');
+        $path = realpath(base_path() . '/public/views/' . str_replace('.', DIRECTORY_SEPARATOR, $this->path) . '.php');
 
-        if (file_exists($path) === false) {
+        if (!file_exists($path)) {
             return 'View not found: ' . $path;
         }
 

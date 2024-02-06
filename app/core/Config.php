@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use Error;
+
 /**
  * The Config class provides a simple configuration management system.
  *
@@ -20,12 +22,16 @@ class Config
      * Load the configuration values from the file.
      *
      * @param string $path
+     * @return void
+     * @throws Error
      */
-    public static function set_config(string $path)
+    public static function prepare(string $path)
     {
-        if (file_exists($path)) {
-            self::$config = require $path;
+        if (!file_exists($path)) {
+            throw new Error('Unable to import configuration due to not being able to find file: ' . $path);
         }
+
+        self::$config = require $path;
     }
 
     /**

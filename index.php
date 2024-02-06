@@ -18,18 +18,12 @@ use App\Core\Config;
 
 session_start();
 
-const ROOT_DIR = __DIR__;
-
 require_once 'autoload.php';
-require_once 'functions.php';
+require_once 'helpers.php';
 require_once 'routes/web.php';
 
-Config::set_config(ROOT_DIR . '/config/app.php');
+Config::prepare(__DIR__ . '/config/app.php');
 
-try {
-    if (Route::resolve($_SERVER['REQUEST_URI']) === false) {
-        echo view('404')->render();
-    }
-} catch (ReflectionException $e) {
-    echo view('404')->render();
-}
+Route::resolve(
+    $_SERVER['REQUEST_URI']
+);

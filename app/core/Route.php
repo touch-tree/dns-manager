@@ -3,7 +3,6 @@
 namespace App\Core;
 
 use Error;
-use ReflectionException;
 
 /**
  * The Route class provides a simple and flexible way to define and handle
@@ -37,9 +36,10 @@ class Route
      */
     public static function route(string $name, array $parameters = []): ?string
     {
-        if (isset(self::$named_routes[$name])) {
-            $route = self::$named_routes[$name];
-            $url = $route['url'];
+        $routes = self::$named_routes[$name] ?? null;
+
+        if (!is_null($routes)) {
+            $url = $routes['url'];
 
             foreach ($parameters as $key => $value) {
                 $url = str_replace('{' . $key . '}', $value, $url);
@@ -115,25 +115,22 @@ class Route
     /**
      * Resolve the matching route and run the associated controller action and parameters.
      *
-     * @param string|null $url The URL to resolve. REQUEST_URI most of the time.
+     * @param string $url The URL to resolve. REQUEST_URI most of the time.
      * @return bool True if a matching route was found and resolved, false otherwise.
      * @throws Error If the controller action is not in a valid format.
-     * @throws ReflectionException If the controller cannot be reflected
      */
-    public static function resolve(?string $url): bool
+    public static function resolve(string $url): bool
     {
+        $_status = false;
+
         foreach (self::$routes as $route) {
-            $route_url = $route['url'];
             $action = $route['action'];
 
             if ($_SERVER['REQUEST_METHOD'] !== $route['method']) {
                 continue;
             }
 
-            $route_parameters = self::get_route_parameters($route_url, $url) ?? [];
-
-            // check whether the current REQUEST_URI matches any of our routes
-            if (preg_match(self::get_route_pattern($route_url), $url)) {
+            if (preg_match(self::get_pattern($route['url']), $url)) {
                 if (!is_array($action) || count($action) !== 2 || !is_string($action[0]) || !is_string($action[1])) {
                     throw new Error('Invalid controller action format');
                 }
@@ -143,22 +140,26 @@ class Route
                         new $action[0](),
                         $action[1]
                     ],
-                    $route_parameters
+                    self::get_parameters($route['url'], $url)
                 );
 
                 if ($response instanceof Redirect) {
                     $response->send();
-                    return true;
+                    $_status = true;
                 }
 
                 if ($response instanceof View) {
                     echo $response->render();
-                    return true;
+                    $_status = true;
                 }
             }
         }
 
-        return false;
+        if (!$_status) {
+            echo view('404')->render();
+        }
+
+        return $_status;
     }
 
     /**
@@ -166,15 +167,17 @@ class Route
      *
      * @param string $route_url The URL pattern of the route.
      * @param string $url The actual URL.
-     * @return array|null Associative array of route parameters, or null if no match.
+     * @return array Associative array of route parameters, or empty array if no match.
      */
-    private static function get_route_parameters(string $route_url, string $url): ?array
+    private static function get_parameters(string $route_url, string $url): ?array
     {
-        if (preg_match(self::get_route_pattern($route_url), $url, $matches)) {
-            return array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+        $pattern = self::get_pattern($route_url);
+
+        if (preg_match($pattern, $url, $matches)) {
+            return array_filter($matches, fn($key) => is_string($key), ARRAY_FILTER_USE_KEY);
         }
 
-        return null;
+        return [];
     }
 
     /**
@@ -183,7 +186,7 @@ class Route
      * @param string $route_url The URL pattern of the route.
      * @return string The regex pattern for the route.
      */
-    private static function get_route_pattern(string $route_url): string
+    private static function get_pattern(string $route_url): string
     {
         return '#^' . str_replace(['\{', '\}'], ['(?P<', '>[^/]+)'], preg_quote($route_url, '#')) . '$#';
     }

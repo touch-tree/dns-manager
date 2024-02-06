@@ -36,7 +36,7 @@ class Validator
      * Validator constructor.
      *
      * @param array $data The data to be validated.
-     * @param array $rules An associative array where keys are parameter names and values are validation patterns (e.g., ['name' => 'required|string|max:255']).
+     * @param array $rules An associative array where keys are parameter names and values are validation patterns (e.g. ['name' => 'required|string|max:255']).
      */
     public function __construct(array $data, array $rules)
     {
@@ -164,7 +164,7 @@ class Validator
         $value = $this->data[$field] ?? null;
         $is_valid = isset($value) && is_numeric($value);
 
-        if ($is_valid === false) {
+        if (!$is_valid) {
             $this->add_error($field, 'numeric');
         }
 
@@ -182,7 +182,7 @@ class Validator
         $value = $this->data[$field] ?? null;
         $is_valid = isset($value) && filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
 
-        if ($is_valid === false) {
+        if (!$is_valid) {
             $this->add_error($field, 'email');
         }
 

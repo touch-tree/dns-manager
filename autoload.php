@@ -1,7 +1,5 @@
 <?php
 
-// PSR-4 inspired autoloader
-
 spl_autoload_register(function ($class) {
     $class_path = realpath(__DIR__ . '/' . str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php');
 

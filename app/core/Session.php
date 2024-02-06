@@ -61,7 +61,7 @@ class Session
      */
     public function put($key, $value = null): Session
     {
-        if (is_array($key) === false) {
+        if (!is_array($key)) {
             $_SESSION[$key] = $value;
 
             return $this;

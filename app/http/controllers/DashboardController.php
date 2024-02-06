@@ -49,7 +49,7 @@ class DashboardController
     {
         $response = $this->cloudflare_service->get_zone($id);
 
-        if ($response['success'] === false) {
+        if (!$response['success']) {
             return view('404');
         }
 
@@ -91,7 +91,7 @@ class DashboardController
     {
         $response = $this->cloudflare_service->get_zone($id);
 
-        if ($response['success'] === false) {
+        if (!$response['success']) {
             return view('404');
         }
 
@@ -241,7 +241,7 @@ class DashboardController
         foreach ($dns_records['result'] as $dns_record) {
             $dns_response = $this->cloudflare_service->delete_dns_record($id, $dns_record['id']);
 
-            if ($dns_response['success'] === false) {
+            if (!$dns_response['success']) {
                 $warnings[] = 'Unable to delete DNS record with id: ' . $dns_record['id'];
             }
         }
@@ -258,7 +258,7 @@ class DashboardController
             ]
         );
 
-        if ($dns_root['success'] === false) {
+        if (!$dns_root['success']) {
             $warnings[] = 'Unable to add CNAME ROOT';
         }
 

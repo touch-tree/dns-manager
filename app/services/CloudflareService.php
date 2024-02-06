@@ -27,10 +27,6 @@ class CloudflareService
                 'Authorization: Bearer ' . config('api_token'),
             ]
         );
-
-        if ($this->http->get(config('api_url') . '/zones')->get_response() === false) {
-            dump('API token does not work');
-        }
     }
 
     /**
@@ -78,7 +74,7 @@ class CloudflareService
     }
 
     /**
-     * Set HTTPS settings for a zone
+     * Set Https settings for a zone
      *
      * @param string $id Zone id
      * @param array $options
