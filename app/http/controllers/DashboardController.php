@@ -4,27 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Core\Redirect;
 use App\Core\View;
-use App\Services\CloudflareService;
-use App\Http\Requests\CreateRequest;
+use App\Services\DashboardService;
+use App\Http\Requests\CreateDomainRequest;
 use Exception;
 
 class DashboardController
 {
     /**
-     * CloudflareService instance
+     * DashboardService instance
      *
-     * @var CloudflareService
+     * @var DashboardService
      */
-    private CloudflareService $cloudflare_service;
+    private DashboardService $dashboard_service;
 
     /**
      * DashboardController constructor
      *
      * @return void
      */
-    public function __construct(CloudflareService $cloudflare_service)
+    public function __construct(DashboardService $dashboard_service)
     {
-        $this->cloudflare_service = $cloudflare_service;
+        $this->dashboard_service = $dashboard_service;
     }
 
     /**
@@ -34,7 +34,7 @@ class DashboardController
      */
     public function index(): View
     {
-        $response = $this->cloudflare_service->get_zones();
+        $response = $this->dashboard_service->get_zones();
 
         return view('dashboard.index')->with('domains', $response['result']);
     }
@@ -47,7 +47,7 @@ class DashboardController
      */
     public function edit(string $id): View
     {
-        $response = $this->cloudflare_service->get_zone($id);
+        $response = $this->dashboard_service->get_zone($id);
 
         if (!$response['success']) {
             return view('404');
@@ -89,7 +89,7 @@ class DashboardController
      */
     public function details(string $id): View
     {
-        $response = $this->cloudflare_service->get_zone($id);
+        $response = $this->dashboard_service->get_zone($id);
 
         if (!$response['success']) {
             return view('404');
@@ -121,12 +121,12 @@ class DashboardController
     /**
      * Create domain action
      *
-     * @param CreateRequest $request
+     * @param CreateDomainRequest $request Form request
      * @return Redirect
      *
      * @throws Exception
      */
-    public function create(CreateRequest $request): Redirect
+    public function create(CreateDomainRequest $request): Redirect
     {
         if ($request->validate()->errors()) {
             return redirect('dashboard')
@@ -166,7 +166,7 @@ class DashboardController
 
         // create new site
 
-        $site = $this->cloudflare_service->add_site(
+        $site = $this->dashboard_service->add_site(
             [
                 'name' => $request->input('domain'),
                 'jump_start' => true,
@@ -207,19 +207,19 @@ class DashboardController
 
         // settings for site setup
 
-        $this->cloudflare_service->set_ssl($id,
+        $this->dashboard_service->set_ssl($id,
             [
                 'value' => 'flexible'
             ]
         );
 
-        $this->cloudflare_service->set_pseudo_ip($id,
+        $this->dashboard_service->set_pseudo_ip($id,
             [
                 'value' => 'overwrite_header',
             ]
         );
 
-        $this->cloudflare_service->set_https($id,
+        $this->dashboard_service->set_https($id,
             [
                 'value' => 'on'
             ]
@@ -227,10 +227,10 @@ class DashboardController
 
         // remove scanned dns records to prevent conflicts when we're adding new ones in
 
-        $dns_records = $this->cloudflare_service->get_dns_records($id);
+        $dns_records = $this->dashboard_service->get_dns_records($id);
 
         foreach ($dns_records['result'] as $dns_record) {
-            $dns_response = $this->cloudflare_service->delete_dns_record($id, $dns_record['id']);
+            $dns_response = $this->dashboard_service->delete_dns_record($id, $dns_record['id']);
 
             if (!$dns_response['success']) {
                 $warnings[] = 'Unable to delete DNS record with id: ' . $dns_record['id'];
@@ -239,7 +239,7 @@ class DashboardController
 
         // preparing to set up the dns records
 
-        $dns_root = $this->cloudflare_service->add_dns_record($id,
+        $dns_root = $this->dashboard_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => '@',
@@ -253,7 +253,7 @@ class DashboardController
             $warnings[] = 'Unable to add CNAME ROOT';
         }
 
-        $dns_sub = $this->cloudflare_service->add_dns_record($id,
+        $dns_sub = $this->dashboard_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => 'www',
@@ -267,9 +267,21 @@ class DashboardController
             $warnings[] = 'Unable to add CNAME SUB';
         }
 
+        // remove auto-added pagerules
+
+        $pagerules = $this->dashboard_service->get_pagerules($id);
+
+        foreach ($pagerules['result'] as $pagerule) {
+            $pagerule_response = $this->dashboard_service->delete_pagerule($id, $pagerule['id']);
+
+            if (!$pagerule_response['success']) {
+                $warnings[] = 'Unable to pagerule record with id: ' . $pagerule['id'];
+            }
+        }
+
         // pagerule setup
 
-        $pagerule_url = $this->cloudflare_service->update_pagerule($id,
+        $pagerule_url = $this->dashboard_service->add_pagerule($id,
             [
                 'targets' => [
                     [
@@ -296,7 +308,7 @@ class DashboardController
             $warnings[] = 'Unable to set value for PAGERULE URL';
         }
 
-        $pagerule_full_url = $this->cloudflare_service->update_pagerule($id,
+        $pagerule_full_url = $this->dashboard_service->add_pagerule($id,
             [
                 'targets' => [
                     [
@@ -344,7 +356,7 @@ class DashboardController
      */
     public function verify_nameservers(string $id): Redirect
     {
-        $response = $this->cloudflare_service->verify_nameservers($id);
+        $response = $this->dashboard_service->verify_nameservers($id);
 
         if ($response['success'] === false) {
             $code = 0;

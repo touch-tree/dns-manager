@@ -3,7 +3,6 @@
 namespace App\Core;
 
 use Error;
-use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 
@@ -185,12 +184,12 @@ class Route
      */
     private static function resolve_controller(array $action, array $path_parameters)
     {
-        [$class, $method] = $action;
+        [$class, $_method] = $action;
 
-        $_method = new ReflectionMethod($class, $method);
+        $method = new ReflectionMethod($class, $_method);
         $parameters = [];
 
-        foreach ($_method->getParameters() as $param) {
+        foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             $type = $param->getType();
 
@@ -212,7 +211,7 @@ class Route
             $parameters[] = $path_parameters[$name] ?? null;
         }
 
-        return $_method->invokeArgs($class, $parameters);
+        return $method->invokeArgs($class, $parameters);
     }
 
     /**

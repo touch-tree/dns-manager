@@ -29,5 +29,5 @@ try {
         $_SERVER['REQUEST_URI']
     );
 } catch (ReflectionException $exception) {
-    dump($exception);
+    stop($exception);
 }

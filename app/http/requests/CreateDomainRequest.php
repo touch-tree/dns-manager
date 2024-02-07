@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Core\FormRequest;
 
-class CreateRequest extends FormRequest
+class CreateDomainRequest extends FormRequest
 {
     public function rules(): array
     {

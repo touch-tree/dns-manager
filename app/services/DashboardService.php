@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Core\Http;
 
-class CloudflareService
+class DashboardService
 {
     /**
      * Http instance
@@ -138,9 +138,32 @@ class CloudflareService
      * @param array $options
      * @return array
      */
-    public function update_pagerule(string $id, array $options): array
+    public function add_pagerule(string $id, array $options): array
     {
         return $this->http->post(config('api_url') . '/zones/' . $id . '/pagerules', $options)->json();
+    }
+
+    /**
+     * Get all pagerules for a zone
+     *
+     * @param string $id Zone id
+     * @return array
+     */
+    public function get_pagerules(string $id): array
+    {
+        return $this->http->get(config('api_url') . '/zones/' . $id . '/pagerules')->json();
+    }
+
+    /**
+     * Delete a pagerule for a zone
+     *
+     * @param string $id Zone id
+     * @param string $pagerule_id Pagerule id
+     * @return array
+     */
+    public function delete_pagerule(string $id, string $pagerule_id): array
+    {
+        return $this->http->delete(config('api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id)->json();
     }
 
     /**

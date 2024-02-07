@@ -140,7 +140,7 @@ function config($key = null, $default = null)
  * @param mixed $message The variable or message to be dumped.
  * @return void
  */
-function dump($message)
+function stop($message)
 {
     var_dump($message);
     die();
