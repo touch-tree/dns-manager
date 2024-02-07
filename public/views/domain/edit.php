@@ -40,11 +40,6 @@
                         </label>
                     </div>
 
-                    <label for="forwarding_url_pagerule" class="text-input-column">
-                        Forwarding URL pagerule:
-                        <input type="text" name="forwarding_url_pagerule" id="forwarding_url_pagerule" required>
-                    </label>
-
                     <button type="submit" class="btn btn-primary form-submit">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                         Update site

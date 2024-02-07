@@ -29,6 +29,47 @@ class DashboardService
     }
 
     /**
+     * Get DNS record by zone id and name
+     *
+     * @param string $id
+     * @param string $name
+     * @return mixed|null
+     */
+    public function get_dns_record(string $id, string $name)
+    {
+        $dns_records = $this->get_dns_records($id);
+
+        foreach ($dns_records['result'] as $record) {
+            if ($record['name'] === $name) {
+                return $record;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Update DNS record for a zone by id
+     *
+     * @param string $id Zone id
+     * @param string $name Record name
+     * @param array $options
+     * @return array
+     */
+    public function update_dns_record(string $id, string $name, array $options): array
+    {
+        $dns_record = $this->get_dns_record($id, $name);
+
+        if (is_null($dns_record)) {
+            return [
+                'success' => false
+            ];
+        }
+
+        return $this->http->put(config('api_url') . '/zones/' . $id . '/dns_records/' . $dns_record['id'], $options)->json();
+    }
+
+    /**
      * Get all zones
      *
      * @return array

@@ -38,10 +38,10 @@ class Redirect
     {
         $this->session = $session;
 
-        if ($path !== null) {
+        if (is_string($path)) {
             $route = route($path);
 
-            if ($route === null) {
+            if (is_null($route)) {
                 throw new Error('Route is invalid: ' . $path);
             }
 
@@ -59,7 +59,7 @@ class Redirect
     {
         $route = route($path);
 
-        if ($route === null) {
+        if (is_null($route)) {
             throw new Error('Route is invalid: ' . $path);
         }
 
@@ -79,7 +79,7 @@ class Redirect
      */
     public function with(string $key, $value): Redirect
     {
-        if ($this->path === null) {
+        if (is_null($this->path)) {
             throw new LogicException('Cannot use with method without setting the path property');
         }
 

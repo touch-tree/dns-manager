@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Core\Redirect;
+use App\Core\Request;
 use App\Core\View;
 use App\Services\DashboardService;
 use App\Http\Requests\CreateDomainRequest;
@@ -59,14 +60,33 @@ class DashboardController
     /**
      * Update domain action
      *
+     * @param Request $request
      * @param string $id
      * @return Redirect
      */
-    public function update(string $id): Redirect
+    public function update(Request $request, string $id): Redirect
     {
         $warnings = [];
 
-        // needs testing this does not work yet lol
+        $root = $this->dashboard_service->update_dns_record($id, '@',
+            [
+                'content' => $request->input('root_cname_target')
+            ]
+        );
+
+        if (!$root['success']) {
+            $warnings[] = 'Unable to update CNAME ROOT';
+        }
+
+        $sub = $this->dashboard_service->update_dns_record($id, 'www',
+            [
+                'content' => $request->input('sub_cname_target')
+            ]
+        );
+
+        if (!$sub['success']) {
+            $warnings[] = 'Unable to update CNAME SUB';
+        }
 
         if (count($warnings)) {
             return redirect('dashboard')
