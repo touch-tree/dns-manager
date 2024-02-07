@@ -142,7 +142,7 @@ class DashboardController
             $request->input('pagerule_full_url'),
         ];
 
-        $page_destination = request()->input('pagerule_destination_url');
+        $page_destination = $request->input('pagerule_destination_url');
 
         foreach ($page_rules as $rule) {
             $parsed_url = parse_url($page_destination);
@@ -180,7 +180,7 @@ class DashboardController
             ]
         );
 
-        if ($site['success'] === false) {
+        if (!$site['success']) {
             $code = 0;
 
             foreach ($site['errors'] as $item) {
