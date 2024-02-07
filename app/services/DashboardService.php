@@ -14,7 +14,7 @@ class DashboardService
     private Http $http;
 
     /**
-     * CloudflareAPIService constructor
+     * DashboardService constructor
      *
      * @return void
      */
