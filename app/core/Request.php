@@ -52,13 +52,14 @@ class Request
      *
      * @param array $rules An associative array where keys are parameter names and values are validation patterns (e.g. ['name' => 'required|string|max:255']).
      * @return Validator
+     *
      * @throws Exception
      */
     public function validate(array $rules): Validator
     {
         $validator = new Validator($this->all(), $rules);
         $validator->validate();
-        
+
         return $validator;
     }
 }

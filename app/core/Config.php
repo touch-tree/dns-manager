@@ -23,9 +23,10 @@ class Config
      *
      * @param string $path
      * @return void
+     *
      * @throws Error
      */
-    public static function prepare(string $path)
+    public static function resolve(string $path)
     {
         if (!file_exists($path)) {
             throw new Error('Unable to import configuration due to not being able to find file: ' . $path);

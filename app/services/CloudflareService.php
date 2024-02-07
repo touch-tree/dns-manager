@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Core\Http;
-use ReflectionException;
 
 class CloudflareService
 {
@@ -17,11 +16,11 @@ class CloudflareService
     /**
      * CloudflareAPIService constructor
      *
-     * @throws ReflectionException
+     * @return void
      */
-    public function __construct()
+    public function __construct(Http $http)
     {
-        $this->http = app(Http::class)::set_headers(
+        $this->http = $http::set_headers(
             [
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . config('api_token'),
@@ -70,7 +69,7 @@ class CloudflareService
      */
     public function set_ssl(string $id, array $options): array
     {
-        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/ssl', $options);
+        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/ssl', $options)->json();
     }
 
     /**
@@ -82,7 +81,7 @@ class CloudflareService
      */
     public function set_https(string $id, array $options): array
     {
-        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/always_use_https', $options);
+        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/always_use_https', $options)->json();
     }
 
     /**

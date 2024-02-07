@@ -48,6 +48,7 @@ class Validator
      * Validates the data based on the specified rules.
      *
      * @return bool True if validation passes, false otherwise.
+     *
      * @throws Exception If an unsupported validation rule is encountered.
      */
     public function validate(): bool
@@ -64,6 +65,7 @@ class Validator
      *
      * @param string $field The field to validate.
      * @param string $rule The validation rule to apply.
+     *
      * @throws Exception If an unsupported validation rule is encountered.
      */
     protected function apply_rule(string $field, string $rule)

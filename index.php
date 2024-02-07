@@ -22,8 +22,12 @@ require_once 'autoload.php';
 require_once 'helpers.php';
 require_once 'routes/web.php';
 
-Config::prepare(__DIR__ . '/config/app.php');
+Config::resolve(__DIR__ . '/config/app.php');
 
-Route::resolve(
-    $_SERVER['REQUEST_URI']
-);
+try {
+    Route::dispatch(
+        $_SERVER['REQUEST_URI']
+    );
+} catch (ReflectionException $exception) {
+    dump($exception);
+}

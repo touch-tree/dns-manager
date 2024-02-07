@@ -31,6 +31,7 @@ class Redirect
      *
      * @param Session $session The session manager for storing flash data.
      * @param string|null $path The destination path for the redirect.
+     *
      * @throws Error If the provided route is invalid.
      */
     public function __construct(Session $session, ?string $path = null)
@@ -73,6 +74,7 @@ class Redirect
      * @param string $key The key for the flash data.
      * @param mixed $value The value of the flash data.
      * @return Redirect
+     *
      * @throws LogicException If the 'path' property is not set.
      */
     public function with(string $key, $value): Redirect

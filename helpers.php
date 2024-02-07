@@ -83,7 +83,11 @@ function route(string $name, array $parameters = []): ?string
 }
 
 /**
- * Get current request.
+ * Get the current request instance.
+ *
+ * This function provides a convenient way to obtain the current request object
+ * throughout the application. It ensures that only a single instance of the
+ * Request class is created and reused, promoting efficiency.
  *
  * @return Request The instance of the Request class.
  */
@@ -147,12 +151,15 @@ function dump($message)
  *
  * @template T
  * @param class-string<T> $class_name The fully qualified class name to resolve.
- * @return T An instance of the specified class.
- * @throws ReflectionException If the class cannot be reflected.
+ * @return T|null An instance of the specified class, or false if instance cannot be resolved.
  */
 function app(string $class_name)
 {
-    return Container::get($class_name);
+    try {
+        return Container::get($class_name);
+    } catch (ReflectionException $exception) {
+        return null;
+    }
 }
 
 /**

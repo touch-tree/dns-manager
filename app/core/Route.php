@@ -3,6 +3,9 @@
 namespace App\Core;
 
 use Error;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
 
 /**
  * The Route class provides a simple and flexible way to define and handle
@@ -14,14 +17,14 @@ use Error;
 class Route
 {
     /**
-     * Routes.
+     * Routes
      *
      * @var array
      */
     private static array $routes = [];
 
     /**
-     * Named routes.
+     * Named routes
      *
      * @var array
      */
@@ -99,6 +102,7 @@ class Route
      *
      * @param string $name The name for the route.
      * @return $this
+     *
      * @throws Error If a duplicate route name is detected.
      */
     public function name(string $name): Route
@@ -113,53 +117,102 @@ class Route
     }
 
     /**
-     * Resolve the matching route and run the associated controller action and parameters.
+     * Resolve the matching route and dispatch the associated controller action and parameters.
      *
      * @param string $url The URL to resolve. REQUEST_URI most of the time.
      * @return bool True if a matching route was found and resolved, false otherwise.
+     *
      * @throws Error If the controller action is not in a valid format.
+     * @throws ReflectionException
      */
-    public static function resolve(string $url): bool
+    public static function dispatch(string $url): bool
     {
-        $_status = false;
+        $status = false;
 
         foreach (self::$routes as $route) {
-            $action = $route['action'];
+            $route_url = $route['url'];
+            [$class, $method] = $route['action'];
 
             if ($_SERVER['REQUEST_METHOD'] !== $route['method']) {
                 continue;
             }
 
             if (preg_match(self::get_pattern($route['url']), $url)) {
-                if (!is_array($action) || count($action) !== 2 || !is_string($action[0]) || !is_string($action[1])) {
-                    throw new Error('Invalid controller action format');
+                if (!class_exists($class)) {
+                    throw new Error('Invalid controller given');
                 }
 
-                $response = call_user_func_array(
+                if (!method_exists($class, $method)) {
+                    throw new Error('Unable to find method for ' . $class);
+                }
+
+                $response = self::resolve_controller(
                     [
-                        new $action[0](),
-                        $action[1]
+                        app(Container::class)::get($class),
+                        $method
                     ],
-                    self::get_parameters($route['url'], $url)
+                    self::get_parameters($route_url, $url)
                 );
 
                 if ($response instanceof Redirect) {
                     $response->send();
-                    $_status = true;
+                    $status = true;
                 }
 
                 if ($response instanceof View) {
                     echo $response->render();
-                    $_status = true;
+                    $status = true;
                 }
             }
         }
 
-        if (!$_status) {
+        if (!$status) {
             echo view('404')->render();
         }
 
-        return $_status;
+        return $status;
+    }
+
+    /**
+     * Resolve the controller method and invoke it with the provided parameters.
+     *
+     * @param array $action An array containing the controller instance and method.
+     * @param array $path_parameters Associative array of path parameters.
+     * @return mixed The result of invoking the controller method.
+     *
+     * @throws ReflectionException If there is an issue with reflection.
+     * @throws Error If a type hint must be set for a parameter without a type hint.
+     */
+    private static function resolve_controller(array $action, array $path_parameters)
+    {
+        [$class, $method] = $action;
+
+        $_method = new ReflectionMethod($class, $method);
+        $parameters = [];
+
+        foreach ($_method->getParameters() as $param) {
+            $name = $param->getName();
+            $type = $param->getType();
+
+            if (!$type) {
+                throw new Error('Type hint must be set for ' . $name . ' in ' . $param->getDeclaringClass()->name);
+            }
+
+            if ($type->getName() == Request::class) {
+                $parameters[] = request();
+                continue;
+            }
+
+            if (is_subclass_of($type->getName(), Request::class)) {
+                $request = $type->getName();
+                $parameters[] = new $request;
+                continue;
+            }
+
+            $parameters[] = $path_parameters[$name] ?? null;
+        }
+
+        return $_method->invokeArgs($class, $parameters);
     }
 
     /**

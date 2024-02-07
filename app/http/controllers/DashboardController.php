@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Core\Redirect;
 use App\Core\View;
 use App\Services\CloudflareService;
+use App\Http\Requests\CreateRequest;
 use Exception;
-use ReflectionException;
 
 class DashboardController
 {
@@ -20,11 +20,11 @@ class DashboardController
     /**
      * DashboardController constructor
      *
-     * @throws ReflectionException
+     * @return void
      */
-    public function __construct()
+    public function __construct(CloudflareService $cloudflare_service)
     {
-        $this->cloudflare_service = app(CloudflareService::class);
+        $this->cloudflare_service = $cloudflare_service;
     }
 
     /**
@@ -121,23 +121,14 @@ class DashboardController
     /**
      * Create domain action
      *
+     * @param CreateRequest $request
      * @return Redirect
+     *
      * @throws Exception
      */
-    public function create(): Redirect
+    public function create(CreateRequest $request): Redirect
     {
-        // make sure to add a request parameter for custom requests, so we can handle their rules better lol
-
-        $validator = request()->validate(
-            [
-                'domain' => 'string|required',
-                'root_cname_target' => 'string|required',
-                'sub_cname_target' => 'string|required',
-                'pagerule_destination_url' => 'string|required',
-            ]
-        );
-
-        if ($validator->errors()) {
+        if ($request->validate()->errors()) {
             return redirect('dashboard')
                 ->with('message_header', 'Unable to add site')
                 ->with('message_content', 'Unable to add site due to invalid form submission')
@@ -147,8 +138,8 @@ class DashboardController
         // check whether the pagerule targets are valid urls
 
         $page_rules = [
-            request()->input('pagerule_url'),
-            request()->input('pagerule_full_url'),
+            $request->input('pagerule_url'),
+            $request->input('pagerule_full_url'),
         ];
 
         $page_destination = request()->input('pagerule_destination_url');
@@ -177,7 +168,7 @@ class DashboardController
 
         $site = $this->cloudflare_service->add_site(
             [
-                'name' => request()->input('domain'),
+                'name' => $request->input('domain'),
                 'jump_start' => true,
                 'type' => 'full',
                 'account' => [
@@ -252,7 +243,7 @@ class DashboardController
             [
                 'type' => 'CNAME',
                 'name' => '@',
-                'content' => request()->input('root_cname_target'),
+                'content' => $request->input('root_cname_target'),
                 'proxied' => true,
                 'ttl' => 1,
             ]
@@ -266,13 +257,13 @@ class DashboardController
             [
                 'type' => 'CNAME',
                 'name' => 'www',
-                'content' => request()->input('sub_cname_target'),
+                'content' => $request->input('sub_cname_target'),
                 'proxied' => true,
                 'ttl' => 1,
             ]
         );
 
-        if ($dns_sub['success'] === false) {
+        if (!$dns_sub['success']) {
             $warnings[] = 'Unable to add CNAME SUB';
         }
 
@@ -285,7 +276,7 @@ class DashboardController
                         'target' => 'url',
                         'constraint' => [
                             'operator' => 'matches',
-                            'value' => request()->input('pagerule_url'),
+                            'value' => $request->input('pagerule_url'),
                         ],
                     ],
                 ],
@@ -293,7 +284,7 @@ class DashboardController
                     [
                         'id' => 'forwarding_url',
                         'value' => [
-                            'url' => request()->input('pagerule_destination_url'),
+                            'url' => $request->input('pagerule_destination_url'),
                             'status_code' => 301,
                         ],
                     ],
@@ -301,7 +292,7 @@ class DashboardController
             ]
         );
 
-        if ($pagerule_url['success'] === false) {
+        if (!$pagerule_url['success']) {
             $warnings[] = 'Unable to set value for PAGERULE URL';
         }
 
@@ -312,7 +303,7 @@ class DashboardController
                         'target' => 'url',
                         'constraint' => [
                             'operator' => 'matches',
-                            'value' => request()->input('pagerule_full_url'),
+                            'value' => $request->input('pagerule_full_url'),
                         ],
                     ],
                 ],
@@ -320,7 +311,7 @@ class DashboardController
                     [
                         'id' => 'forwarding_url',
                         'value' => [
-                            'url' => request()->input('pagerule_destination_url'),
+                            'url' => $request->input('pagerule_destination_url'),
                             'status_code' => 301,
                         ],
                     ],
@@ -328,7 +319,7 @@ class DashboardController
             ]
         );
 
-        if ($pagerule_full_url['success'] === false) {
+        if (!$pagerule_full_url['success']) {
             $warnings[] = 'Unable to set value for PAGERULE FULL URL';
         }
 
