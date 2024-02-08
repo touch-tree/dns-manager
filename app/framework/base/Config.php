@@ -2,6 +2,7 @@
 
 namespace App\Framework\Base;
 
+use Error;
 use Exception;
 
 /**
@@ -24,12 +25,12 @@ class Config
      * @param string $path
      * @return void
      *
-     * @throws Exception Unable to find config file
+     * @throws Error Unable to find config file
      */
     public static function resolve(string $path)
     {
         if (!file_exists($path)) {
-            throw new Exception('Unable to import configuration due to not being able to find file: ' . $path);
+            throw new Error('Unable to import configuration due to not being able to find file: ' . $path);
         }
 
         self::$config = require $path;

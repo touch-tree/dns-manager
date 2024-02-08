@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <?php echo get_template('header.php'); ?>
+    <?php echo get_template('header'); ?>
 
     <title>Add</title>
 </head>

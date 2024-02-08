@@ -2,7 +2,6 @@
 
 namespace App\Framework\Base;
 
-use App\Exceptions\UnsupportedException;
 use Exception;
 
 /**

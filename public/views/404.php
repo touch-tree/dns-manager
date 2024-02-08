@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <?php echo get_template('header.php'); ?>
+    <?php echo get_template('header'); ?>
 
     <title>Page not found</title>
 </head>
@@ -11,7 +11,7 @@
 
 <p>Page not found</p>
 
-<?php echo get_template('footer.php'); ?>
+<?php echo get_template('footer'); ?>
 
 </body>
 

@@ -3,6 +3,7 @@
 namespace App\Framework\Base;
 
 use Closure;
+use Error;
 use Exception;
 use ReflectionClass;
 use ReflectionException;
@@ -37,8 +38,7 @@ class Container
      * @param string $class_name The fully qualified class name.
      * @return object The resolved instance of the specified class.
      *
-     * @throws ReflectionException If the class cannot be reflected.
-     * @throws Exception If the class is not instantiable.
+     * @throws Exception
      */
     public static function get(string $class_name): object
     {
@@ -69,7 +69,6 @@ class Container
      * @param string $class_name The fully qualified class name.
      * @return object The resolved instance of the specified class.
      *
-     * @throws ReflectionException If the class cannot be reflected.
      * @throws Exception If the class is not instantiable.
      */
     private static function resolve_instance(string $class_name): object
@@ -77,7 +76,7 @@ class Container
         $reflection_class = new ReflectionClass($class_name);
 
         if (!$reflection_class->isInstantiable()) {
-            throw new Exception('Class ' . $class_name . ' is not instantiable');
+            throw new Error('Class ' . $class_name . ' is not instantiable');
         }
 
         $constructor = $reflection_class->getConstructor();
@@ -95,7 +94,6 @@ class Container
      * @param ReflectionMethod $constructor The constructor method.
      * @return array The resolved dependencies.
      *
-     * @throws ReflectionException
      * @throws Exception
      */
     private static function resolve_constructor_dependencies(ReflectionMethod $constructor): array
@@ -107,11 +105,11 @@ class Container
             $type = $param->getType();
 
             if (!$type) {
-                throw new Exception('Type hint must be set for ' . $param->name . ' in ' . $class_name);
+                throw new Error('Type hint must be set for ' . $param->name . ' in ' . $class_name);
             }
 
             if (!($type instanceof ReflectionNamedType) || $type->isBuiltin()) {
-                throw new Exception('Unable to resolve dependency ' . $param->name . ' in ' . $class_name);
+                throw new Error('Unable to resolve dependency ' . $param->name . ' in ' . $class_name);
             }
 
             $dependencies[] = self::get($type->getName());
@@ -139,7 +137,7 @@ class Container
      * @param Closure|string|object $concrete The closure, class name, or instance.
      * @return void
      *
-     * @throws ReflectionException
+     * @throws ReflectionException|Exception
      */
     public static function singleton(string $abstract, $concrete): void
     {

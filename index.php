@@ -14,18 +14,13 @@
 */
 
 use App\Framework\Base\Config;
+use App\Framework\Base\Session;
 use App\Framework\Routing\Router;
-
-session_start();
 
 require_once 'autoload.php';
 require_once 'helpers.php';
 require_once 'routes/web.php';
 
-Config::resolve(__DIR__ . '/config/app.php');
-
-try {
-    Router::dispatch($_SERVER['REQUEST_URI']);
-} catch (ReflectionException $exception) {
-    stop($exception);
-}
+Session::start();
+Config::resolve(base_path('/config/app.php'));
+Router::dispatch();

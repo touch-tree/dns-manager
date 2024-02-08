@@ -2,14 +2,14 @@
 <html lang="en">
 
 <head>
-    <?php echo get_template('header.php'); ?>
+    <?php echo get_template('header'); ?>
 
     <title>Dashboard</title>
 </head>
 
 <body>
 
-<?php echo get_template('modal.php'); ?>
+<?php echo get_template('modal'); ?>
 
 <div class="center-wrap">
     <div class="dashboard-container main-container">
@@ -105,7 +105,7 @@
     </div>
 </div>
 
-<?php echo get_template('footer.php'); ?>
+<?php echo get_template('footer'); ?>
 </body>
 
 </html>

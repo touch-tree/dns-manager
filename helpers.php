@@ -27,7 +27,7 @@ use App\Framework\Routing\Router;
  */
 function redirect(?string $route = null): Redirect
 {
-    return new Redirect(new Session(), $route);
+    return new Redirect(session(), $route);
 }
 
 /**
@@ -57,13 +57,15 @@ function session(?string $key = null, $value = null)
 {
     static $session;
 
-    if ($session === null) {
+    if (is_null($session)) {
         $session = new Session();
     }
 
-    if ($key !== null && $value !== null) {
+    if (!is_null($key) && !is_null($value)) {
         $session->put($key, $value);
-    } elseif ($key !== null) {
+    }
+
+    if (!is_null($key)) {
         return $session->pull($key);
     }
 
@@ -95,7 +97,7 @@ function request(): Request
 {
     static $request;
 
-    if ($request === null) {
+    if (is_null($request)) {
         $request = new Request();
     }
 
@@ -122,7 +124,7 @@ function request(): Request
  */
 function config($key = null, $default = null)
 {
-    if ($key === null) {
+    if (is_null($key)) {
         return Config::all();
     }
 
@@ -152,12 +154,13 @@ function stop($message)
  * @template T
  * @param class-string<T> $class_name The fully qualified class name to resolve.
  * @return T|null An instance of the specified class, or false if instance cannot be resolved.
+ * @throws Error
  */
 function app(string $class_name)
 {
     try {
         return Container::get($class_name);
-    } catch (ReflectionException $exception) {
+    } catch (ReflectionException|Exception $exception) {
         return null;
     }
 }
@@ -198,7 +201,7 @@ function asset(string $path): string
  */
 function get_template(string $file): ?string
 {
-    if (file_exists($path = base_path('/public/templates/' . $file))) {
+    if (file_exists($path = base_path('/public/templates/' . $file . '.php'))) {
         ob_start();
         include $path;
         return ob_get_clean();

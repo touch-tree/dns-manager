@@ -119,4 +119,14 @@ class Session
     {
         return $_SESSION;
     }
+
+    /**
+     * Start session
+     *
+     * @return bool True when the session started successfully, else false.
+     */
+    public static function start(): bool
+    {
+        return session_start();
+    }
 }

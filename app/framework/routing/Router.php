@@ -5,7 +5,7 @@ namespace App\Framework\Routing;
 use App\Framework\Base\View;
 use App\Framework\Http\Redirect;
 use App\Framework\Http\Request;
-use Exception;
+use Error;
 use ReflectionException;
 use ReflectionMethod;
 
@@ -100,12 +100,12 @@ class Router
      * @param string $name The name for the route.
      * @return $this
      *
-     * @throws Exception If a duplicate route name is detected.
+     * @throws Error If a duplicate route name is detected.
      */
     public function name(string $name): Router
     {
         if (isset(self::$named_routes[$name])) {
-            throw new Exception($name);
+            throw new Error($name);
         }
 
         self::$named_routes[$name] = self::$routes[count(self::$routes) - 1];
@@ -116,14 +116,13 @@ class Router
     /**
      * Resolve the matching route and dispatch the associated controller action and parameters.
      *
-     * @param string $uri The URI to resolve. REQUEST_URI most of the time.
+     * @param string|null $uri The URI to resolve else REQUEST_URI if empty.
      * @return bool True if a matching route was found and resolved, false otherwise.
-     *
-     * @throws Exception If the controller action is not in a valid format.
-     * @throws ReflectionException
      */
-    public static function dispatch(string $uri): bool
+    public static function dispatch(?string $uri = null): bool
     {
+        $uri = $uri ?: $_SERVER['REQUEST_URI'];
+
         foreach (self::$routes as $route) {
             [$class, $method] = $route->get_action();
 
@@ -133,11 +132,11 @@ class Router
 
             if (preg_match(self::get_pattern($route->uri()), $uri)) {
                 if (!class_exists($class)) {
-                    throw new Exception('Invalid controller given');
+                    throw new Error('Controller does not exist.');
                 }
 
                 if (!method_exists($class, $method)) {
-                    throw new Exception('Unable to find method for ' . $class);
+                    throw new Error('Unable to find method for ' . $class);
                 }
 
                 $response = self::resolve_controller(
@@ -172,14 +171,18 @@ class Router
      * @param array $path_parameters Associative array of path parameters.
      * @return mixed The result of invoking the controller method.
      *
-     * @throws ReflectionException If there is an issue with reflection.
-     * @throws Exception If a type hint must be set for a parameter without a type hint.
+     * @throws Error If a type hint must be set for a parameter without a type hint.
      */
     private static function resolve_controller(array $action, array $path_parameters)
     {
         [$class, $_method] = $action;
 
-        $method = new ReflectionMethod($class, $_method);
+        try {
+            $method = new ReflectionMethod($class, $_method);
+        } catch (ReflectionException $exception) {
+            throw new Error('Unable to reflect this class or method.');
+        }
+
         $parameters = [];
 
         foreach ($method->getParameters() as $param) {
@@ -188,7 +191,7 @@ class Router
             $type = $param->getType();
 
             if (!$type) {
-                throw new Exception('Type hint must be set for ' . $name . ' in ' . $class_name);
+                throw new Error('Type hint must be set for ' . $name . ' in ' . $class_name);
             }
 
             if ($type->getName() == Request::class) {
@@ -205,7 +208,13 @@ class Router
             $parameters[] = $path_parameters[$name] ?? null;
         }
 
-        return $method->invokeArgs($class, $parameters);
+        try {
+            $result = $method->invokeArgs($class, $parameters);
+        } catch (ReflectionException $exception) {
+            throw new Error('Unable to resolve object parameters.');
+        }
+
+        return $result;
     }
 
     /**

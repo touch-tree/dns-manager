@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Framework\Base\View;
 use App\Framework\Http\Redirect;
-use App\Framework\Http\Request;
 use App\Http\Requests\CreateRequest;
+use App\Http\Requests\UpdateRequest;
 use App\Services\DashboardService;
 use Exception;
 
@@ -60,13 +60,15 @@ class DashboardController
     /**
      * Update domain action
      *
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param string $id
      * @return Redirect
      */
-    public function update(Request $request, string $id): Redirect
+    public function update(UpdateRequest $request, string $id): Redirect
     {
         $warnings = [];
+
+        // update dns records
 
         $root = $this->dashboard_service->update_dns_record($id, '@',
             [

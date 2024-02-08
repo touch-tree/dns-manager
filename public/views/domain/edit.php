@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <?php echo get_template('header.php'); ?>
+    <?php echo get_template('header'); ?>
 
     <title>Edit</title>
 </head>
@@ -50,7 +50,7 @@
     </div>
 </div>
 
-<?php echo get_template('footer.php'); ?>
+<?php echo get_template('footer'); ?>
 </body>
 
 </html>
