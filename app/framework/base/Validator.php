@@ -124,9 +124,9 @@ class Validator
     protected function is_required(string $field): bool
     {
         $value = $this->data[$field] ?? null;
-        $is_valid = empty($value) === false;
+        $is_valid = !empty($value);
 
-        if ($is_valid === false) {
+        if (!$is_valid) {
             $this->add_error($field, 'required');
         }
 
@@ -144,7 +144,7 @@ class Validator
         $value = $this->data[$field] ?? null;
         $is_valid = isset($value) && is_string($value);
 
-        if ($is_valid === false) {
+        if (!$is_valid) {
             $this->add_error($field, 'string');
         }
 

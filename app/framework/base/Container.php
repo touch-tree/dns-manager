@@ -85,7 +85,7 @@ class Container
             return $reflection_class->newInstance();
         }
 
-        return $reflection_class->newInstanceArgs(self::resolve_constructor_dependencies($constructor));
+        return $reflection_class->newInstanceArgs(self::resolve_dependencies($constructor));
     }
 
     /**
@@ -96,7 +96,7 @@ class Container
      *
      * @throws Exception
      */
-    private static function resolve_constructor_dependencies(ReflectionMethod $constructor): array
+    private static function resolve_dependencies(ReflectionMethod $constructor): array
     {
         $dependencies = [];
 

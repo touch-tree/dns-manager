@@ -3,7 +3,6 @@
 namespace App\Framework\Base;
 
 use Error;
-use Exception;
 
 /**
  * The Config class provides a simple configuration management system.

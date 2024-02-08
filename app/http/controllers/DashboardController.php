@@ -380,7 +380,7 @@ class DashboardController
     {
         $response = $this->dashboard_service->verify_nameservers($id);
 
-        if ($response['success'] === false) {
+        if (!$response['success']) {
             $code = 0;
 
             foreach ($response['errors'] as $item) {

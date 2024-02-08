@@ -5,10 +5,9 @@
 | Introduction
 |--------------------------------------------------------------------------
 |
-| A lightweight framework designed for simplicity and ease of use.
-| The framework includes a simple routing system,
-| Views are used to render HTML content, and the autoloader ensures that
-| framework are loaded dynamically as needed.
+| This application is made using our personal framework. This framework
+| contains every tooling that makes a solid application abiding by PSR
+| convention. Have fun
 |
 |--------------------------------------------------------------------------
 */

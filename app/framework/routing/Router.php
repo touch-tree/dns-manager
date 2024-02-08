@@ -72,7 +72,7 @@ class Router
      * Set a POST route.
      *
      * @param string $uri The URI pattern for the route.
-     * @param array $action An array representing the controller and method to be called for this route.
+     * @param string[] $action An array representing the controller and method to be called for this route.
      * @return Router
      */
     public static function post(string $uri, array $action): Router
@@ -85,7 +85,7 @@ class Router
      *
      * @param string $method The HTTP method for the route (GET or POST).
      * @param string $uri The URI pattern for the route.
-     * @param array $action An array representing the controller and method to be called for this route.
+     * @param string[] $action An array representing the controller and method to be called for this route.
      * @return Router
      */
     private static function add_route(string $method, string $uri, array $action): Router

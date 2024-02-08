@@ -198,14 +198,17 @@ function asset(string $path): string
  *
  * @param string $file The relative file path of the template file.
  * @return string|null The content of the template file if it exists, or null otherwise.
+ * @throws Error
  */
 function get_template(string $file): ?string
 {
-    if (file_exists($path = base_path('/public/templates/' . $file . '.php'))) {
-        ob_start();
-        include $path;
-        return ob_get_clean();
+    $path = base_path('/public/templates/' . $file . '.php');
+
+    if (!file_exists($path)) {
+        throw new Error('Unable to find template: ' . $file);
     }
 
-    return null;
+    ob_start();
+    include $path;
+    return ob_get_clean();
 }
