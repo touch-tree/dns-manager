@@ -2,7 +2,6 @@
 
 namespace App\Framework\Base;
 
-use Error;
 use Closure;
 use Exception;
 use ReflectionClass;
@@ -39,7 +38,7 @@ class Container
      * @return object The resolved instance of the specified class.
      *
      * @throws ReflectionException If the class cannot be reflected.
-     * @throws Error If the class is not instantiable.
+     * @throws Exception If the class is not instantiable.
      */
     public static function get(string $class_name): object
     {

@@ -3,7 +3,7 @@
 namespace App\Framework\Http;
 
 use App\Framework\Base\Session;
-use Error;
+use Exception;
 use LogicException;
 
 /**
@@ -33,7 +33,7 @@ class Redirect
      * @param Session $session The session manager for storing flash data.
      * @param string|null $path The destination path for the redirect.
      *
-     * @throws Error If the provided route is invalid.
+     * @throws Exception If the provided route is invalid.
      */
     public function __construct(Session $session, ?string $path = null)
     {
@@ -43,7 +43,7 @@ class Redirect
             $route = route($path);
 
             if (is_null($route)) {
-                throw new Error('Router is invalid: ' . $path);
+                throw new Exception('Route is invalid: ' . $path);
             }
 
             $this->path = $route;
@@ -55,13 +55,14 @@ class Redirect
      *
      * @param string $path The destination path for the redirect.
      * @return Redirect
+     * @throws Exception
      */
     public function route(string $path): Redirect
     {
         $route = route($path);
 
         if (is_null($route)) {
-            throw new Error('Router is invalid: ' . $path);
+            throw new Exception('Route is invalid: ' . $path);
         }
 
         $this->path = $route;

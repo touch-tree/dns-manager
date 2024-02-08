@@ -68,7 +68,7 @@ class Validator
      * @param string $rule The validation rule to apply.
      * @return bool
      *
-     * @throws UnsupportedException If an unsupported validation rule is encountered.
+     * @throws Exception If an unsupported validation rule is encountered.
      */
     protected function apply_rule(string $field, string $rule): bool
     {
@@ -88,7 +88,7 @@ class Validator
             return $this->is_email($field);
         }
 
-        throw new UnsupportedException($rule);
+        throw new Exception($rule);
     }
 
     /**
@@ -99,7 +99,7 @@ class Validator
      */
     protected function add_error(string $field, string $rule)
     {
-        if (isset($this->errors[$field]) === false) {
+        if (!isset($this->errors[$field])) {
             $this->errors[$field] = [];
         }
 

@@ -2,7 +2,7 @@
 
 namespace App\Framework\Base;
 
-use Error;
+use Exception;
 
 /**
  * The Config class provides a simple configuration management system.
@@ -24,12 +24,12 @@ class Config
      * @param string $path
      * @return void
      *
-     * @throws Error
+     * @throws Exception Unable to find config file
      */
     public static function resolve(string $path)
     {
         if (!file_exists($path)) {
-            throw new Error('Unable to import configuration due to not being able to find file: ' . $path);
+            throw new Exception('Unable to import configuration due to not being able to find file: ' . $path);
         }
 
         self::$config = require $path;

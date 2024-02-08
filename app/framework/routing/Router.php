@@ -5,7 +5,6 @@ namespace App\Framework\Routing;
 use App\Framework\Base\View;
 use App\Framework\Http\Redirect;
 use App\Framework\Http\Request;
-use Error;
 use Exception;
 use ReflectionException;
 use ReflectionMethod;
@@ -120,7 +119,7 @@ class Router
      * @param string $uri The URI to resolve. REQUEST_URI most of the time.
      * @return bool True if a matching route was found and resolved, false otherwise.
      *
-     * @throws Error If the controller action is not in a valid format.
+     * @throws Exception If the controller action is not in a valid format.
      * @throws ReflectionException
      */
     public static function dispatch(string $uri): bool
@@ -134,11 +133,11 @@ class Router
 
             if (preg_match(self::get_pattern($route->uri()), $uri)) {
                 if (!class_exists($class)) {
-                    throw new Error('Invalid controller given');
+                    throw new Exception('Invalid controller given');
                 }
 
                 if (!method_exists($class, $method)) {
-                    throw new Error('Unable to find method for ' . $class);
+                    throw new Exception('Unable to find method for ' . $class);
                 }
 
                 $response = self::resolve_controller(
