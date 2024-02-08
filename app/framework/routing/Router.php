@@ -21,14 +21,14 @@ class Router
     /**
      * Routes
      *
-     * @var array<Route>
+     * @var Route[]
      */
     private static array $routes = [];
 
     /**
      * Named routes
      *
-     * @var array<Route>
+     * @var Route[]
      */
     private static array $named_routes = [];
 
