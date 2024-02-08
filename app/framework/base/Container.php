@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Core;
+namespace App\Framework\Base;
 
 use Error;
 use Closure;
+use Exception;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -13,7 +14,7 @@ use ReflectionNamedType;
  * The Container class provides a simple Dependency Injection Container for managing and resolving instances of classes.
  * Representing a service container.
  *
- * @package App\Core
+ * @package App\Framework\Base
  */
 class Container
 {
@@ -70,14 +71,14 @@ class Container
      * @return object The resolved instance of the specified class.
      *
      * @throws ReflectionException If the class cannot be reflected.
-     * @throws Error If the class is not instantiable.
+     * @throws Exception If the class is not instantiable.
      */
     private static function resolve_instance(string $class_name): object
     {
         $reflection_class = new ReflectionClass($class_name);
 
         if (!$reflection_class->isInstantiable()) {
-            throw new Error('Class ' . $class_name . ' is not instantiable');
+            throw new Exception('Class ' . $class_name . ' is not instantiable');
         }
 
         $constructor = $reflection_class->getConstructor();
@@ -96,22 +97,22 @@ class Container
      * @return array The resolved dependencies.
      *
      * @throws ReflectionException
-     * @throws Error
+     * @throws Exception
      */
     private static function resolve_constructor_dependencies(ReflectionMethod $constructor): array
     {
         $dependencies = [];
 
         foreach ($constructor->getParameters() as $param) {
-            $declared_class = $param->getDeclaringClass()->name;
+            $class_name = $param->getDeclaringClass()->name;
             $type = $param->getType();
 
             if (!$type) {
-                throw new Error('Type hint must be set for ' . $param->name . ' in ' . $declared_class);
+                throw new Exception('Type hint must be set for ' . $param->name . ' in ' . $class_name);
             }
 
             if (!($type instanceof ReflectionNamedType) || $type->isBuiltin()) {
-                throw new Error('Unable to resolve dependency ' . $param->name . ' in ' . $declared_class);
+                throw new Exception('Unable to resolve dependency ' . $param->name . ' in ' . $class_name);
             }
 
             $dependencies[] = self::get($type->getName());

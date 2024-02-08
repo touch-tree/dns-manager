@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Core;
+namespace App\Framework\Base;
 
+use App\Exceptions\UnsupportedException;
 use Exception;
 
 /**
  * The Validator class provides a simple and extensible way to validate data based on specified rules.
  *
- * @package App\Core
+ * @package App\Framework\Base
  */
 class Validator
 {
@@ -65,33 +66,29 @@ class Validator
      *
      * @param string $field The field to validate.
      * @param string $rule The validation rule to apply.
+     * @return bool
      *
-     * @throws Exception If an unsupported validation rule is encountered.
+     * @throws UnsupportedException If an unsupported validation rule is encountered.
      */
-    protected function apply_rule(string $field, string $rule)
+    protected function apply_rule(string $field, string $rule): bool
     {
-        $rule_parts = explode(':', $rule, 2);
-        $parameters = isset($rule_parts[1]) ? explode(',', $rule_parts[1]) : [];
-
-        switch (strtolower($rule_parts[0])) {
-            case 'required':
-                $this->validate_required($field);
-                break;
-            case 'string':
-                $this->validate_string($field);
-                break;
-            case 'numeric':
-                $this->validate_numeric($field);
-                break;
-            case 'email':
-                $this->validate_email($field);
-                break;
-            case 'max':
-                $this->validate_max($field, $parameters);
-                break;
-            default:
-                throw new Exception('Validation rule ' . $rule . ' not supported');
+        if ($rule === 'required') {
+            return $this->is_required($field);
         }
+
+        if ($rule === 'string') {
+            return $this->is_string($field);
+        }
+
+        if ($rule === 'numeric') {
+            return $this->is_numeric($field);
+        }
+
+        if ($rule === 'email') {
+            return $this->is_email($field);
+        }
+
+        throw new UnsupportedException($rule);
     }
 
     /**
@@ -125,7 +122,7 @@ class Validator
      * @param string $field The field to validate.
      * @return bool True if the validation passes, false otherwise.
      */
-    protected function validate_required(string $field): bool
+    protected function is_required(string $field): bool
     {
         $value = $this->data[$field] ?? null;
         $is_valid = empty($value) === false;
@@ -143,7 +140,7 @@ class Validator
      * @param string $field The field to validate.
      * @return bool True if the validation passes, false otherwise.
      */
-    protected function validate_string(string $field): bool
+    protected function is_string(string $field): bool
     {
         $value = $this->data[$field] ?? null;
         $is_valid = isset($value) && is_string($value);
@@ -161,7 +158,7 @@ class Validator
      * @param string $field The field to validate.
      * @return bool True if the validation passes, false otherwise.
      */
-    protected function validate_numeric(string $field): bool
+    protected function is_numeric(string $field): bool
     {
         $value = $this->data[$field] ?? null;
         $is_valid = isset($value) && is_numeric($value);
@@ -179,7 +176,7 @@ class Validator
      * @param string $field The field to validate.
      * @return bool True if the validation passes, false otherwise.
      */
-    protected function validate_email(string $field): bool
+    protected function is_email(string $field): bool
     {
         $value = $this->data[$field] ?? null;
         $is_valid = isset($value) && filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
@@ -189,24 +186,5 @@ class Validator
         }
 
         return $is_valid;
-    }
-
-    /**
-     * Validates that the length of the specified field does not exceed the specified maximum value.
-     *
-     * @param string $field The field to validate.
-     * @param array $parameters An array of parameters, with the first parameter representing the maximum length.
-     * @return bool True if the validation passes, false otherwise.
-     */
-    protected function validate_max(string $field, array $parameters): bool
-    {
-        $value = $this->data[$field] ?? null;
-
-        if (isset($value) && strlen($value) > (isset($parameters[0]) ? (int)$parameters[0] : 0)) {
-            $this->add_error($field, 'max');
-            return false;
-        }
-
-        return true;
     }
 }

@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Core;
+namespace App\Framework\Http;
 
+use App\Framework\Base\Session;
 use Error;
 use LogicException;
 
 /**
  * This class provides functionality for creating redirects with flash data.
  *
- * @package App\Core
+ * @package App\Framework\Http
  */
 class Redirect
 {
@@ -42,7 +43,7 @@ class Redirect
             $route = route($path);
 
             if (is_null($route)) {
-                throw new Error('Route is invalid: ' . $path);
+                throw new Error('Router is invalid: ' . $path);
             }
 
             $this->path = $route;
@@ -60,7 +61,7 @@ class Redirect
         $route = route($path);
 
         if (is_null($route)) {
-            throw new Error('Route is invalid: ' . $path);
+            throw new Error('Router is invalid: ' . $path);
         }
 
         $this->path = $route;

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Redirect;
-use App\Core\Request;
-use App\Core\View;
+use App\Framework\Base\View;
+use App\Framework\Http\Redirect;
+use App\Framework\Http\Request;
+use App\Http\Requests\CreateRequest;
 use App\Services\DashboardService;
-use App\Http\Requests\CreateDomainRequest;
 use Exception;
 
 class DashboardController
@@ -141,12 +141,12 @@ class DashboardController
     /**
      * Create domain action
      *
-     * @param CreateDomainRequest $request Form request
+     * @param CreateRequest $request Form request
      * @return Redirect
      *
      * @throws Exception
      */
-    public function create(CreateDomainRequest $request): Redirect
+    public function create(CreateRequest $request): Redirect
     {
         if ($request->validate()->errors()) {
             return redirect('dashboard')
@@ -167,7 +167,7 @@ class DashboardController
         foreach ($page_rules as $rule) {
             $parsed_url = parse_url($page_destination);
 
-            if (isset($parsed_url['host']) === false) {
+            if (!isset($parsed_url['host'])) {
                 return redirect('dashboard')
                     ->with('message_header', 'Unable to add site')
                     ->with('message_content', 'Forwarding URL should be a proper URL')

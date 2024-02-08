@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Core;
+namespace App\Framework\Http;
 
+use App\Framework\Base\Validator;
 use Exception;
 
 /**
@@ -9,7 +10,7 @@ use Exception;
  * to work with query parameters. It is designed to simplify the extraction
  * of query parameters from a URL.
  *
- * @package App\Core
+ * @package App\Framework\Http
  */
 class Request
 {

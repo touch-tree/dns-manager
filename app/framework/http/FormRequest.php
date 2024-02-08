@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Core;
+namespace App\Framework\Http;
 
+use App\Framework\Base\Validator;
 use Exception;
 
 /**
@@ -9,7 +10,7 @@ use Exception;
  * It provides methods to handle and validate form data based on specified rules.
  * You can define custom validation rules within this class for specific use cases.
  *
- * @package App\Core
+ * @package App\Framework\Http
  */
 class FormRequest extends Request
 {

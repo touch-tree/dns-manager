@@ -11,13 +11,13 @@
 |-----------------------------------------------------------------------------
 */
 
-use App\Core\Config;
-use App\Core\Redirect;
-use App\Core\Request;
-use App\Core\Route;
-use App\Core\Container;
-use App\Core\Session;
-use App\Core\View;
+use App\Framework\Base\Config;
+use App\Framework\Base\Container;
+use App\Framework\Base\Session;
+use App\Framework\Base\View;
+use App\Framework\Http\Redirect;
+use App\Framework\Http\Request;
+use App\Framework\Routing\Router;
 
 /**
  * Redirect to a specified route.
@@ -79,7 +79,7 @@ function session(?string $key = null, $value = null)
  */
 function route(string $name, array $parameters = []): ?string
 {
-    return Route::route($name, $parameters);
+    return Router::route($name, $parameters);
 }
 
 /**

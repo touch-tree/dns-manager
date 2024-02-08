@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Core\Http;
+use App\Framework\Base\Http;
 
 class DashboardService
 {

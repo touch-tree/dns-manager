@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Core\FormRequest;
+use App\Framework\Http\FormRequest;
 
-class CreateDomainRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     public function rules(): array
     {

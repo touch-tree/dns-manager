@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Core;
+namespace App\Framework\Base;
 
 /**
  * The Http class provides a simple interface for sending HTTP requests using cURL.
  * It allows you to set custom headers, send GET and POST requests, and handle
  * responses. This class is designed to simplify the interaction with APIs.
  *
- * @package App\Core
+ * @package App\Framework\Base
  */
 class Http
 {
