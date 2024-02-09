@@ -12,7 +12,7 @@ use Throwable;
  *
  * @package App\Framework\Base
  */
-class View
+final class View
 {
     /**
      * The path to the view file.

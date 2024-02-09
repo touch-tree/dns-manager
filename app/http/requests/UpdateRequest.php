@@ -8,6 +8,9 @@ class UpdateRequest extends FormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'root_cname_target' => 'string|required',
+            'sub_cname_target' => 'string|required',
+        ];
     }
 }

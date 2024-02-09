@@ -12,7 +12,7 @@ use LogicException;
  *
  * @package App\Framework\Http
  */
-class Redirect
+final class Redirect
 {
     /**
      * The destination path for the redirect.

@@ -16,7 +16,7 @@ use ReflectionMethod;
  *
  * @package App\Framework\Routing
  */
-class Router
+final class Router
 {
     /**
      * Routes

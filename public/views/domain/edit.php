@@ -30,15 +30,21 @@
                         <label for="root_cname_target" class="text-input-column">
                             Root CNAME target:
                             <input type="text" name="root_cname_target" id="root_cname_target"
-                                   value="" required>
+                                   value="<?php echo isset($dns_root) ? $dns_root['content'] : ''; ?>" required>
                         </label>
 
                         <label for="sub_cname_target" class="text-input-column">
                             Sub CNAME target:
                             <input type="text" name="sub_cname_target" id="sub_cname_target"
-                                   value="" required>
+                                   value="<?php echo isset($dns_sub) ? $dns_sub['content'] : ''; ?>" required>
                         </label>
                     </div>
+
+                    <label for="pagerule_destination_url" class="text-input-column">
+                        PAGERULE destination URL:
+                        <input type="text" name="pagerule_destination_url" id="pagerule_destination_url"
+                               placeholder="For example: https://domain.sub.com/" required>
+                    </label>
 
                     <button type="submit" class="btn btn-primary form-submit">
                         <i class="fa fa-plus" aria-hidden="true"></i>

@@ -66,7 +66,7 @@ class DashboardService
             ];
         }
 
-        return $this->http->put(config('api_url') . '/zones/' . $id . '/dns_records/' . $dns_record['id'], $options)->json();
+        return $this->http->patch(config('api_url') . '/zones/' . $id . '/dns_records/' . $dns_record['id'], $options)->json();
     }
 
     /**
@@ -193,6 +193,39 @@ class DashboardService
     public function get_pagerules(string $id): array
     {
         return $this->http->get(config('api_url') . '/zones/' . $id . '/pagerules')->json();
+    }
+
+    /**
+     * Get a specific pagerule for a zone by URL
+     *
+     * @param string $id Zone id
+     * @param string $pagerule_url Pagerule URL
+     * @return array|null
+     */
+    public function get_pagerule_by_url(string $id, string $pagerule_url): ?array
+    {
+        $pagerules = $this->get_pagerules($id);
+
+        foreach ($pagerules['result'] as $pagerule) {
+            if ($pagerule['targets'][0]['constraint']['value'] === $pagerule_url) {
+                return $pagerule;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Update a specific pagerule for a zone
+     *
+     * @param string $id Zone id
+     * @param string $pagerule_id Pagerule id
+     * @param array $options
+     * @return array
+     */
+    public function update_pagerule(string $id, string $pagerule_id, array $options): array
+    {
+        return $this->http->patch(config('api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id, $options)->json();
     }
 
     /**

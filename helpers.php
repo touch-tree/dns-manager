@@ -142,7 +142,7 @@ function config($key = null, $default = null)
  * @param mixed $message The variable or message to be dumped.
  * @return void
  */
-function stop($message)
+function dd($message)
 {
     var_dump($message);
     die();
@@ -194,7 +194,7 @@ function asset(string $path): string
 }
 
 /**
- * Retrieves the content of the specified template file.
+ * Retrieves the content of the specified template file by filename.
  *
  * @param string $file The relative file path of the template file.
  * @return string|null The content of the template file if it exists, or null otherwise.

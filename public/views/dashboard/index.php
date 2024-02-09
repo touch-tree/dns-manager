@@ -25,7 +25,7 @@
                 <a href="<?php echo route('dashboard'); ?>">
                     <button class="btn btn-outline-primary">
                         <i class="fa fa-refresh" aria-hidden="true"></i>
-                        Reload
+                        Refresh entries
                     </button>
                 </a>
             </div>

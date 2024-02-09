@@ -9,7 +9,7 @@ namespace App\Framework\Base;
  *
  * @package App\Framework\Base
  */
-class Session
+final class Session
 {
     /**
      * Flash a key-value pair to the session.

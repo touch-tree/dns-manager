@@ -16,7 +16,7 @@ use ReflectionNamedType;
  *
  * @package App\Framework\Base
  */
-class Container
+final class Container
 {
     /**
      * An array to store instances of resolved classes.

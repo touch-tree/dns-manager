@@ -48,13 +48,24 @@ class DashboardController
      */
     public function edit(string $id): View
     {
-        $response = $this->dashboard_service->get_zone($id);
+        $zone = $this->dashboard_service->get_zone($id);
 
-        if (!$response['success']) {
+        if (!$zone['success']) {
             return view('404');
         }
 
-        return view('domain.edit')->with('domain', $response['result']);
+        $dns_root = $this->dashboard_service->get_dns_record($id, $zone['result']['name']);
+        $dns_sub = $this->dashboard_service->get_dns_record($id, 'www.' . $zone['result']['name']);
+
+        if (!$dns_root || !$dns_sub) {
+            echo 'Unable to get DNS data';
+            return view('404');
+        }
+
+        return view('domain.edit')
+            ->with('domain', $zone['result'])
+            ->with('dns_root', $dns_root)
+            ->with('dns_sub', $dns_sub);
     }
 
     /**
@@ -63,32 +74,52 @@ class DashboardController
      * @param UpdateRequest $request
      * @param string $id
      * @return Redirect
+     *
+     * @throws Exception
      */
     public function update(UpdateRequest $request, string $id): Redirect
     {
+        if ($request->validate()->errors()) {
+            return redirect('dashboard')
+                ->with('message_header', 'Unable to update site')
+                ->with('message_content', 'Unable to update site due to invalid form submission')
+                ->with('message_type', 'error');
+        }
+
+        $zone = $this->dashboard_service->get_zone($id);
+
+        if (!$zone['success']) {
+            return redirect('dashboard')
+                ->with('message_header', 'Unable to resolve site option')
+                ->with('message_content', 'No zone found with given id')
+                ->with('message_type', 'error');
+        }
+
         $warnings = [];
 
         // update dns records
 
-        $root = $this->dashboard_service->update_dns_record($id, '@',
+        $dns_root = $this->dashboard_service->update_dns_record($id, $zone['result']['name'],
             [
-                'content' => $request->input('root_cname_target')
+                'content' => $request->input('root_cname_target'),
             ]
         );
 
-        if (!$root['success']) {
+        if (!$dns_root['success']) {
             $warnings[] = 'Unable to update CNAME ROOT';
         }
 
-        $sub = $this->dashboard_service->update_dns_record($id, 'www',
+        $sub_root = $this->dashboard_service->update_dns_record($id, 'www.' . $zone['result']['name'],
             [
-                'content' => $request->input('sub_cname_target')
+                'content' => $request->input('sub_cname_target'),
             ]
         );
 
-        if (!$sub['success']) {
+        if (!$sub_root['success']) {
             $warnings[] = 'Unable to update CNAME SUB';
         }
+
+        $uwu = $request->input('pagerule_destination_url');
 
         if (count($warnings)) {
             return redirect('dashboard')
@@ -118,16 +149,6 @@ class DashboardController
         }
 
         return view('domain.details')->with('domain', $response['result']);
-    }
-
-    /**
-     * Add domain form view
-     *
-     * @return View
-     */
-    public function add_modal(): View
-    {
-        return view('domain.form.add');
     }
 
     /**
@@ -305,6 +326,7 @@ class DashboardController
 
         $pagerule_url = $this->dashboard_service->add_pagerule($id,
             [
+                'status' => 'active',
                 'targets' => [
                     [
                         'target' => 'url',
@@ -332,6 +354,7 @@ class DashboardController
 
         $pagerule_full_url = $this->dashboard_service->add_pagerule($id,
             [
+                'status' => 'active',
                 'targets' => [
                     [
                         'target' => 'url',

@@ -9,7 +9,7 @@ use Exception;
  *
  * @package App\Framework\Base
  */
-class Validator
+final class Validator
 {
     /**
      * The data to be validated.

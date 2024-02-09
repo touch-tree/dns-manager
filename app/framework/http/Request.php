@@ -21,7 +21,7 @@ class Request
      * @param string|null $default The default value if the parameter is not set.
      * @return string|null The value of the query parameter or the default value.
      */
-    public function get(string $parameter, ?string $default = null): ?string
+    final public function get(string $parameter, ?string $default = null): ?string
     {
         return $_GET[$parameter] ?? $default;
     }
@@ -33,7 +33,7 @@ class Request
      * @param string|null $default The default value if the parameter is not set.
      * @return string|null The value of the form post data parameter or the default value.
      */
-    public function input(string $parameter, ?string $default = null): ?string
+    final public function input(string $parameter, ?string $default = null): ?string
     {
         return $_POST[$parameter] ?? $default;
     }
@@ -43,7 +43,7 @@ class Request
      *
      * @return array The associative array of form post data.
      */
-    public function all(): array
+    final public function all(): array
     {
         return $_POST;
     }
