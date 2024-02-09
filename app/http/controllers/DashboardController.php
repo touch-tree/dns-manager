@@ -119,7 +119,7 @@ class DashboardController
             $warnings[] = 'Unable to update CNAME SUB';
         }
 
-        $uwu = $request->input('pagerule_destination_url');
+//        $request->input('pagerule_destination_url');
 
         if (count($warnings)) {
             return redirect('dashboard')
