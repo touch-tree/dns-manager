@@ -40,11 +40,11 @@
                         </label>
                     </div>
 
-                    <label for="pagerule_destination_url" class="text-input-column">
-                        PAGERULE destination URL:
-                        <input type="text" name="pagerule_destination_url" id="pagerule_destination_url"
-                               placeholder="For example: https://domain.sub.com/" required>
-                    </label>
+<!--                    <label for="pagerule_destination_url" class="text-input-column">-->
+<!--                        PAGERULE destination URL:-->
+<!--                        <input type="text" name="pagerule_destination_url" id="pagerule_destination_url"-->
+<!--                               placeholder="For example: https://domain.sub.com/" required>-->
+<!--                    </label>-->
 
                     <button type="submit" class="btn btn-primary form-submit">
                         <i class="fa fa-plus" aria-hidden="true"></i>

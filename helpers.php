@@ -183,6 +183,28 @@ function base_path(?string $path = null): string
 }
 
 /**
+ * Get the base URL of the application.
+ *
+ * @return string The base URL.
+ */
+function base_url(): string
+{
+    return ($_SERVER['REQUEST_SCHEME'] ?? 'http') . PATH_SEPARATOR . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . DIRECTORY_SEPARATOR;
+}
+
+/**
+ * Generate a URL based on the given route.
+ *
+ * @param string|null $path The path for the URL.
+ *
+ * @return string The generated URL.
+ */
+function url(?string $path): string
+{
+    return base_url() . ltrim($path, DIRECTORY_SEPARATOR);
+}
+
+/**
  * Generates the URL for an asset based on the provided relative path.
  *
  * @param string $path The relative path to the asset.
@@ -190,7 +212,10 @@ function base_path(?string $path = null): string
  */
 function asset(string $path): string
 {
-    return config('url') . '/public/' . trim($path, DIRECTORY_SEPARATOR);
+    $base_url = base_url();
+    $url = config('url', $base_url);
+
+    return $url . '/public/' . trim($path, DIRECTORY_SEPARATOR);
 }
 
 /**
