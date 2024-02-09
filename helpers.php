@@ -149,12 +149,17 @@ function dd($message)
 }
 
 /**
- * Get an instance of the specified class from the service container.
+ * Get an instance of the specified class from the Container class.
+ *
+ * This function acts as a convenient entry point to retrieve instances of
+ * classes from the application's Dependency Injection Container.
  *
  * @template T
  * @param class-string<T> $class_name The fully qualified class name to resolve.
- * @return T|null An instance of the specified class, or false if instance cannot be resolved.
- * @throws Error
+ * @return T|null An instance of the specified class, or null if the instance cannot be resolved.
+ *
+ * @throws Error If there is an error during the resolution process.
+ * @see Container
  */
 function app(string $class_name)
 {
@@ -236,4 +241,23 @@ function get_template(string $file): ?string
     ob_start();
     include $path;
     return ob_get_clean();
+}
+
+/**
+ * Search for an object in an array based on specified properties and values.
+ *
+ * @param array $array The array to search.
+ * @param array $search The associative array of properties and values to match.
+ *
+ * @return array|null The found object or null if not found.
+ */
+function search_object_by_properties(array $array, array $search): ?array
+{
+    foreach ($array as $item) {
+        if (is_array($item) && array_intersect_assoc($search, $item) == $search) {
+            return $item;
+        }
+    }
+
+    return null;
 }

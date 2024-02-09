@@ -224,15 +224,7 @@ class DashboardController
         );
 
         if (!$site['success']) {
-            $code = 0;
-
-            foreach ($site['errors'] as $item) {
-                if ($item['code'] === 1061) {
-                    $code = 1061;
-                }
-            }
-
-            if ($code === 1061) {
+            if (search_object_by_properties($site['errors'], ['code' => '1061'])) {
                 return redirect('dashboard')
                     ->with('message_header', 'Unable to add site')
                     ->with('message_content', 'There is another site with the same domain name, unable to have duplicate sites under the same domain name')
@@ -318,7 +310,7 @@ class DashboardController
             $pagerule_response = $this->dashboard_service->delete_pagerule($id, $pagerule['id']);
 
             if (!$pagerule_response['success']) {
-                $warnings[] = 'Unable to pagerule record with id: ' . $pagerule['id'];
+                $warnings[] = 'Unable to delete pagerule record with id: ' . $pagerule['id'];
             }
         }
 
@@ -404,15 +396,7 @@ class DashboardController
         $response = $this->dashboard_service->verify_nameservers($id);
 
         if (!$response['success']) {
-            $code = 0;
-
-            foreach ($response['errors'] as $item) {
-                if ($item['code'] === 1224) {
-                    $code = 1224;
-                }
-            }
-
-            if ($code === 1224) {
+            if (search_object_by_properties($response['errors'], ['code' => '1224'])) {
                 return redirect('dashboard')
                     ->with('message_header', 'Unable to check nameservers')
                     ->with('message_content', 'This request cannot be made because it can only be called once an hour')
