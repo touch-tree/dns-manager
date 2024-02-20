@@ -109,6 +109,7 @@ class DashboardController
             $warnings[] = 'Unable to update CNAME SUB';
         }
 
+<<<<<<< HEAD
         // update pagerules
 
         $pagerules = $this->dashboard_service->get_pagerules($id);
@@ -132,6 +133,9 @@ class DashboardController
                 $warnings[] = 'Unable to update pagerule record with id: ' . $pagerule['id'];
             }
         }
+=======
+        $uwu = $request->input('pagerule_destination_url');
+>>>>>>> parent of de374f5 (Updated phpdoc for helper functions)
 
         if (count($warnings)) {
             return redirect('dashboard')
