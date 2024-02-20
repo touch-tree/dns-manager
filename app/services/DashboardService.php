@@ -196,26 +196,6 @@ class DashboardService
     }
 
     /**
-     * Get a specific pagerule for a zone by URL
-     *
-     * @param string $id Zone id
-     * @param string $pagerule_url Pagerule URL
-     * @return array|null
-     */
-    public function get_pagerule_by_url(string $id, string $pagerule_url): ?array
-    {
-        $pagerules = $this->get_pagerules($id);
-
-        foreach ($pagerules['result'] as $pagerule) {
-            if ($pagerule['targets'][0]['constraint']['value'] === $pagerule_url) {
-                return $pagerule;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Update a specific pagerule for a zone
      *
      * @param string $id Zone id

@@ -49,23 +49,13 @@ class DashboardController
     public function edit(string $id): View
     {
         $zone = $this->dashboard_service->get_zone($id);
-
-        if (!$zone['success']) {
-            return view('404');
-        }
-
-        $dns_root = $this->dashboard_service->get_dns_record($id, $zone['result']['name']);
-        $dns_sub = $this->dashboard_service->get_dns_record($id, 'www.' . $zone['result']['name']);
-
-        if (!$dns_root || !$dns_sub) {
-            echo 'Unable to get DNS data';
-            return view('404');
-        }
+        $pagerules = $this->dashboard_service->get_pagerules($id);
 
         return view('domain.edit')
             ->with('domain', $zone['result'])
-            ->with('dns_root', $dns_root)
-            ->with('dns_sub', $dns_sub);
+            ->with('dns_root', $this->dashboard_service->get_dns_record($id, $zone['result']['name']))
+            ->with('dns_sub', $this->dashboard_service->get_dns_record($id, 'www.' . $zone['result']['name']))
+            ->with('pagerule_destination_url', $pagerules['result'][0]['actions'][0]['value']['url']);
     }
 
     /**
@@ -119,7 +109,29 @@ class DashboardController
             $warnings[] = 'Unable to update CNAME SUB';
         }
 
-//        $request->input('pagerule_destination_url');
+        // update pagerules
+
+        $pagerules = $this->dashboard_service->get_pagerules($id);
+
+        foreach ($pagerules['result'] as $pagerule) {
+            $pagerule_response = $this->dashboard_service->update_pagerule($id, $pagerule['id'],
+                [
+                    'actions' => [
+                        [
+                            'id' => 'forwarding_url',
+                            'value' => [
+                                'url' => $request->input('pagerule_destination_url'),
+                                'status_code' => 301,
+                            ],
+                        ],
+                    ],
+                ]
+            );
+
+            if (!$pagerule_response['success']) {
+                $warnings[] = 'Unable to update pagerule record with id: ' . $pagerule['id'];
+            }
+        }
 
         if (count($warnings)) {
             return redirect('dashboard')
@@ -143,10 +155,6 @@ class DashboardController
     public function details(string $id): View
     {
         $response = $this->dashboard_service->get_zone($id);
-
-        if (!$response['success']) {
-            return view('404');
-        }
 
         return view('domain.details')->with('domain', $response['result']);
     }
