@@ -35,6 +35,7 @@ final class Session
     public function pull(string $key, $default = null)
     {
         $value = $this->get($key, $default);
+
         unset($_SESSION[$key]);
 
         return $value;
@@ -61,14 +62,14 @@ final class Session
      */
     public function put($key, $value = null): Session
     {
-        if (!is_array($key)) {
+        if (is_string($key) && !is_null($value)) {
             $_SESSION[$key] = $value;
-
-            return $this;
         }
 
-        foreach ($key as $k => $v) {
-            $_SESSION[$k] = $v;
+        if (is_array($key) && is_null($value)) {
+            foreach ($key as $k => $v) {
+                $_SESSION[$k] = $v;
+            }
         }
 
         return $this;
@@ -88,12 +89,20 @@ final class Session
     /**
      * Remove a key from the session.
      *
-     * @param string $key The key to remove from the session.
+     * @param string|array $key The key to remove from the session.
      * @return Session The current Session instance.
      */
-    public function forget(string $key): Session
+    public function forget($key): Session
     {
-        unset($_SESSION[$key]);
+        if (is_string($key)) {
+            unset($_SESSION[$key]);
+        }
+
+        if (is_array($key)) {
+            foreach ($key as $k) {
+                unset($_SESSION[$k]);
+            }
+        }
 
         return $this;
     }

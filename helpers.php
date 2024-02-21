@@ -73,6 +73,17 @@ function session(?string $key = null, $value = null)
 }
 
 /**
+ * Get the error associated with the given key from the session.
+ *
+ * @param string $key The key to retrieve the error.
+ * @return string|null The error message or null if not found.
+ */
+function error(string $key): ?string
+{
+    return $_SESSION['errors'][$key][0] ?? null;
+}
+
+/**
  * Get URL for a named route.
  *
  * @param string $name The name of the route.
@@ -102,6 +113,21 @@ function request(): Request
     }
 
     return $request;
+}
+
+/**
+ * Retrieve the previous input value for a given key from the session.
+ *
+ * This function is commonly used in the context of form submissions
+ * where validation fails, and you need to repopulate form fields
+ * with the previously submitted values.
+ *
+ * @param string $key The key for which the previous input value should be retrieved.
+ * @return mixed Returns the previous input value for the specified key or null if not found.
+ */
+function old(string $key)
+{
+    return request()->old($key);
 }
 
 /**
@@ -139,12 +165,15 @@ function config($key = null, $default = null)
 /**
  * Dump and die function for quick debugging.
  *
- * @param mixed $message The variable or message to be dumped.
+ * @param mixed|null $message The variable or message to be dumped.
  * @return void
  */
-function dd($message)
+function dd(...$message)
 {
-    var_dump($message);
+    if (!empty($message)) {
+        var_dump($message);
+    }
+
     die();
 }
 

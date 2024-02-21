@@ -180,10 +180,7 @@ class DashboardController
     public function create(CreateRequest $request): Redirect
     {
         if ($request->validate()->errors()) {
-            return redirect('dashboard')
-                ->with('message_header', 'Unable to add site')
-                ->with('message_content', 'Unable to add site due to invalid form submission')
-                ->with('message_type', 'error');
+            return redirect('domain.add');
         }
 
         // check whether the pagerule targets are valid urls
@@ -199,19 +196,21 @@ class DashboardController
             $parsed_url = parse_url($page_destination);
 
             if (!isset($parsed_url['host'])) {
-                return redirect('dashboard')
-                    ->with('message_header', 'Unable to add site')
-                    ->with('message_content', 'Forwarding URL should be a proper URL')
-                    ->with('message_type', 'error');
+                return redirect('domain.add')->with_errors(
+                    [
+                        'pagerule_destination_url' => 'Forwarding URL should be a proper URL'
+                    ]
+                );
             }
 
             $host = $parsed_url['host'] . $parsed_url['path'];
 
             if ($host === $rule || $host === 'www.' . $rule) {
-                return redirect('dashboard')
-                    ->with('message_header', 'Unable to add site')
-                    ->with('message_content', 'Forwarding URL matches the target and would cause a redirect loop')
-                    ->with('message_type', 'error');
+                return redirect('domain.add')->with_errors(
+                    [
+                        'pagerule_destination_url' => 'Forwarding URL matches the target and would cause a redirect loop'
+                    ]
+                );
             }
         }
 
@@ -233,15 +232,16 @@ class DashboardController
 
         if (!$site['success']) {
             if (search_object_by_properties($site['errors'], ['code' => '1061'])) {
-                return redirect('dashboard')
-                    ->with('message_header', 'Unable to add site')
-                    ->with('message_content', 'There is another site with the same domain name, unable to have duplicate sites under the same domain name')
-                    ->with('message_type', 'error');
+                return redirect('domain.add')->with_errors(
+                    [
+                        'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
+                    ]
+                );
             }
 
-            return redirect('dashboard')
+            return redirect('domain.add')
                 ->with('message_header', 'Unable to add site')
-                ->with('message_content', 'Unable to add site due to internal server error, possible reasons might be that the domain already exists or user token has permission issues.')
+                ->with('message_content', 'Unable to add site due to an error with the Cloudflare API.')
                 ->with('message_type', 'error');
         }
 
@@ -381,13 +381,13 @@ class DashboardController
         }
 
         if (count($warnings)) {
-            return redirect('dashboard')
+            return redirect('domain.add')
                 ->with('message_header', 'Encountered issues with site setup')
                 ->with('message_content', 'Site is added, but setup encountered some issues: ' . join(', ', $warnings))
                 ->with('message_type', 'error');
         }
 
-        return redirect('dashboard')
+        return redirect('domain.add')
             ->with('message_header', 'Added site')
             ->with('message_content', 'Site added and setup is done')
             ->with('message_type', 'success');

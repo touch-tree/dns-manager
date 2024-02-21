@@ -63,6 +63,6 @@ label {
     height: 35px;
 }
 
-.error-form-input {
+label.text-input-column:has(.validation-text.error) input {
     border-color: #ff0f11 !important;
 }

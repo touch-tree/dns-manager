@@ -87,6 +87,24 @@ final class Redirect
     }
 
     /**
+     * Add custom error messages to the session's 'errors' array.
+     *
+     * This method is useful when you need to manually add custom error messages
+     * outside the typical form request validation.
+     *
+     * @param array $errors An associative array where keys represent error keys and values represent error messages.
+     * @return Redirect
+     */
+    public function with_errors(array $errors): Redirect
+    {
+        foreach ($errors as $key => $value) {
+            $_SESSION['errors'][$key][] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
      * Perform the actual redirection and terminate the script.
      *
      * @return void

@@ -2,6 +2,7 @@
 
 namespace App\Framework\Http;
 
+use App\Framework\Base\Session;
 use App\Framework\Base\Validator;
 use Exception;
 
@@ -62,5 +63,36 @@ class Request
         $validator->validate();
 
         return $validator;
+    }
+
+    /**
+     * Flash the current request data into the session and return the session instance.
+     *
+     * @return Session The session instance with flashed data.
+     */
+    public function flash(): Session
+    {
+        return $this->session()->flash('flash', $_POST);
+    }
+
+    /**
+     * Retrieve the old input data from the previous request.
+     *
+     * @param string $key The key to retrieve old input data.
+     * @return mixed|null The old input data or null if not found.
+     */
+    public function old(string $key)
+    {
+        return $_SESSION['flash'][$key] ?? null;
+    }
+
+    /**
+     * Return session object
+     *
+     * @return Session
+     */
+    public function session(): Session
+    {
+        return session();
     }
 }

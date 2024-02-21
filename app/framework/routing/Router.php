@@ -91,6 +91,7 @@ final class Router
     private static function add_route(string $method, string $uri, array $action): Router
     {
         self::$routes[] = new Route($uri, $method, $action);
+
         return new self();
     }
 
@@ -139,6 +140,8 @@ final class Router
                     throw new Error('Unable to find method for ' . $class);
                 }
 
+                // route to controller
+
                 $response = self::resolve_controller(
                     [
                         app($class),
@@ -147,17 +150,30 @@ final class Router
                     self::get_parameters($route->uri(), $uri)
                 );
 
+                // handle requests
+
                 if ($response instanceof Redirect) {
+                    session()->forget('flash'); // clear redirect POST data
+                    request()->flash();
+
                     $response->send();
+
+                    session()->forget(['flash', 'errors']);
+
                     return true;
                 }
 
                 if ($response instanceof View) {
                     echo $response->render();
+
+                    session()->forget(['flash', 'errors']);
+
                     return true;
                 }
             }
         }
+
+        // request cannot be processed
 
         echo view('404')->render();
 
@@ -193,6 +209,8 @@ final class Router
             if (!$type) {
                 throw new Error('Type hint must be set for ' . $name . ' in ' . $class_name);
             }
+
+            // add request type by type hint
 
             if ($type->getName() == Request::class) {
                 $parameters[] = request();

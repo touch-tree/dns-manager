@@ -3,6 +3,7 @@
 namespace App\Framework\Http;
 
 use App\Framework\Base\Validator;
+use Decimal\Decimal;
 use Exception;
 
 /**
@@ -35,6 +36,15 @@ class FormRequest extends Request
      */
     final public function validate(?array $rules = []): Validator
     {
-        return parent::validate(empty($rules) ? $this->rules() : []);
+        $validator = parent::validate(empty($rules) ? $this->rules() : []);
+        $errors = $validator->errors();
+
+        if (is_null($errors)) {
+            session()->forget(['errors', 'flash']);
+        }
+
+        session()->put('errors', $errors);
+
+        return $validator;
     }
 }

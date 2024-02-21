@@ -127,7 +127,7 @@ final class Validator
         $is_valid = !empty($value);
 
         if (!$is_valid) {
-            $this->add_error($field, 'required');
+            $this->add_error($field, 'This field is required.');
         }
 
         return $is_valid;

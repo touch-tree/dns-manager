@@ -1,14 +1,11 @@
 $(document).ready(function () {
-    if (messageHeader) {
-        const $n = $('<div class="notification ' + messageType + '">' +
-            '<div class="notification__header">' + messageHeader + '</div>' +
-            '<div class="notification__content">' + messageContent + '</div>' +
-            '</div>');
+    let $notification = $('#notification-data');
+
+    if ($notification.data('message-header')) {
+        const $n = $('<div class="notification ' + $notification.data('message-type') + '">' + '<div class="notification__header">' + $notification.data('message-header') + '</div>' + '<div class="notification__content">' + $notification.data('message-content') + '</div>' + '</div>');
 
         $('body').append($n);
 
-        setTimeout(function () {
-            $n.remove();
-        }, 10000);
+        setTimeout(() => $n.remove(), 10000);
     }
 });

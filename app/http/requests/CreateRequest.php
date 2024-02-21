@@ -12,6 +12,8 @@ class CreateRequest extends FormRequest
             'domain' => 'string|required',
             'root_cname_target' => 'string|required',
             'sub_cname_target' => 'string|required',
+            'pagerule_url' => 'string|required',
+            'pagerule_full_url' => 'string|required',
             'pagerule_destination_url' => 'string|required',
         ];
     }
