@@ -9,9 +9,9 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'root_cname_target' => 'string|required',
-            'sub_cname_target' => 'string|required',
-            'pagerule_destination_url' => 'string|required'
+            'root_cname_target' => 'required',
+            'sub_cname_target' => 'required',
+            'pagerule_destination_url' => 'required'
         ];
     }
 }

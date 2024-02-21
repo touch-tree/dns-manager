@@ -79,6 +79,14 @@ final class Validator
             return $this->is_string($field);
         }
 
+        if ($rule === 'alpha') {
+            return $this->is_alpha($field);
+        }
+
+        if ($rule === 'alpha_num') {
+            return $this->is_alpha_num($field);
+        }
+
         if ($rule === 'numeric') {
             return $this->is_numeric($field);
         }
@@ -134,6 +142,42 @@ final class Validator
     }
 
     /**
+     * Validates that the specified field contains only letters (alphabetic characters).
+     *
+     * @param string $field The field to validate.
+     * @return bool True if the validation passes, false otherwise.
+     */
+    protected function is_alpha(string $field): bool
+    {
+        $value = $this->data[$field] ?? null;
+        $is_valid = isset($value) && ctype_alpha($value);
+
+        if (!$is_valid) {
+            $this->add_error($field, 'This field must contain only alphabetic characters.');
+        }
+
+        return $is_valid;
+    }
+
+    /**
+     * Validates that the specified field contains only alphanumeric characters.
+     *
+     * @param string $field The field to validate.
+     * @return bool True if the validation passes, false otherwise.
+     */
+    protected function is_alpha_num(string $field): bool
+    {
+        $value = $this->data[$field] ?? null;
+        $is_valid = isset($value) && ctype_alnum($value);
+
+        if (!$is_valid) {
+            $this->add_error($field, 'This field must contain only alphanumeric characters.');
+        }
+
+        return $is_valid;
+    }
+
+    /**
      * Validates that the specified field is a string.
      *
      * @param string $field The field to validate.
@@ -145,7 +189,7 @@ final class Validator
         $is_valid = isset($value) && is_string($value);
 
         if (!$is_valid) {
-            $this->add_error($field, 'string');
+            $this->add_error($field, 'This field must be a string.');
         }
 
         return $is_valid;
@@ -163,7 +207,7 @@ final class Validator
         $is_valid = isset($value) && is_numeric($value);
 
         if (!$is_valid) {
-            $this->add_error($field, 'numeric');
+            $this->add_error($field, 'This field must contain only numeric characters.');
         }
 
         return $is_valid;
@@ -181,7 +225,7 @@ final class Validator
         $is_valid = isset($value) && filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
 
         if (!$is_valid) {
-            $this->add_error($field, 'email');
+            $this->add_error($field, 'This field must contain a valid email.');
         }
 
         return $is_valid;

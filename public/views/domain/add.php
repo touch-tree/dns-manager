@@ -78,7 +78,6 @@
                     <label for="pagerule_destination_url" class="text-input-column">
                         PAGERULE destination URL:
                         <input type="text" name="pagerule_destination_url" id="pagerule_destination_url"
-                               placeholder="For example: https://domain.sub.com/"
                                value="<?php echo old('pagerule_destination_url') ?>">
                         <?php if (error('pagerule_destination_url')) { ?>
                             <span class="validation-text error"><?php echo error('pagerule_destination_url') ?></span>
