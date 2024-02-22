@@ -2,7 +2,13 @@
 <html lang="en">
 
 <head>
-    <?php echo get_template('header'); ?>
+    <?php
+
+    use App\Services\DashboardService;
+
+    echo get_template('header');
+
+    ?>
 
     <title>Dashboard</title>
 </head>
@@ -36,6 +42,7 @@
                 <tr>
                     <th>Domain</th>
                     <th>Owner</th>
+                    <th>CNAME</th>
                     <th>Nameservers</th>
                     <th>Status</th>
                     <th>Created On</th>
@@ -50,10 +57,16 @@
                                 <a href="<?php echo route('domain.edit', ['id' => $domain['id']]); ?>"
                                    class="link">
                                     <?php echo $domain['name']; ?>
-                                    <i class="fa-solid fa-link"></i>
                                 </a>
                             </td>
                             <td class="owner"><?php echo strtolower($domain['account']['name']); ?></td>
+                            <td>
+                                <?php
+                                foreach (app(DashboardService::class)->get_dns_records($domain['id'])['result'] as $dns_record) {
+                                    echo $dns_record['name'] . '<br>';
+                                }
+                                ?>
+                            </td>
                             <td class="name-server">
                                 <?php
                                 foreach ($domain['name_servers'] as $name_server) {

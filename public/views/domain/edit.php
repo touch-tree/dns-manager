@@ -30,22 +30,30 @@
                         <label for="root_cname_target" class="text-input-column">
                             Root CNAME target:
                             <input type="text" name="root_cname_target" id="root_cname_target"
-                                   value="<?php echo isset($dns_root) ? $dns_root['content'] : ''; ?>" required>
+                                   value="<?php echo isset($dns_root) ? $dns_root['content'] : ''; ?>">
+                            <?php if (error('root_cname_target')) { ?>
+                                <span class="validation-text error"><?php echo error('root_cname_target') ?></span>
+                            <?php } ?>
                         </label>
 
                         <label for="sub_cname_target" class="text-input-column">
                             Sub CNAME target:
                             <input type="text" name="sub_cname_target" id="sub_cname_target"
-                                   value="<?php echo isset($dns_sub) ? $dns_sub['content'] : ''; ?>" required>
+                                   value="<?php echo isset($dns_sub) ? $dns_sub['content'] : ''; ?>">
+                            <?php if (error('sub_cname_target')) { ?>
+                                <span class="validation-text error"><?php echo error('sub_cname_target') ?></span>
+                            <?php } ?>
                         </label>
                     </div>
 
                     <label for="pagerule_destination_url" class="text-input-column">
                         PAGERULE destination URL:
                         <input type="text" name="pagerule_destination_url" id="pagerule_destination_url"
-                               placeholder="For example: https://domain.sub.com/"
-                               value="<?php echo $pagerule_destination_url ?? ''; ?>"
-                               required>
+                               placeholder="For example: https://other.domain.sub.com/"
+                               value="<?php echo $pagerule_destination_url ?? ''; ?>">
+                        <?php if (error('pagerule_destination_url')) { ?>
+                            <span class="validation-text error"><?php echo error('pagerule_destination_url') ?></span>
+                        <?php } ?>
                     </label>
 
                     <button type="submit" class="btn btn-primary form-submit">

@@ -202,15 +202,12 @@ final class Router
         $parameters = [];
 
         foreach ($method->getParameters() as $param) {
-            $class_name = $param->getDeclaringClass()->name;
             $name = $param->getName();
             $type = $param->getType();
 
             if (!$type) {
-                throw new Error('Type hint must be set for ' . $name . ' in ' . $class_name);
+                throw new Error('Type hint must be set for ' . $name . ' in ' . $param->getDeclaringClass()->name);
             }
-
-            // add request type by type hint
 
             if ($type->getName() == Request::class) {
                 $parameters[] = request();

@@ -16,6 +16,23 @@ use Exception;
 class Request
 {
     /**
+     * Get the HTTP headers from the request.
+     *
+     * If the headers have not been previously initialized, a new HeaderBag instance
+     * is created and returned.
+     *
+     * @return HeaderBag The HTTP headers.
+     */
+    public function headers(): HeaderBag
+    {
+        if (!isset($this->headers)) {
+            $this->headers = new HeaderBag();
+        }
+
+        return $this->headers;
+    }
+
+    /**
      * Retrieve the value of a query parameter.
      *
      * @param string $parameter The name of the query parameter.

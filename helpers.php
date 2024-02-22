@@ -123,11 +123,12 @@ function request(): Request
  * with the previously submitted values.
  *
  * @param string $key The key for which the previous input value should be retrieved.
+ * @param string|null $default The default value if the previous input value cannot be retrieved.
  * @return mixed Returns the previous input value for the specified key or null if not found.
  */
-function old(string $key)
+function old(string $key, ?string $default = null)
 {
-    return request()->old($key);
+    return request()->old($key) ?? $default;
 }
 
 /**
@@ -224,6 +225,20 @@ function base_path(?string $path = null): string
 function base_url(): string
 {
     return ($_SERVER['REQUEST_SCHEME'] ?? 'http') . PATH_SEPARATOR . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . DIRECTORY_SEPARATOR;
+}
+
+/**
+ * Generate a redirect response back to the previous page.
+ *
+ * This function creates a redirect response to the URL specified in the 'Referer' header
+ * or defaults to the home URL if the 'Referer' header is not present. It is a shorthand
+ * for 'redirect()->back()'.
+ *
+ * @return Redirect
+ */
+function back(): Redirect
+{
+    return redirect()->back();
 }
 
 /**

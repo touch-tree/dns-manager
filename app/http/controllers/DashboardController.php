@@ -70,16 +70,13 @@ class DashboardController
     public function update(UpdateRequest $request, string $id): Redirect
     {
         if ($request->validate()->errors()) {
-            return redirect('dashboard')
-                ->with('message_header', 'Unable to update site')
-                ->with('message_content', 'Unable to update site due to invalid form submission')
-                ->with('message_type', 'error');
+            return back();
         }
 
         $zone = $this->dashboard_service->get_zone($id);
 
         if (!$zone['success']) {
-            return redirect('dashboard')
+            return back()
                 ->with('message_header', 'Unable to resolve site option')
                 ->with('message_content', 'No zone found with given id')
                 ->with('message_type', 'error');
@@ -134,13 +131,13 @@ class DashboardController
         }
 
         if (count($warnings)) {
-            return redirect('dashboard')
+            return back()
                 ->with('message_header', 'Problems with updating site')
                 ->with('message_content', 'Failed update requests: ' . join(', ', $warnings))
                 ->with('message_type', 'error');
         }
 
-        return redirect('dashboard')
+        return back()
             ->with('message_header', 'Updated site')
             ->with('message_content', 'Site was updated successfully')
             ->with('message_type', 'success');
@@ -180,7 +177,7 @@ class DashboardController
     public function create(CreateRequest $request): Redirect
     {
         if ($request->validate()->errors()) {
-            return redirect('domain.add');
+            return back();
         }
 
         // check whether the pagerule targets are valid urls
@@ -196,7 +193,7 @@ class DashboardController
             $parsed_url = parse_url($page_destination);
 
             if (!isset($parsed_url['host'])) {
-                return redirect('domain.add')->with_errors(
+                return back()->with_errors(
                     [
                         'pagerule_destination_url' => 'Forwarding URL should be a proper URL'
                     ]
@@ -206,7 +203,7 @@ class DashboardController
             $host = $parsed_url['host'] . $parsed_url['path'];
 
             if ($host === $rule || $host === 'www.' . $rule) {
-                return redirect('domain.add')->with_errors(
+                return back()->with_errors(
                     [
                         'pagerule_destination_url' => 'Forwarding URL matches the target and would cause a redirect loop'
                     ]
@@ -232,14 +229,14 @@ class DashboardController
 
         if (!$site['success']) {
             if (search_object_by_properties($site['errors'], ['code' => '1061'])) {
-                return redirect('domain.add')->with_errors(
+                return back()->with_errors(
                     [
                         'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
                     ]
                 );
             }
 
-            return redirect('domain.add')
+            return back()
                 ->with('message_header', 'Unable to add site')
                 ->with('message_content', 'Unable to add site due to an error with the Cloudflare API.')
                 ->with('message_type', 'error');
@@ -381,13 +378,13 @@ class DashboardController
         }
 
         if (count($warnings)) {
-            return redirect('domain.add')
+            return back()
                 ->with('message_header', 'Encountered issues with site setup')
                 ->with('message_content', 'Site is added, but setup encountered some issues: ' . join(', ', $warnings))
                 ->with('message_type', 'error');
         }
 
-        return redirect('domain.add')
+        return back()
             ->with('message_header', 'Added site')
             ->with('message_content', 'Site added and setup is done')
             ->with('message_type', 'success');
@@ -405,19 +402,19 @@ class DashboardController
 
         if (!$response['success']) {
             if (search_object_by_properties($response['errors'], ['code' => '1224'])) {
-                return redirect('dashboard')
+                return back()
                     ->with('message_header', 'Unable to check nameservers')
                     ->with('message_content', 'This request cannot be made because it can only be called once an hour')
                     ->with('message_type', 'error');
             }
 
-            return redirect('dashboard')
+            return back()
                 ->with('message_header', 'Checking nameservers failed')
                 ->with('message_content', 'Failed to send check nameservers request')
                 ->with('message_type', 'error');
         }
 
-        return redirect('dashboard')
+        return back()
             ->with('message_header', 'Started checking nameservers')
             ->with('message_content', 'Nameserver check started successfully')
             ->with('message_type', 'success');

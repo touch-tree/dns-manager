@@ -15,7 +15,7 @@ label {
 }
 
 .js-form .validation-text {
-    font-size: 11px;
+    font-size: 13px;
     margin-top: 3px;
 }
 
@@ -40,7 +40,7 @@ label {
     width: auto;
     height: 35px;
     padding: 0.25rem 0.5rem;
-    font-size: .875rem;
+    font-size: 13px;
     line-height: 1.5;
     border-radius: 0.2rem;
     color: #495057;
