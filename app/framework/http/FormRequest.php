@@ -25,8 +25,11 @@ class FormRequest extends Request
     }
 
     /**
-     * Validate multiple parameters based on the rules set for the request.
-     * If no rules are provided the given validation rules will overwrite the set rules.
+     * Validates multiple parameters based on specified rules and manages error handling.
+     *
+     * If no custom rules are provided, the default rules set in the class will be used.
+     * The validation errors are stored in the session's 'errors' key, and the input data
+     * is flashed to the session for convenient retrieval in subsequent requests.
      *
      * @param array|null $rules Set options to overwrite set options of custom rules (Optional)
      * @return Validator

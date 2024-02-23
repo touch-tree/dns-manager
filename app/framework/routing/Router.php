@@ -157,19 +157,19 @@ final class Router
                     request()->flash();
 
                     $response->send();
-
-                    session()->forget(['flash', 'errors']);
-
-                    return true;
                 }
 
                 if ($response instanceof View) {
                     echo $response->render();
-
-                    session()->forget(['flash', 'errors']);
-
-                    return true;
                 }
+
+                if (is_string($response)) {
+                    echo $response;
+                }
+
+                session()->forget(['flash', 'errors']);
+
+                return true;
             }
         }
 

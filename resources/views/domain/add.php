@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <?php echo get_template('header'); ?>
+    <?php echo view('partials.header')->render(); ?>
 
     <title>Add</title>
 </head>
@@ -95,7 +95,7 @@
     </div>
 </div>
 
-<?php echo get_template('footer'); ?>
+<?php echo view('partials.footer')->render(); ?>
 </body>
 
 </html>

@@ -37,7 +37,9 @@ class DashboardController
     {
         $response = $this->dashboard_service->get_zones();
 
-        return view('dashboard.index')->with('domains', $response['result']);
+        return view('dashboard.index')
+            ->with('domains', $response['result'])
+            ->with('dashboard_service', app(DashboardService::class));
     }
 
     /**
@@ -51,11 +53,13 @@ class DashboardController
         $zone = $this->dashboard_service->get_zone($id);
         $pagerules = $this->dashboard_service->get_pagerules($id);
 
+        // pagerule not always set for each domain fix this
+
         return view('domain.edit')
             ->with('domain', $zone['result'])
             ->with('dns_root', $this->dashboard_service->get_dns_record($id, $zone['result']['name']))
             ->with('dns_sub', $this->dashboard_service->get_dns_record($id, 'www.' . $zone['result']['name']))
-            ->with('pagerule_destination_url', $pagerules['result'][0]['actions'][0]['value']['url']);
+            ->with('pagerule_destination_url', $pagerules['result'][0]['actions'][0]['value']['url'] ?? '');
     }
 
     /**
@@ -151,9 +155,27 @@ class DashboardController
      */
     public function details(string $id): View
     {
-        $response = $this->dashboard_service->get_zone($id);
+        $domain = $this->dashboard_service->get_zone($id);
 
-        return view('domain.details')->with('domain', $response['result']);
+        return view('domain.details')->with('domain', $domain['result']);
+    }
+
+    /**
+     * Details domain modal
+     *
+     * @param string $id
+     * @return string
+     */
+    public function details_modal(string $id): string
+    {
+        $domain = $this->dashboard_service->get_zone($id);
+
+        return view(resource_path('views/partials/modal_content.php'),
+            [
+                'title' => 'Details for ' . $domain['result']['name'],
+                'content' => view(resource_path('views/domain/details_content.php'), ['domain' => $domain['result']])->render()
+            ]
+        )->render();
     }
 
     /**

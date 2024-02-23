@@ -22,4 +22,12 @@ require_once 'routes/web.php';
 
 Session::start();
 Config::resolve(base_path('/config/app.php'));
+
+if (!config('development_mode', false)) {
+    if (!session('cloudflare_enabled')) {
+        echo view('404')->render();
+        die();
+    }
+}
+
 Router::dispatch();

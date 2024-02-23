@@ -43,6 +43,17 @@ function view(string $path, array $data = []): View
 }
 
 /**
+ * Get path to 'resources' directory.
+ *
+ * @param string $path
+ * @return false|string
+ */
+function resource_path(string $path)
+{
+    return realpath(base_path('resources/' . ltrim($path)));
+}
+
+/**
  * Get or set a session value.
  *
  * If both $key and $value are provided, it sets the session value.
@@ -53,7 +64,7 @@ function view(string $path, array $data = []): View
  * @param T|null $value The value to set for the session key.
  * @return Session|T|string|null
  */
-function session(?string $key = null, $value = null)
+function session(string $key = null, $value = null)
 {
     static $session;
 
@@ -232,7 +243,7 @@ function base_url(): string
  *
  * This function creates a redirect response to the URL specified in the 'Referer' header
  * or defaults to the home URL if the 'Referer' header is not present. It is a shorthand
- * for 'redirect()->back()'.
+ * for `redirect()->back()`.
  *
  * @return Redirect
  */
@@ -261,30 +272,7 @@ function url(?string $path): string
  */
 function asset(string $path): string
 {
-    $base_url = base_url();
-    $url = config('url', $base_url);
-
-    return $url . '/public/' . trim($path, DIRECTORY_SEPARATOR);
-}
-
-/**
- * Retrieves the content of the specified template file by filename.
- *
- * @param string $file The relative file path of the template file.
- * @return string|null The content of the template file if it exists, or null otherwise.
- * @throws Error
- */
-function get_template(string $file): ?string
-{
-    $path = base_path('/public/templates/' . $file . '.php');
-
-    if (!file_exists($path)) {
-        throw new Error('Unable to find template: ' . $file);
-    }
-
-    ob_start();
-    include $path;
-    return ob_get_clean();
+    return config('url', base_url()) . '/public/' . trim($path, DIRECTORY_SEPARATOR);
 }
 
 /**

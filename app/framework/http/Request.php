@@ -100,7 +100,7 @@ class Request
      */
     public function old(string $key)
     {
-        return $_SESSION['flash'][$key] ?? null;
+        return $this->session()->get('flash')[$key] ?? null;
     }
 
     /**

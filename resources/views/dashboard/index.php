@@ -2,20 +2,14 @@
 <html lang="en">
 
 <head>
-    <?php
-
-    use App\Services\DashboardService;
-
-    echo get_template('header');
-
-    ?>
+    <?php echo view('partials.header')->render(); ?>
 
     <title>Dashboard</title>
 </head>
 
 <body>
 
-<?php echo get_template('modal'); ?>
+<?php echo view('partials.modal')->render(); ?>
 
 <div class="center-wrap">
     <div class="dashboard-container main-container">
@@ -62,7 +56,7 @@
                             <td class="owner"><?php echo strtolower($domain['account']['name']); ?></td>
                             <td>
                                 <?php
-                                foreach (app(DashboardService::class)->get_dns_records($domain['id'])['result'] as $dns_record) {
+                                foreach (app('App\Services\DashboardService')->get_dns_records($domain['id'])['result'] as $dns_record) {
                                     echo $dns_record['name'] . '<br>';
                                 }
                                 ?>
@@ -104,7 +98,11 @@
                                         </div>
                                         <div class="options-popup" data-popup="<?php echo $domain['id']; ?>">
                                             <a href="<?php echo route('domain.edit', ['id' => $domain['id']]); ?>">Edit</a>
-                                            <a href="<?php echo route('domain.details', ['id' => $domain['id']]); ?>">Details</a>
+                                            <a data-api-route="<?php echo route('domain.details.modal', ['id' => $domain['id']]); ?>"
+                                               data-toggle="modal"
+                                               data-target="#modal-main">
+                                                Details
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -118,7 +116,7 @@
     </div>
 </div>
 
-<?php echo get_template('footer'); ?>
+<?php echo view('partials.footer')->render(); ?>
 </body>
 
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <?php echo get_template('header'); ?>
+    <?php echo view('partials.header')->render(); ?>
 
     <title>Page not found</title>
 </head>
@@ -11,7 +11,7 @@
 
 <p>Page not found</p>
 
-<?php echo get_template('footer'); ?>
+<?php echo view('partials.footer')->render(); ?>
 
 </body>
 

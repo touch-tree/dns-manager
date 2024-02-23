@@ -2,12 +2,14 @@
 <html lang="en">
 
 <head>
-    <?php echo get_template('header'); ?>
+    <?php echo view('partials.header')->render(); ?>
 
     <title>Edit</title>
 </head>
 
 <body>
+
+<?php echo view('partials.modal')->render(); ?>
 
 <div class="center-wrap">
     <div class="dashboard-container main-container">
@@ -21,6 +23,12 @@
                             Return to dashboard
                         </button>
                     </a>
+                    <button type="button" class="btn btn-secondary"
+                            data-api-route="<?php echo route('domain.details.modal', ['id' => $domain['id']]); ?>"
+                            data-toggle="modal"
+                            data-target="#modal-main">
+                        Details
+                    </button>
                 </div>
             </div>
             <div class="dashboard-content">
@@ -66,7 +74,7 @@
     </div>
 </div>
 
-<?php echo get_template('footer'); ?>
+<?php echo view('partials.footer')->render(); ?>
 </body>
 
 </html>
