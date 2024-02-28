@@ -71,6 +71,33 @@ class Response
     }
 
     /**
+     * Add a header to the response.
+     *
+     * @param string $key The header key.
+     * @param string $value The header value.
+     * @return $this
+     */
+    public function with_header(string $key, string $value): Response
+    {
+        $this->headers->set($key, $value);
+
+        return $this;
+    }
+
+    /**
+     * Set the content type of the response.
+     *
+     * @param string $content_type The content type.
+     * @return $this
+     */
+    public function with_content_type(string $content_type): Response
+    {
+        $this->headers->set('Content-Type', $content_type);
+
+        return $this;
+    }
+
+    /**
      * Get the content of the response.
      *
      * @return mixed The content of the response.

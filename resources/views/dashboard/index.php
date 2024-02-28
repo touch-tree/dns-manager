@@ -56,8 +56,10 @@
                             <td class="owner"><?php echo strtolower($domain['account']['name']); ?></td>
                             <td>
                                 <?php
-                                foreach (app('App\Services\DashboardService')->get_dns_records($domain['id'])['result'] as $dns_record) {
-                                    echo $dns_record['name'] . '<br>';
+                                if (isset($cloudflare_service)) {
+                                    foreach ($cloudflare_service->get_dns_records($domain['id'])['result'] as $dns_record) {
+                                        echo $dns_record['name'] . '<br>';
+                                    }
                                 }
                                 ?>
                             </td>

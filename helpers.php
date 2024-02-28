@@ -15,9 +15,11 @@ use App\Framework\Base\Config;
 use App\Framework\Base\Container;
 use App\Framework\Base\Session;
 use App\Framework\Base\View;
+use App\Framework\Http\HeaderBag;
 use App\Framework\Http\Redirect;
 use App\Framework\Http\RedirectResponse;
 use App\Framework\Http\Request;
+use App\Framework\Http\Response;
 use App\Framework\Http\Server;
 use App\Framework\Routing\Router;
 
@@ -30,6 +32,19 @@ use App\Framework\Routing\Router;
 function redirect(string $route = null): RedirectResponse
 {
     return app(Redirect::class)->to($route);
+}
+
+/**
+ * Helper function to create an instance of the Response class.
+ *
+ * @param mixed $content The content of the response.
+ * @param int $status_code The HTTP status code of the response.
+ * @param HeaderBag|null $headers The HeaderBag instance containing HTTP headers.
+ * @return Response
+ */
+function response($content = null, int $status_code = 200, HeaderBag $headers = null): Response
+{
+    return new Response($content, $status_code, $headers ?: new HeaderBag());
 }
 
 /**

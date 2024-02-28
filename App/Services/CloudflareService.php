@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Framework\Base\Http;
 
-class DashboardService
+class CloudflareService
 {
     /**
      * Http instance
@@ -74,7 +74,7 @@ class DashboardService
      *
      * @return array
      */
-    public function get_zones(): array
+    public function get_sites(): array
     {
         return $this->http->get(config('api_url') . '/zones')->json();
     }
@@ -85,7 +85,7 @@ class DashboardService
      * @param string $id Zone id
      * @return array
      */
-    public function get_zone(string $id): array
+    public function get_site(string $id): array
     {
         return $this->http->get(config('api_url') . '/zones/' . $id)->json();
     }
