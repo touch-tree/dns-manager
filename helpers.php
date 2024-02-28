@@ -6,7 +6,7 @@
 |-----------------------------------------------------------------------------
 |
 | This file contains commonly used functions in the application. These
-| functions provide utility for our framework.
+| functions provide utility for our Framework.
 |
 |-----------------------------------------------------------------------------
 */
@@ -17,6 +17,7 @@ use App\Framework\Base\Session;
 use App\Framework\Base\View;
 use App\Framework\Http\Redirect;
 use App\Framework\Http\Request;
+use App\Framework\Http\Server;
 use App\Framework\Routing\Router;
 
 /**
@@ -107,11 +108,21 @@ function route(string $name, array $parameters = []): ?string
 }
 
 /**
+ * Get server.
+ *
+ * @return Server
+ */
+function server(): Server
+{
+    return app(Server::class);
+}
+
+/**
  * Get the current request instance.
  *
  * This function provides a convenient way to obtain the current request object
  * throughout the application. It ensures that only a single instance of the
- * Request class is created and reused, promoting efficiency.
+ * Request class is created and reused.
  *
  * @return Request The instance of the Request class.
  */
@@ -120,7 +131,7 @@ function request(): Request
     static $request;
 
     if (is_null($request)) {
-        $request = new Request();
+        $request = app(Request::class);
     }
 
     return $request;
@@ -193,7 +204,7 @@ function dd(...$message)
  * Get an instance of the specified class from the Container class.
  *
  * This function acts as a convenient entry point to retrieve instances of
- * classes from the application's Dependency Injection Container.
+ * classes from the application's Dependency Injection (DI) Container.
  *
  * @template T
  * @param class-string<T> $class_name The fully qualified class name to resolve.
@@ -212,10 +223,10 @@ function app(string $class_name)
 }
 
 /**
- * Get the absolute path to the base directory of the application.
+ * Get the absolute path to the Base directory of the application.
  *
- * @param string|null $path The relative path to append to the base path (optional).
- * @return string The absolute path to the base directory of the application.
+ * @param string|null $path The relative path to append to the Base path (optional).
+ * @return string The absolute path to the Base directory of the application.
  */
 function base_path(?string $path = null): string
 {
@@ -229,13 +240,13 @@ function base_path(?string $path = null): string
 }
 
 /**
- * Get the base URL of the application.
+ * Get the Base URL of the application.
  *
- * @return string The base URL.
+ * @return string The Base URL.
  */
 function base_url(): string
 {
-    return ($_SERVER['REQUEST_SCHEME'] ?? 'http') . PATH_SEPARATOR . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . DIRECTORY_SEPARATOR;
+    return ($_SERVER['REQUEST_SCHEME'] ?? 'Http') . PATH_SEPARATOR . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . DIRECTORY_SEPARATOR;
 }
 
 /**

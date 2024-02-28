@@ -16,17 +16,57 @@ use Exception;
 class Request
 {
     /**
-     * Get the HTTP headers from the request.
+     * @var Server The Server instance.
+     */
+    private Server $server;
+
+    /**
+     * Request constructor.
+     */
+    public function __construct()
+    {
+        $this->server = server();
+    }
+
+    /**
+     * Get the HTTP method of the request.
      *
-     * If the headers have not been previously initialized, a new HeaderBag instance
-     * is created and returned.
+     * @return string The HTTP method (GET, POST, PUT, DELETE, etc.).
+     */
+    final public function method(): string
+    {
+        return strtoupper($this->server->get('REQUEST_METHOD'));
+    }
+
+    /**
+     * Get the full request URI including query parameters.
+     *
+     * @return mixed|string|null The full request URI.
+     */
+    final public function get_request_uri()
+    {
+        return $this->server->get('REQUEST_URI');
+    }
+
+    /**
+     * Get the path component of the request URI.
+     *
+     * @return array|false|int|string|null The path component of the request URI.
+     */
+    final public function path()
+    {
+        return parse_url($this->get_request_uri(), PHP_URL_PATH);
+    }
+
+    /**
+     * Get the HTTP headers from the request.
      *
      * @return HeaderBag The HTTP headers.
      */
-    public function headers(): HeaderBag
+    final public function headers(): HeaderBag
     {
         if (!isset($this->headers)) {
-            $this->headers = new HeaderBag();
+            $this->headers = new HeaderBag(array_change_key_case(getallheaders()));
         }
 
         return $this->headers;
@@ -70,7 +110,7 @@ class Request
      * Validate multiple parameters based on the given validation patterns.
      *
      * @param array $rules An associative array where keys are parameter names and values are validation patterns (e.g. ['name' => 'required|string|max:255']).
-     * @return Validator
+     * @return Validator The Validator instance.
      *
      * @throws Exception
      */
@@ -104,9 +144,9 @@ class Request
     }
 
     /**
-     * Return session object
+     * Return the session object.
      *
-     * @return Session
+     * @return Session The Session instance.
      */
     public function session(): Session
     {

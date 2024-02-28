@@ -3,7 +3,7 @@
 namespace App\Framework\Routing;
 
 /**
- * Represents a route in the application's routing system.
+ * Represents a route in the application's Routing system.
  *
  * @package App\Framework\Routing
  */
@@ -31,6 +31,13 @@ final class Route
     protected array $action;
 
     /**
+     * Route name
+     *
+     * @var string|null
+     */
+    protected ?string $name;
+
+    /**
      * Router constructor.
      *
      * @param string $uri The URI pattern for the route.
@@ -42,6 +49,8 @@ final class Route
         $this->uri = $uri;
         $this->method = $method;
         $this->action = $action;
+
+        $this->name = null;
     }
 
     /**
@@ -72,5 +81,28 @@ final class Route
     public function get_action(): array
     {
         return $this->action;
+    }
+
+    /**
+     * Set route name.
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function set_name(string $name): Route
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get route name.
+     *
+     * @return string|null
+     */
+    public function get_name(): ?string
+    {
+        return $this->name;
     }
 }

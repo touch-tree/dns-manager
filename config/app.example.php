@@ -9,7 +9,7 @@
 | including the port and any other relevant components, such as routes, ports
 | or subdomains, necessary for accessing the entrypoint of your application.
 |
-| See config function in base.php
+| See config function in Base.php
 |
 |--------------------------------------------------------------------------
 */

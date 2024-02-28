@@ -2,6 +2,8 @@
 
 namespace App\Framework\Http;
 
+use App\Framework\Base\ParameterBag;
+
 /**
  * This class provides methods to retrieve, set, check, and remove HTTP headers.
  * It ensures consistency by normalizing header keys to lowercase, making it
@@ -9,12 +11,17 @@ namespace App\Framework\Http;
  *
  * @package App\Framework\Http
  */
-class HeaderBag
+class HeaderBag extends ParameterBag
 {
     /**
-     * @var array The array containing the headers.
+     * HeaderBag constructor.
+     *
+     * @param array $headers
      */
-    protected array $headers = [];
+    public function __construct(array $headers = [])
+    {
+        parent::__construct($headers);
+    }
 
     /**
      * Get all headers.
@@ -23,11 +30,7 @@ class HeaderBag
      */
     public function all(): array
     {
-        if (empty($this->headers)) {
-            $this->headers = array_change_key_case(getallheaders());
-        }
-
-        return $this->headers;
+        return parent::all();
     }
 
     /**
@@ -39,7 +42,7 @@ class HeaderBag
      */
     public function get(string $key, $default = null)
     {
-        return $this->all()[strtolower($key)] ?? $default;
+        return parent::get($key, $default);
     }
 
     /**
@@ -50,7 +53,7 @@ class HeaderBag
      */
     public function set(string $key, $value)
     {
-        $this->headers[strtolower($key)] = $value;
+        parent::set($key, $value);
     }
 
     /**
@@ -61,7 +64,7 @@ class HeaderBag
      */
     public function has(string $key): bool
     {
-        return isset($this->all()[strtolower($key)]);
+        return parent::has($key);
     }
 
     /**
@@ -71,6 +74,6 @@ class HeaderBag
      */
     public function remove(string $key)
     {
-        unset($this->headers[strtolower($key)]);
+        parent::remove($key);
     }
 }

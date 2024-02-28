@@ -74,10 +74,6 @@ final class View
     {
         $path = realpath($this->path) ?: realpath(base_path() . '/resources/views/' . str_replace('.', DIRECTORY_SEPARATOR, $this->path) . '.php');
 
-        if (!file_exists($path)) {
-            return 'View not found: ' . $path;
-        }
-
         try {
             extract($this->data);
             ob_start();

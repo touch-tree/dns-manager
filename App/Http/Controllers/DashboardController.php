@@ -54,6 +54,7 @@ class DashboardController
         $pagerules = $this->dashboard_service->get_pagerules($id);
 
         // pagerule not always set for each domain fix this
+        // if pagerule not set then just don't display pagerule destination etc.
 
         return view('domain.edit')
             ->with('domain', $zone['result'])
@@ -85,6 +86,9 @@ class DashboardController
                 ->with('message_content', 'No zone found with given id')
                 ->with('message_type', 'error');
         }
+
+        // instead of using warning array, use error session and report all errors if not fetched manually to glob in view
+        // errors()->any() etc.
 
         $warnings = [];
 
@@ -164,9 +168,9 @@ class DashboardController
      * Details domain modal
      *
      * @param string $id
-     * @return string
+     * @return View
      */
-    public function details_modal(string $id): string
+    public function details_modal(string $id): View
     {
         $domain = $this->dashboard_service->get_zone($id);
 
@@ -175,7 +179,7 @@ class DashboardController
                 'title' => 'Details for ' . $domain['result']['name'],
                 'content' => view(resource_path('views/domain/details_content.php'), ['domain' => $domain['result']])->render()
             ]
-        )->render();
+        );
     }
 
     /**
@@ -234,6 +238,7 @@ class DashboardController
         }
 
         // create new site
+        // we should really wrap these things in a normal object for our cloudflare interface. such as sites etc.
 
         $site = $this->dashboard_service->add_site(
             [
@@ -268,26 +273,16 @@ class DashboardController
         $warnings = [];
 
         // settings for site setup
+        // we should just not handle each error for set ssl, if this method fails then just generalize the throw. we can debug later lol
 
-        $this->dashboard_service->set_ssl($id,
-            [
-                'value' => 'flexible'
-            ]
-        );
+        $this->dashboard_service->set_ssl($id, ['value' => 'flexible']);
 
-        $this->dashboard_service->set_pseudo_ip($id,
-            [
-                'value' => 'overwrite_header',
-            ]
-        );
+        $this->dashboard_service->set_pseudo_ip($id, ['value' => 'overwrite_header',]);
 
-        $this->dashboard_service->set_https($id,
-            [
-                'value' => 'on'
-            ]
-        );
+        $this->dashboard_service->set_https($id, ['value' => 'on']);
 
         // remove scanned dns records to prevent conflicts when we're adding new ones in
+        // loop should be better and minimized
 
         $dns_records = $this->dashboard_service->get_dns_records($id);
 
