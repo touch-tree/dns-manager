@@ -45,7 +45,7 @@ class ParameterBag
      */
     public function get(string $key, $default = null)
     {
-        return $this->parameters[strtolower($key)] ?? $default;
+        return $this->parameters[$key] ?? $default;
     }
 
     /**
@@ -56,7 +56,7 @@ class ParameterBag
      */
     public function set(string $key, $value)
     {
-        $this->parameters[strtolower($key)] = $value;
+        $this->parameters[$key] = $value;
     }
 
     /**
@@ -67,7 +67,7 @@ class ParameterBag
      */
     public function has(string $key): bool
     {
-        return isset($this->parameters[strtolower($key)]);
+        return isset($this->parameters[$key]);
     }
 
     /**
@@ -77,6 +77,6 @@ class ParameterBag
      */
     public function remove(string $key)
     {
-        unset($this->parameters[strtolower($key)]);
+        unset($this->parameters[$key]);
     }
 }

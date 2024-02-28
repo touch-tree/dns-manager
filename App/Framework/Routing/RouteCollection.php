@@ -66,7 +66,9 @@ class RouteCollection
                 continue;
             }
 
-            if (preg_match(app(Router::class)::get_pattern($route->uri()), $request->get_request_uri())) {
+//            var_dump(app(Router::class)::get_pattern($route->uri()), $request->request_uri());
+
+            if (preg_match(app(Router::class)::get_pattern($route->uri()), $request->request_uri())) {
                 return $route;
             }
         }

@@ -16,16 +16,25 @@ use Exception;
 class Request
 {
     /**
-     * @var Server The Server instance.
+     * Server instance.
+     *
+     * @var Server
      */
     private Server $server;
+
+    /**
+     * Header instance.
+     *
+     * @var HeaderBag
+     */
+    public HeaderBag $headers;
 
     /**
      * Request constructor.
      */
     public function __construct()
     {
-        $this->server = server();
+        $this->server = app(Server::class);
     }
 
     /**
@@ -43,7 +52,7 @@ class Request
      *
      * @return mixed|string|null The full request URI.
      */
-    final public function get_request_uri()
+    final public function request_uri()
     {
         return $this->server->get('REQUEST_URI');
     }
@@ -55,7 +64,7 @@ class Request
      */
     final public function path()
     {
-        return parse_url($this->get_request_uri(), PHP_URL_PATH);
+        return parse_url($this->request_uri(), PHP_URL_PATH);
     }
 
     /**

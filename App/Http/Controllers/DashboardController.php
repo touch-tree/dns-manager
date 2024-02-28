@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Framework\Base\View;
 use App\Framework\Http\Redirect;
+use App\Framework\Http\RedirectResponse;
 use App\Http\Requests\CreateRequest;
 use App\Http\Requests\UpdateRequest;
 use App\Services\DashboardService;
@@ -72,7 +73,7 @@ class DashboardController
      *
      * @throws Exception
      */
-    public function update(UpdateRequest $request, string $id): Redirect
+    public function update(UpdateRequest $request, string $id): RedirectResponse
     {
         if ($request->validate()->errors()) {
             return back();
@@ -196,14 +197,14 @@ class DashboardController
      * Create domain action
      *
      * @param CreateRequest $request Form request
-     * @return Redirect
+     * @return RedirectResponse
      *
      * @throws Exception
      */
-    public function create(CreateRequest $request): Redirect
+    public function create(CreateRequest $request): RedirectResponse
     {
         if ($request->validate()->errors()) {
-            return back();
+            return redirect(null, 340)->back();
         }
 
         // check whether the pagerule targets are valid urls
@@ -413,7 +414,7 @@ class DashboardController
      * @param string $id
      * @return Redirect
      */
-    public function verify_nameservers(string $id): Redirect
+    public function verify_nameservers(string $id): RedirectResponse
     {
         $response = $this->dashboard_service->verify_nameservers($id);
 

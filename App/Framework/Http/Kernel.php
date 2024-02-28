@@ -34,18 +34,18 @@ class Kernel
     {
         // middleware should handle session request logic not prepare response lol, fix this
 
-        if ($response instanceof Redirect) {
+        if ($response instanceof RedirectResponse) {
             session()->forget('flash');
             $request->flash();
             $response->send();
         }
 
-        if ($response instanceof View) {
-            echo $response->render();
-        }
-
         if ($response instanceof JsonResponse) {
             echo $response->send();
+        }
+
+        if ($response instanceof View) {
+            echo $response->render();
         }
 
         session()->forget(['flash', 'errors']);

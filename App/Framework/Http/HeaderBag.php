@@ -42,7 +42,7 @@ class HeaderBag extends ParameterBag
      */
     public function get(string $key, $default = null)
     {
-        return parent::get($key, $default);
+        return parent::get(strtolower($key), $default);
     }
 
     /**
@@ -50,10 +50,13 @@ class HeaderBag extends ParameterBag
      *
      * @param string $key The header key.
      * @param mixed $value The header value.
+     * @return HeaderBag
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): HeaderBag
     {
-        parent::set($key, $value);
+        header($key, $value);
+
+        return $this;
     }
 
     /**
@@ -64,7 +67,7 @@ class HeaderBag extends ParameterBag
      */
     public function has(string $key): bool
     {
-        return parent::has($key);
+        return parent::has(strtolower($key));
     }
 
     /**
@@ -74,6 +77,6 @@ class HeaderBag extends ParameterBag
      */
     public function remove(string $key)
     {
-        parent::remove($key);
+        header_remove($key);
     }
 }

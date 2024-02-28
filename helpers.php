@@ -16,6 +16,7 @@ use App\Framework\Base\Container;
 use App\Framework\Base\Session;
 use App\Framework\Base\View;
 use App\Framework\Http\Redirect;
+use App\Framework\Http\RedirectResponse;
 use App\Framework\Http\Request;
 use App\Framework\Http\Server;
 use App\Framework\Routing\Router;
@@ -23,12 +24,12 @@ use App\Framework\Routing\Router;
 /**
  * Redirect to a specified route.
  *
- * @param string|null $route The route to redirect to.
- * @return Redirect
+ * @param string|null $route The route to redirect to. If null, path of redirect should be set using 'route' method instead.
+ * @return RedirectResponse A RedirectResponse instance representing the redirection.
  */
-function redirect(?string $route = null): Redirect
+function redirect(string $route = null): RedirectResponse
 {
-    return new Redirect(session(), $route);
+    return app(Redirect::class)->to($route);
 }
 
 /**
@@ -256,11 +257,11 @@ function base_url(): string
  * or defaults to the home URL if the 'Referer' header is not present. It is a shorthand
  * for `redirect()->back()`.
  *
- * @return Redirect
+ * @return RedirectResponse
  */
-function back(): Redirect
+function back(): RedirectResponse
 {
-    return redirect()->back();
+    return app(Redirect::class)->back();
 }
 
 /**

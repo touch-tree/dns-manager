@@ -130,41 +130,33 @@ final class Router
     {
         $route = self::get_routes()->match($request);
 
-        if ($route) {
-            [$class, $method] = $route->get_action();
-
-            try {
-                return self::resolve_controller(
-                    [
-                        app($class),
-                        $method
-                    ],
-                    self::get_parameters($route->uri(), $request->get_request_uri())
-                );
-            } catch (Exception $e) {
-                return null;
-            }
+        if (is_null($route)) {
+            return null;
         }
 
-        return null;
+        try {
+            [$class, $method] = $route->get_action();
+
+            return self::resolve_controller([app($class), $method], self::get_parameters($route->uri(), $request->request_uri()));
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
     /**
      * Resolve the controller method and invoke it with the provided parameters.
      *
      * @param array $action An array containing the controller instance and method.
-     * @param array $path_parameters Associative array of path parameters.
+     * @param array $parameters Associative array of parameters.
      * @return View|Redirect|array|string|null The result of invoking the controller method.
      *
      * @throws Error
      * @throws ReflectionException
      */
-    private static function resolve_controller(array $action, array $path_parameters)
+    private static function resolve_controller(array $action, array $parameters)
     {
-        [$class, $method] = $action;
-
-        $reflection_method = new ReflectionMethod($class, $method);
-        $parameters = [];
+        $reflection_method = new ReflectionMethod(...$action);
+        $reflection_parameters = [];
 
         foreach ($reflection_method->getParameters() as $param) {
             $name = $param->getName();
@@ -175,22 +167,22 @@ final class Router
             }
 
             if ($type->getName() == Request::class) {
-                $parameters[] = request();
+                $reflection_parameters[] = request();
 
                 continue;
             }
 
             if (is_subclass_of($type->getName(), Request::class)) {
                 $request = $type->getName();
-                $parameters[] = new $request;
+                $reflection_parameters[] = new $request;
 
                 continue;
             }
 
-            $parameters[] = $path_parameters[$name] ?? null;
+            $reflection_parameters[] = $parameters[$name] ?? null;
         }
 
-        return $reflection_method->invokeArgs($class, $parameters);
+        return $reflection_method->invokeArgs($action[0], $reflection_parameters);
     }
 
     /**

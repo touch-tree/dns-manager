@@ -9,6 +9,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionParameter;
 
 /**
  * The Container class provides a simple Dependency Injection Container for managing and resolving instances of classes.
@@ -42,25 +43,21 @@ final class Container
      */
     public static function get(string $class_name): object
     {
-        if (isset(self::$bindings[$class_name])) {
-            $concrete = self::$bindings[$class_name];
+        $concrete = self::$bindings[$class_name] ?? null;
 
-            if ($concrete instanceof Closure) {
-                return $concrete();
-            }
-
-            if (is_object($concrete)) {
-                return $concrete;
-            }
-
-            return self::resolve_instance($concrete);
+        if (is_null($concrete)) {
+            return self::$instances[$class_name] = self::resolve_instance($class_name);
         }
 
-        if (!isset(self::$instances[$class_name])) {
-            self::$instances[$class_name] = self::resolve_instance($class_name);
+        if ($concrete instanceof Closure) {
+            return $concrete();
         }
 
-        return self::$instances[$class_name];
+        if (is_object($concrete)) {
+            return $concrete;
+        }
+
+        return self::resolve_instance($concrete);
     }
 
     /**
@@ -76,16 +73,14 @@ final class Container
         $reflection_class = new ReflectionClass($class_name);
 
         if (!$reflection_class->isInstantiable()) {
-            throw new Error('Class ' . $class_name . ' is not instantiable');
+            throw new Error('Class is not instantiable: ' . $class_name);
         }
 
-        $constructor = $reflection_class->getConstructor();
-
-        if (is_null($constructor)) {
-            return $reflection_class->newInstance();
+        if ($constructor = $reflection_class->getConstructor()) {
+            return $reflection_class->newInstanceArgs(self::resolve_dependencies($constructor));
         }
 
-        return $reflection_class->newInstanceArgs(self::resolve_dependencies($constructor));
+        return $reflection_class->newInstance();
     }
 
     /**
@@ -96,16 +91,17 @@ final class Container
      *
      * @throws Exception
      */
-    private static function resolve_dependencies(ReflectionMethod $constructor): array
+    public static function resolve_dependencies(ReflectionMethod $constructor): array
     {
         $dependencies = [];
 
         foreach ($constructor->getParameters() as $param) {
             $class_name = $param->getDeclaringClass()->name;
+            $name = $param->getName();
             $type = $param->getType();
 
             if (!$type) {
-                throw new Error('Type hint must be set for ' . $param->name . ' in ' . $class_name);
+                throw new Error('Type hint must be set for ' . $name . ' in ' . $class_name);
             }
 
             if (!($type instanceof ReflectionNamedType) || $type->isBuiltin()) {

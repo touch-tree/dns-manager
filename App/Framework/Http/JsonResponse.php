@@ -7,32 +7,17 @@ namespace App\Framework\Http;
  *
  * @package App\Framework\Http
  */
-class JsonResponse
+class JsonResponse extends Response
 {
-    /**
-     * The HTTP status code for the response.
-     *
-     * @var int
-     */
-    private int $status_code;
-
-    /**
-     * The content to be JSON-encoded and sent in the response.
-     *
-     * @var array
-     */
-    private array $content;
-
     /**
      * JsonResponse constructor.
      *
-     * @param array $content The content to be JSON-encoded and sent in the response.
+     * @param array $data The data to be JSON-encoded and sent in the response.
      * @param int $status_code The HTTP status code for the response. Default is 200 (OK).
      */
-    public function __construct(array $content, int $status_code = 200)
+    public function __construct(array $data, int $status_code = 200)
     {
-        $this->content = $content;
-        $this->status_code = $status_code;
+        parent::__construct($data, $status_code, request()->headers()->set('Content-Type', 'application/json'));
     }
 
     /**
@@ -42,8 +27,6 @@ class JsonResponse
      */
     public function send()
     {
-        header('Content-Type: application/json', true, $this->status_code);
-
-        return json_encode($this->content);
+        return json_encode($this->send());
     }
 }
