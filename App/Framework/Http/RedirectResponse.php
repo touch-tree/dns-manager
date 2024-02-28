@@ -11,7 +11,7 @@ use LogicException;
  *
  * @package App\Framework\Http
  */
-final class RedirectResponse extends Response
+class RedirectResponse extends Response
 {
     /**
      * The destination path for the redirect.

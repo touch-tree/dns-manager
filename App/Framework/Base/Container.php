@@ -17,7 +17,7 @@ use ReflectionParameter;
  *
  * @package App\Framework\Base
  */
-final class Container
+class Container
 {
     /**
      * An array to store instances of resolved classes.

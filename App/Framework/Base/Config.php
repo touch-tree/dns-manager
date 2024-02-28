@@ -9,7 +9,7 @@ use Error;
  *
  * @package App\Framework\Base
  */
-final class Config
+class Config
 {
     /**
      * The array of configuration values.

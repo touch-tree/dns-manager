@@ -7,7 +7,7 @@ namespace App\Framework\Routing;
  *
  * @package App\Framework\Routing
  */
-final class Route
+class Route
 {
     /**
      * The URI pattern for the route.

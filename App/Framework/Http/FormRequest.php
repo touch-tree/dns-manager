@@ -36,7 +36,7 @@ class FormRequest extends Request
      *
      * @throws Exception
      */
-    final public function validate(array $rules = []): Validator
+    public function validate(array $rules = []): Validator
     {
         $validator = parent::validate(empty($rules) ? $this->rules() : []);
         $errors = $validator->errors();

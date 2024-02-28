@@ -10,7 +10,7 @@ use Error;
  *
  * @package App\Framework\Http
  */
-final class Redirect
+class Redirect
 {
     /**
      * The session manager for storing flash data.

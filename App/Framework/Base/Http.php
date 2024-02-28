@@ -9,7 +9,7 @@ namespace App\Framework\Base;
  *
  * @package App\Framework\Base
  */
-final class Http
+class Http
 {
     /**
      * Request headers

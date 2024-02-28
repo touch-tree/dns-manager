@@ -42,7 +42,7 @@ class Request
      *
      * @return string The HTTP method (GET, POST, PUT, DELETE, etc.).
      */
-    final public function method(): string
+    public function method(): string
     {
         return strtoupper($this->server->get('REQUEST_METHOD'));
     }
@@ -52,7 +52,7 @@ class Request
      *
      * @return mixed|string|null The full request URI.
      */
-    final public function request_uri()
+    public function request_uri()
     {
         return $this->server->get('REQUEST_URI');
     }
@@ -62,7 +62,7 @@ class Request
      *
      * @return array|false|int|string|null The path component of the request URI.
      */
-    final public function path()
+    public function path()
     {
         return parse_url($this->request_uri(), PHP_URL_PATH);
     }
@@ -72,7 +72,7 @@ class Request
      *
      * @return HeaderBag The HTTP headers.
      */
-    final public function headers(): HeaderBag
+    public function headers(): HeaderBag
     {
         if (!isset($this->headers)) {
             $this->headers = new HeaderBag(array_change_key_case(getallheaders()));
@@ -88,7 +88,7 @@ class Request
      * @param string|null $default The default value if the parameter is not set.
      * @return string|null The value of the query parameter or the default value.
      */
-    final public function get(string $parameter, ?string $default = null): ?string
+    public function get(string $parameter, ?string $default = null): ?string
     {
         return $_GET[$parameter] ?? $default;
     }
@@ -100,7 +100,7 @@ class Request
      * @param string|null $default The default value if the parameter is not set.
      * @return string|null The value of the form post data parameter or the default value.
      */
-    final public function input(string $parameter, ?string $default = null): ?string
+    public function input(string $parameter, ?string $default = null): ?string
     {
         return $_POST[$parameter] ?? $default;
     }
@@ -110,7 +110,7 @@ class Request
      *
      * @return array The associative array of form post data.
      */
-    final public function all(): array
+    public function all(): array
     {
         return $_POST;
     }
