@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Site\SiteService;
 use App\Framework\Base\View;
 use App\Framework\Http\Redirect;
 use App\Framework\Http\RedirectResponse;
@@ -24,7 +25,7 @@ class DashboardController
      *
      * @return void
      */
-    public function __construct(CloudflareService $cloudflare_service)
+    public function __construct(CloudflareService $cloudflare_service, SiteService $site_service)
     {
         $this->cloudflare_service = $cloudflare_service;
     }

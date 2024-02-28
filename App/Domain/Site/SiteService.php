@@ -3,6 +3,7 @@
 namespace App\Domain\Site;
 
 use App\Framework\Base\ParameterBag;
+use App\Framework\Support\Collection;
 use App\Services\CloudflareService;
 
 class SiteService
@@ -25,12 +26,14 @@ class SiteService
     }
 
     /**
-     * @return ParameterBag<Site>
+     * Get sites.
+     *
+     * @return Collection<Site>
      */
-    public function get_sites()
+    public function get_sites(): Collection
     {
         $response = $this->cloudflare_service->get_sites();
-        $sites = new ParameterBag();
+        $sites = new Collection();
 
         foreach ($response['result'] as $zone) {
             $site = new Site();
