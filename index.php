@@ -21,7 +21,7 @@ require_once 'helpers.php';
 require_once 'routes/web.php';
 
 Session::start();
-Config::resolve(base_path('/config/App.php'));
+Config::resolve(base_path('/config/app.php'));
 
 if (!config('development_mode', false)) {
     if (!session('cloudflare_enabled')) {

@@ -14,20 +14,30 @@ use Exception;
 class DashboardController
 {
     /**
-     * CloudflareService instance
+     * CloudflareService instance.
      *
      * @var CloudflareService
      */
     private CloudflareService $cloudflare_service;
 
     /**
-     * DashboardController constructor
+     * SiteService instance.
+     *
+     * @var SiteService
+     */
+    private SiteService $site_service;
+
+    /**
+     * DashboardController constructor.
      *
      * @return void
      */
     public function __construct(CloudflareService $cloudflare_service, SiteService $site_service)
     {
+//        dd($site_service->get_sites());
+
         $this->cloudflare_service = $cloudflare_service;
+        $this->site_service = $site_service;
     }
 
     /**
@@ -70,7 +80,7 @@ class DashboardController
      *
      * @param UpdateRequest $request
      * @param string $id
-     * @return Redirect
+     * @return RedirectResponse
      *
      * @throws Exception
      */
@@ -248,7 +258,7 @@ class DashboardController
                 'jump_start' => true,
                 'type' => 'full',
                 'account' => [
-                    'id' => config('api_client_id')
+                    'id' => config('api_clientid')
                 ],
                 'plan' => [
                     'id' => 'free'
@@ -413,7 +423,7 @@ class DashboardController
      * Verify nameservers domain action
      *
      * @param string $id
-     * @return Redirect
+     * @return RedirectResponse
      */
     public function verify_nameservers(string $id): RedirectResponse
     {

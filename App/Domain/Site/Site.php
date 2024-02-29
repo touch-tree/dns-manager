@@ -8,8 +8,8 @@ class Site
     private $name;
     private $status;
     private $paused;
-    private $name_servers;
-    private $original_name_servers;
+    private $nameservers;
+    private $original_nameservers;
     private $modified_on;
     private $created_on;
     private $activated_on;
@@ -66,26 +66,26 @@ class Site
         return $this;
     }
 
-    public function get_name_servers()
+    public function get_nameservers()
     {
-        return $this->name_servers;
+        return $this->nameservers;
     }
 
-    public function set_name_servers($name_servers): Site
+    public function set_nameservers($nameservers): Site
     {
-        $this->name_servers = $name_servers;
+        $this->nameservers = $nameservers;
 
         return $this;
     }
 
-    public function get_original_name_servers()
+    public function get_original_nameservers()
     {
-        return $this->original_name_servers;
+        return $this->original_nameservers;
     }
 
-    public function set_original_name_servers($original_name_servers): Site
+    public function set_original_nameservers($original_nameservers): Site
     {
-        $this->original_name_servers = $original_name_servers;
+        $this->original_nameservers = $original_nameservers;
 
         return $this;
     }

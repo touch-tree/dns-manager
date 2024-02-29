@@ -138,6 +138,7 @@ class Container
     public static function singleton(string $abstract, $concrete): void
     {
         self::bind($abstract, $concrete);
+
         self::$instances[$abstract] = self::resolve_instance($abstract);
     }
 

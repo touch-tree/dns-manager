@@ -40,7 +40,13 @@ class SiteService
 
             $site
                 ->set_id($zone['id'])
-                ->set_name($zone['name']);
+                ->set_name($zone['name'])
+                ->set_account($zone['account'])
+                ->set_activated_on($zone['activated_on'])
+                ->set_created_on($zone['created_on']);
+//                ->set_nameservers()
+//                ->set_original_nameservers()
+//                ->set_owner();
 
             $sites->set($site->get_id(), $site);
         }

@@ -27,6 +27,6 @@ class JsonResponse extends Response
      */
     public function send()
     {
-        return json_encode($this->send());
+        return json_encode(parent::send());
     }
 }

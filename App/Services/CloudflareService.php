@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Framework\Base\Http;
+use App\Framework\Http\HeaderBag;
 
 class CloudflareService
 {
@@ -20,12 +21,13 @@ class CloudflareService
      */
     public function __construct(Http $http)
     {
-        $this->http = $http::set_headers(
-            [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . config('api_token'),
-            ]
-        );
+        $header = new HeaderBag();
+
+        $header
+            ->set('Content-Type', 'application/json')
+            ->set('Authorization', 'Bearer ' . config('api_token'));
+
+        $this->http = $http::set_headers($header);
     }
 
     /**

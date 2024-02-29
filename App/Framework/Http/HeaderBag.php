@@ -54,7 +54,7 @@ class HeaderBag extends ParameterBag
      */
     public function set(string $key, $value): HeaderBag
     {
-        header($key, $value);
+        parent::set($key, $value);
 
         return $this;
     }
@@ -77,6 +77,6 @@ class HeaderBag extends ParameterBag
      */
     public function remove(string $key)
     {
-        header_remove($key);
+        parent::remove($key);
     }
 }

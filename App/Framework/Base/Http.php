@@ -2,6 +2,9 @@
 
 namespace App\Framework\Base;
 
+use App\Framework\Http\HeaderBag;
+use App\Framework\Support\Collection;
+
 /**
  * The Http class provides a simple interface for sending HTTP requests using cURL.
  * It allows you to set custom headers and handle responses.
@@ -12,14 +15,14 @@ namespace App\Framework\Base;
 class Http
 {
     /**
-     * Request headers
+     * Request headers.
      *
-     * @var array
+     * @var HeaderBag
      */
-    public array $headers = [];
+    private HeaderBag $headers;
 
     /**
-     * Request response
+     * Request response.
      *
      * @var bool|string
      */
@@ -28,15 +31,26 @@ class Http
     /**
      * Set headers for the request.
      *
-     * @param array $headers The custom headers for the request.
-     * @return self
+     * @param HeaderBag $headers The custom headers for the request.
+     * @return Http
      */
-    public static function set_headers(array $headers): self
+    public static function set_headers(HeaderBag $headers): Http
     {
         $instance = new self();
+
         $instance->headers = $headers;
 
         return $instance;
+    }
+
+    /**
+     * Get the HeaderBag instance containing HTTP headers.
+     *
+     * @return HeaderBag The HeaderBag instance.
+     */
+    public function headers(): HeaderBag
+    {
+        return $this->headers;
     }
 
     /**
@@ -74,13 +88,18 @@ class Http
     private function request(string $method, string $endpoint, array $data = [])
     {
         $curl = curl_init($endpoint);
+        $headers = [];
+
+        foreach ($this->headers()->all() as $key => $value) {
+            $headers[] = $key . ': ' . $value;
+        }
 
         $this->many_curl_setopt(
             $curl,
             [
                 [CURLOPT_CUSTOMREQUEST, $method],
                 [CURLOPT_RETURNTRANSFER, true],
-                [CURLOPT_HTTPHEADER, $this->headers],
+                [CURLOPT_HTTPHEADER, $headers],
             ]
         );
 

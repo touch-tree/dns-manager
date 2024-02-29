@@ -32,9 +32,9 @@ class Request
     /**
      * Request constructor.
      */
-    public function __construct()
+    public function __construct(Server $server)
     {
-        $this->server = app(Server::class);
+        $this->server = $server;
     }
 
     /**
@@ -126,6 +126,7 @@ class Request
     public function validate(array $rules): Validator
     {
         $validator = new Validator($this->all(), $rules);
+
         $validator->validate();
 
         return $validator;
