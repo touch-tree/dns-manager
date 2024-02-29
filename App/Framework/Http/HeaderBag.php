@@ -5,9 +5,7 @@ namespace App\Framework\Http;
 use App\Framework\Base\ParameterBag;
 
 /**
- * This class provides methods to retrieve, set, check, and remove HTTP headers.
- * It ensures consistency by normalizing header keys to lowercase, making it
- * suitable for applications that need a uniform approach to header manipulation.
+ * This class represents the HTTP header object.
  *
  * @package App\Framework\Http
  */

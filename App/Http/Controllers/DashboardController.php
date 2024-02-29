@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Domain\Site\SiteService;
 use App\Framework\Base\View;
-use App\Framework\Http\Redirect;
 use App\Framework\Http\RedirectResponse;
 use App\Http\Requests\CreateRequest;
 use App\Http\Requests\UpdateRequest;
@@ -51,7 +50,7 @@ class DashboardController
 
         return view('dashboard.index')
             ->with('domains', $response['result'])
-            ->with('cloudflare_service', app(CloudflareService::class));
+            ->with('cloudflare_service', $this->cloudflare_service);
     }
 
     /**
