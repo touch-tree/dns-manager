@@ -91,7 +91,7 @@ class Router
     /**
      * Add a route to the internal Routing.
      *
-     * @param string $method The HTTP method for the route (GET or POST).
+     * @param string $method The HTTP method for the route.
      * @param string $uri The URI pattern for the route.
      * @param string[] $action An array representing the controller and method to be called for this route.
      * @return Router

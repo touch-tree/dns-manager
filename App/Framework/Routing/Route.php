@@ -17,7 +17,7 @@ class Route
     protected string $uri;
 
     /**
-     * The HTTP method associated with the route (e.g., GET, POST).
+     * The HTTP method associated with the route.
      *
      * @var string $method
      */

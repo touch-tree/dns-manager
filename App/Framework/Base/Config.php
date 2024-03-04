@@ -24,7 +24,7 @@ class Config
      * @param string $path
      * @return void
      *
-     * @throws Error Unable to find config file
+     * @throws Error Unable to find config file.
      */
     public static function resolve(string $path)
     {

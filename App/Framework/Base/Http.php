@@ -54,7 +54,7 @@ class Http
     }
 
     /**
-     * Get response
+     * Get response.
      *
      * @return bool|string
      */

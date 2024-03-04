@@ -3,21 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Site\SiteService;
+use App\Framework\App;
 use App\Framework\Base\View;
+use App\Framework\Http\HeaderBag;
 use App\Framework\Http\RedirectResponse;
 use App\Http\Requests\CreateRequest;
 use App\Http\Requests\UpdateRequest;
-use App\Services\CloudflareService;
+use App\Services\DashboardService;
 use Exception;
+use http\Header;
 
 class DashboardController
 {
     /**
      * CloudflareService instance.
      *
-     * @var CloudflareService
+     * @var DashboardService
      */
-    private CloudflareService $cloudflare_service;
+    private DashboardService $dashboard_service;
 
     /**
      * SiteService instance.
@@ -31,11 +34,13 @@ class DashboardController
      *
      * @return void
      */
-    public function __construct(CloudflareService $cloudflare_service, SiteService $site_service)
+    public function __construct(DashboardService $dashboard_service, SiteService $site_service)
     {
-//        dd($site_service->get_sites());
+        // remove this someday
+        dd(app(HeaderBag::class));
+        dd($site_service->get_sites()->all());
 
-        $this->cloudflare_service = $cloudflare_service;
+        $this->dashboard_service = $dashboard_service;
         $this->site_service = $site_service;
     }
 
@@ -46,11 +51,11 @@ class DashboardController
      */
     public function index(): View
     {
-        $response = $this->cloudflare_service->get_sites();
+        $response = $this->dashboard_service->get_sites();
 
         return view('dashboard.index')
             ->with('domains', $response['result'])
-            ->with('cloudflare_service', $this->cloudflare_service);
+            ->with('cloudflare_service', $this->dashboard_service);
     }
 
     /**
@@ -61,16 +66,16 @@ class DashboardController
      */
     public function edit(string $id): View
     {
-        $zone = $this->cloudflare_service->get_site($id);
-        $pagerules = $this->cloudflare_service->get_pagerules($id);
+        $zone = $this->dashboard_service->get_site($id);
+        $pagerules = $this->dashboard_service->get_pagerules($id);
 
         // pagerule not always set for each domain fix this
         // if pagerule not set then just don't display pagerule destination etc.
 
         return view('domain.edit')
             ->with('domain', $zone['result'])
-            ->with('dns_root', $this->cloudflare_service->get_dns_record($id, $zone['result']['name']))
-            ->with('dns_sub', $this->cloudflare_service->get_dns_record($id, 'www.' . $zone['result']['name']))
+            ->with('dns_root', $this->dashboard_service->get_dns_record($id, $zone['result']['name']))
+            ->with('dns_sub', $this->dashboard_service->get_dns_record($id, 'www.' . $zone['result']['name']))
             ->with('pagerule_destination_url', $pagerules['result'][0]['actions'][0]['value']['url'] ?? '');
     }
 
@@ -89,7 +94,7 @@ class DashboardController
             return back();
         }
 
-        $zone = $this->cloudflare_service->get_site($id);
+        $zone = $this->dashboard_service->get_site($id);
 
         if (!$zone['success']) {
             return back()
@@ -105,7 +110,7 @@ class DashboardController
 
         // update dns records
 
-        $dns_root = $this->cloudflare_service->update_dns_record($id, $zone['result']['name'],
+        $dns_root = $this->dashboard_service->update_dns_record($id, $zone['result']['name'],
             [
                 'content' => $request->input('root_cname_target'),
             ]
@@ -115,7 +120,7 @@ class DashboardController
             $warnings[] = 'Unable to update CNAME ROOT';
         }
 
-        $sub_root = $this->cloudflare_service->update_dns_record($id, 'www.' . $zone['result']['name'],
+        $sub_root = $this->dashboard_service->update_dns_record($id, 'www.' . $zone['result']['name'],
             [
                 'content' => $request->input('sub_cname_target'),
             ]
@@ -127,10 +132,10 @@ class DashboardController
 
         // update pagerules
 
-        $pagerules = $this->cloudflare_service->get_pagerules($id);
+        $pagerules = $this->dashboard_service->get_pagerules($id);
 
         foreach ($pagerules['result'] as $pagerule) {
-            $pagerule_response = $this->cloudflare_service->update_pagerule($id, $pagerule['id'],
+            $pagerule_response = $this->dashboard_service->update_pagerule($id, $pagerule['id'],
                 [
                     'actions' => [
                         [
@@ -170,7 +175,7 @@ class DashboardController
      */
     public function details(string $id): View
     {
-        $domain = $this->cloudflare_service->get_site($id);
+        $domain = $this->dashboard_service->get_site($id);
 
         return view('domain.details')->with('domain', $domain['result']);
     }
@@ -183,7 +188,7 @@ class DashboardController
      */
     public function details_modal(string $id): View
     {
-        $domain = $this->cloudflare_service->get_site($id);
+        $domain = $this->dashboard_service->get_site($id);
 
         return view(resource_path('views/partials/modal_content.php'),
             [
@@ -251,7 +256,7 @@ class DashboardController
         // create new site
         // we should really wrap these things in a normal object for our cloudflare interface. such as sites etc.
 
-        $site = $this->cloudflare_service->add_site(
+        $site = $this->dashboard_service->add_site(
             [
                 'name' => $request->input('domain'),
                 'jump_start' => true,
@@ -286,19 +291,19 @@ class DashboardController
         // settings for site setup
         // we should just not handle each error for set ssl, if this method fails then just generalize the throw. we can debug later lol
 
-        $this->cloudflare_service->set_ssl($id, ['value' => 'flexible']);
+        $this->dashboard_service->set_ssl($id, ['value' => 'flexible']);
 
-        $this->cloudflare_service->set_pseudo_ip($id, ['value' => 'overwrite_header',]);
+        $this->dashboard_service->set_pseudo_ip($id, ['value' => 'overwrite_header',]);
 
-        $this->cloudflare_service->set_https($id, ['value' => 'on']);
+        $this->dashboard_service->set_https($id, ['value' => 'on']);
 
         // remove scanned dns records to prevent conflicts when we're adding new ones in
         // loop should be better and minimized
 
-        $dns_records = $this->cloudflare_service->get_dns_records($id);
+        $dns_records = $this->dashboard_service->get_dns_records($id);
 
         foreach ($dns_records['result'] as $dns_record) {
-            $dns_response = $this->cloudflare_service->delete_dns_record($id, $dns_record['id']);
+            $dns_response = $this->dashboard_service->delete_dns_record($id, $dns_record['id']);
 
             if (!$dns_response['success']) {
                 $warnings[] = 'Unable to delete DNS record with id: ' . $dns_record['id'];
@@ -307,7 +312,7 @@ class DashboardController
 
         // preparing to set up the dns records
 
-        $dns_root = $this->cloudflare_service->add_dns_record($id,
+        $dns_root = $this->dashboard_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => '@',
@@ -321,7 +326,7 @@ class DashboardController
             $warnings[] = 'Unable to add CNAME ROOT';
         }
 
-        $dns_sub = $this->cloudflare_service->add_dns_record($id,
+        $dns_sub = $this->dashboard_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => 'www',
@@ -337,10 +342,10 @@ class DashboardController
 
         // remove auto-added pagerules
 
-        $pagerules = $this->cloudflare_service->get_pagerules($id);
+        $pagerules = $this->dashboard_service->get_pagerules($id);
 
         foreach ($pagerules['result'] as $pagerule) {
-            $pagerule_response = $this->cloudflare_service->delete_pagerule($id, $pagerule['id']);
+            $pagerule_response = $this->dashboard_service->delete_pagerule($id, $pagerule['id']);
 
             if (!$pagerule_response['success']) {
                 $warnings[] = 'Unable to delete pagerule record with id: ' . $pagerule['id'];
@@ -349,7 +354,7 @@ class DashboardController
 
         // pagerule setup
 
-        $pagerule_url = $this->cloudflare_service->add_pagerule($id,
+        $pagerule_url = $this->dashboard_service->add_pagerule($id,
             [
                 'status' => 'active',
                 'targets' => [
@@ -377,7 +382,7 @@ class DashboardController
             $warnings[] = 'Unable to set value for PAGERULE URL';
         }
 
-        $pagerule_full_url = $this->cloudflare_service->add_pagerule($id,
+        $pagerule_full_url = $this->dashboard_service->add_pagerule($id,
             [
                 'status' => 'active',
                 'targets' => [
@@ -426,7 +431,7 @@ class DashboardController
      */
     public function verify_nameservers(string $id): RedirectResponse
     {
-        $response = $this->cloudflare_service->verify_nameservers($id);
+        $response = $this->dashboard_service->verify_nameservers($id);
 
         if (!$response['success']) {
             if (search_object_by_properties($response['errors'], ['code' => '1224'])) {

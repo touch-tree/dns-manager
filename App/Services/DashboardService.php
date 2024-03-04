@@ -5,17 +5,17 @@ namespace App\Services;
 use App\Framework\Base\Http;
 use App\Framework\Http\HeaderBag;
 
-class CloudflareService
+class DashboardService
 {
     /**
-     * Http instance
+     * Http instance.
      *
      * @var Http
      */
     private Http $http;
 
     /**
-     * DashboardService constructor
+     * DashboardService constructor.
      *
      * @return void
      */
@@ -23,7 +23,7 @@ class CloudflareService
     {
         $header = new HeaderBag();
 
-        $header
+        $header = $header
             ->set('Content-Type', 'application/json')
             ->set('Authorization', 'Bearer ' . config('api_token'));
 
@@ -31,7 +31,7 @@ class CloudflareService
     }
 
     /**
-     * Get DNS record by zone id and name
+     * Get DNS record by zone id and name.
      *
      * @param string $id
      * @param string $name
@@ -51,10 +51,10 @@ class CloudflareService
     }
 
     /**
-     * Update DNS record for a zone by id
+     * Update DNS record for a zone by id.
      *
-     * @param string $id Zone id
-     * @param string $name Record name
+     * @param string $id Zone id.
+     * @param string $name Record name.
      * @param array $options
      * @return array
      */
@@ -72,7 +72,7 @@ class CloudflareService
     }
 
     /**
-     * Get all zones
+     * Get all zones.
      *
      * @return array
      */
@@ -82,9 +82,9 @@ class CloudflareService
     }
 
     /**
-     * Get zone by ID
+     * Get zone by ID.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @return array
      */
     public function get_site(string $id): array
@@ -93,7 +93,7 @@ class CloudflareService
     }
 
     /**
-     * Add a new site
+     * Add a new site.
      *
      * @param array $options
      * @return array
@@ -104,9 +104,9 @@ class CloudflareService
     }
 
     /**
-     * Set SSL settings for a zone
+     * Set SSL settings for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @param array $options
      * @return array
      */
@@ -116,9 +116,9 @@ class CloudflareService
     }
 
     /**
-     * Set Https settings for a zone
+     * Set Https settings for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @param array $options
      * @return array
      */
@@ -128,9 +128,9 @@ class CloudflareService
     }
 
     /**
-     * Set pseudo IPv4 settings for a zone
+     * Set pseudo IPv4 settings for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @param array $options
      * @return array
      */
@@ -140,9 +140,9 @@ class CloudflareService
     }
 
     /**
-     * Get DNS records for a zone
+     * Get DNS records for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @return array
      */
     public function get_dns_records(string $id): array
@@ -151,9 +151,9 @@ class CloudflareService
     }
 
     /**
-     * Delete DNS record for a zone
+     * Delete DNS record for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @param string $dns_record_id
      * @return array
      */
@@ -163,9 +163,9 @@ class CloudflareService
     }
 
     /**
-     * Add DNS record for a zone
+     * Add DNS record for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @param array $options
      * @return array
      */
@@ -175,9 +175,9 @@ class CloudflareService
     }
 
     /**
-     * Update page rule for a zone
+     * Update page rule for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @param array $options
      * @return array
      */
@@ -187,9 +187,9 @@ class CloudflareService
     }
 
     /**
-     * Get all pagerules for a zone
+     * Get all pagerules for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @return array
      */
     public function get_pagerules(string $id): array
@@ -198,10 +198,10 @@ class CloudflareService
     }
 
     /**
-     * Update a specific pagerule for a zone
+     * Update a specific pagerule for a zone.
      *
-     * @param string $id Zone id
-     * @param string $pagerule_id Pagerule id
+     * @param string $id Zone id.
+     * @param string $pagerule_id Pagerule id.
      * @param array $options
      * @return array
      */
@@ -211,10 +211,10 @@ class CloudflareService
     }
 
     /**
-     * Delete a pagerule for a zone
+     * Delete a pagerule for a zone.
      *
-     * @param string $id Zone id
-     * @param string $pagerule_id Pagerule id
+     * @param string $id Zone id.
+     * @param string $pagerule_id Pagerule id.
      * @return array
      */
     public function delete_pagerule(string $id, string $pagerule_id): array
@@ -223,9 +223,9 @@ class CloudflareService
     }
 
     /**
-     * Verify nameservers for a zone
+     * Verify nameservers for a zone.
      *
-     * @param string $id Zone id
+     * @param string $id Zone id.
      * @return array
      */
     public function verify_nameservers(string $id): array

@@ -4,29 +4,29 @@ namespace App\Domain\Site;
 
 use App\Framework\Base\ParameterBag;
 use App\Framework\Support\Collection;
-use App\Services\CloudflareService;
+use App\Services\DashboardService;
 
 class SiteService
 {
     /**
-     * CloudflareService instance
+     * CloudflareService instance.
      *
-     * @var CloudflareService
+     * @var DashboardService
      */
-    private CloudflareService $cloudflare_service;
+    private DashboardService $cloudflare_service;
 
     /**
      * SiteService constructor.
      *
-     * @param CloudflareService $cloudflare_service
+     * @param DashboardService $cloudflare_service
      */
-    public function __construct(CloudflareService $cloudflare_service)
+    public function __construct(DashboardService $cloudflare_service)
     {
         $this->cloudflare_service = $cloudflare_service;
     }
 
     /**
-     * Get sites.
+     * Get sites as a collection.
      *
      * @return Collection<Site>
      */

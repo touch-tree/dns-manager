@@ -11,6 +11,7 @@
 |-----------------------------------------------------------------------------
 */
 
+use App\Framework\App;
 use App\Framework\Base\Config;
 use App\Framework\Base\Container;
 use App\Framework\Base\Session;
@@ -223,15 +224,19 @@ function dd(...$message)
  * classes from the application's Dependency Injection (DI) Container.
  *
  * @template T
- * @param class-string<T> $class_name The fully qualified class name to resolve.
- * @return T|null An instance of the specified class, or null if the instance cannot be resolved.
+ * @param class-string<T>|null $class_name The fully qualified class name to resolve.
+ * @return T|App|null An instance of the specified class, or null if the instance cannot be resolved.
  *
  * @throws Error If there is an error during the resolution process.
  * @see Container
  */
-function app(string $class_name)
+function app(string $class_name = null)
 {
     try {
+        if (is_null($class_name)) {
+            return Container::get(App::class);
+        }
+
         return Container::get($class_name);
     } catch (ReflectionException|Exception $exception) {
         return null;

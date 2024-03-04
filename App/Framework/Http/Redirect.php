@@ -48,8 +48,8 @@ class Redirect
      * Set the path to the URL specified in the 'Referer' header or the Base URL if not present.
      *
      * This method is commonly used in web applications to redirect back to the previous page.
-     * It retrieves the URL from the 'Referer' header in the HTTP request headers. If the 'Referer'
-     * header is not present, it defaults to the Base URL.
+     * It retrieves the URL from the 'Referer' header in the HTTP request headers.
+     * If the 'Referer' header is not present, it defaults to the Base URL.
      *
      * @return RedirectResponse
      */

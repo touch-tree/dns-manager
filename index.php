@@ -12,7 +12,9 @@
 |--------------------------------------------------------------------------
 */
 
+use App\Framework\App;
 use App\Framework\Base\Config;
+use App\Framework\Base\Container;
 use App\Framework\Base\Session;
 use App\Framework\Http\Kernel;
 
@@ -23,11 +25,18 @@ require_once 'routes/web.php';
 Session::start();
 Config::resolve(base_path('/config/app.php'));
 
+// this needs to be a middleware lol
 if (!config('development_mode', false)) {
     if (!session('cloudflare_enabled')) {
         echo view('errors.404')->render();
         die();
     }
 }
+
+Container::bind(App::class, function () {
+    return new App();
+});
+
+app()->register(app(Container::class));
 
 app(Kernel::class)->handle(request());

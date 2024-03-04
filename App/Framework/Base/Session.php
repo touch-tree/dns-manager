@@ -130,7 +130,7 @@ class Session
     }
 
     /**
-     * Start session
+     * Start session.
      *
      * @return bool True when the session started successfully, else false.
      */

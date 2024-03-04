@@ -118,7 +118,7 @@ class Request
     /**
      * Validate multiple parameters based on the given validation patterns.
      *
-     * @param array $rules An associative array where keys are parameter names and values are validation patterns (e.g. ['name' => 'required|string|max:255']).
+     * @param array $rules An associative array where keys are parameter names and values are validation patterns e.g 'name' as 'required|string|max:255'.
      * @return Validator The Validator instance.
      *
      * @throws Exception

@@ -2,23 +2,23 @@
 
 namespace App\Domain\Site;
 
-use App\Services\CloudflareService;
+use App\Services\DashboardService;
 
 class SiteRepository
 {
     /**
-     * CloudflareService instance
+     * CloudflareService instance.
      *
-     * @var CloudflareService
+     * @var DashboardService
      */
-    private CloudflareService $cloudflare_service;
+    private DashboardService $cloudflare_service;
 
     /**
      * SiteRepository constructor.
      *
-     * @param CloudflareService $cloudflare_service
+     * @param DashboardService $cloudflare_service
      */
-    public function __construct(CloudflareService $cloudflare_service)
+    public function __construct(DashboardService $cloudflare_service)
     {
         $this->cloudflare_service = $cloudflare_service;
     }
