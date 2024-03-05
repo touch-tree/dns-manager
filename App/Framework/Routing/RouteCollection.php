@@ -4,6 +4,11 @@ namespace App\Framework\Routing;
 
 use App\Framework\Http\Request;
 
+/**
+ * This class represents a collection of routes.
+ *
+ * @package App\Framework\Routing
+ */
 class RouteCollection
 {
     /**
@@ -45,7 +50,7 @@ class RouteCollection
     public function get(string $key): ?Route
     {
         foreach ($this->routes as $route) {
-            if ($route->get_name() === $key) {
+            if ($route->name() === $key) {
                 return $route;
             }
         }

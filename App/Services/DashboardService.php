@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Framework\Base\Http;
+use App\Framework\Foundation\Http;
 use App\Framework\Http\HeaderBag;
 
 class DashboardService

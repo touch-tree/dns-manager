@@ -2,7 +2,7 @@
 
 namespace App\Framework\Http;
 
-use App\Framework\Base\ParameterBag;
+use App\Framework\Foundation\ParameterBag;
 
 /**
  * This class represents the HTTP header object.

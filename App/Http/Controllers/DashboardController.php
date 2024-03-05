@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Site\Site;
 use App\Domain\Site\SiteService;
 use App\Framework\App;
-use App\Framework\Base\View;
+use App\Framework\Foundation\ParameterBag;
+use App\Framework\Foundation\View;
 use App\Framework\Http\HeaderBag;
 use App\Framework\Http\RedirectResponse;
 use App\Http\Requests\CreateRequest;
@@ -16,7 +18,7 @@ use http\Header;
 class DashboardController
 {
     /**
-     * CloudflareService instance.
+     * DashboardService instance.
      *
      * @var DashboardService
      */
@@ -36,10 +38,6 @@ class DashboardController
      */
     public function __construct(DashboardService $dashboard_service, SiteService $site_service)
     {
-        // remove this someday
-        dd(app(HeaderBag::class));
-        dd($site_service->get_sites()->all());
-
         $this->dashboard_service = $dashboard_service;
         $this->site_service = $site_service;
     }
@@ -51,11 +49,11 @@ class DashboardController
      */
     public function index(): View
     {
-        $response = $this->dashboard_service->get_sites();
+        $sites = $this->site_service->get_sites();
 
         return view('dashboard.index')
-            ->with('domains', $response['result'])
-            ->with('cloudflare_service', $this->dashboard_service);
+            ->with('domains', $sites->all())
+            ->with('dashboard_service', $this->dashboard_service);
     }
 
     /**
@@ -94,9 +92,9 @@ class DashboardController
             return back();
         }
 
-        $zone = $this->dashboard_service->get_site($id);
+        $zone = $this->site_service->get_site($id);
 
-        if (!$zone['success']) {
+        if (is_null($zone)) {
             return back()
                 ->with('message_header', 'Unable to resolve site option')
                 ->with('message_content', 'No zone found with given id')
@@ -110,7 +108,7 @@ class DashboardController
 
         // update dns records
 
-        $dns_root = $this->dashboard_service->update_dns_record($id, $zone['result']['name'],
+        $dns_root = $this->dashboard_service->update_dns_record($id, $zone->name(),
             [
                 'content' => $request->input('root_cname_target'),
             ]
@@ -120,7 +118,7 @@ class DashboardController
             $warnings[] = 'Unable to update CNAME ROOT';
         }
 
-        $sub_root = $this->dashboard_service->update_dns_record($id, 'www.' . $zone['result']['name'],
+        $sub_root = $this->dashboard_service->update_dns_record($id, 'www.' . $zone->name(),
             [
                 'content' => $request->input('sub_cname_target'),
             ]
@@ -175,9 +173,9 @@ class DashboardController
      */
     public function details(string $id): View
     {
-        $domain = $this->dashboard_service->get_site($id);
+        $site = $this->site_service->get_site($id);
 
-        return view('domain.details')->with('domain', $domain['result']);
+        return view('domain.details')->with('domain', $site);
     }
 
     /**
@@ -188,12 +186,12 @@ class DashboardController
      */
     public function details_modal(string $id): View
     {
-        $domain = $this->dashboard_service->get_site($id);
+        $domain = $this->site_service->get_site($id);
 
         return view(resource_path('views/partials/modal_content.php'),
             [
-                'title' => 'Details for ' . $domain['result']['name'],
-                'content' => view(resource_path('views/domain/details_content.php'), ['domain' => $domain['result']])->render()
+                'title' => 'Details for ' . $domain->name(),
+                'content' => view(resource_path('views/domain/details_content.php'), ['domain' => $domain])->render()
             ]
         );
     }
@@ -253,25 +251,18 @@ class DashboardController
             }
         }
 
-        // create new site
-        // we should really wrap these things in a normal object for our cloudflare interface. such as sites etc.
+        // add site
 
-        $site = $this->dashboard_service->add_site(
+        $response = $this->site_service->add_site(
             [
-                'name' => $request->input('domain'),
-                'jump_start' => true,
-                'type' => 'full',
-                'account' => [
-                    'id' => config('api_clientid')
-                ],
-                'plan' => [
-                    'id' => 'free'
-                ]
+                'name' => $request->input('domain')
             ]
         );
 
-        if (!$site['success']) {
-            if (search_object_by_properties($site['errors'], ['code' => '1061'])) {
+        $site = $response['response'];
+
+        if (!empty($errors = $response['errors'])) {
+            if (find_object_by_properties($errors, ['code' => '1061'])) {
                 return back()->with_errors(
                     [
                         'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
@@ -285,20 +276,30 @@ class DashboardController
                 ->with('message_type', 'error');
         }
 
-        $id = $site['result']['id'];
+        $id = $site->id();
         $warnings = [];
 
         // settings for site setup
-        // we should just not handle each error for set ssl, if this method fails then just generalize the throw. we can debug later lol
 
-        $this->dashboard_service->set_ssl($id, ['value' => 'flexible']);
+        $this->dashboard_service->set_ssl($id,
+            [
+                'value' => 'flexible'
+            ]
+        );
 
-        $this->dashboard_service->set_pseudo_ip($id, ['value' => 'overwrite_header',]);
+        $this->dashboard_service->set_pseudo_ip($id,
+            [
+                'value' => 'overwrite_header'
+            ]
+        );
 
-        $this->dashboard_service->set_https($id, ['value' => 'on']);
+        $this->dashboard_service->set_https($id,
+            [
+                'value' => 'on'
+            ]
+        );
 
         // remove scanned dns records to prevent conflicts when we're adding new ones in
-        // loop should be better and minimized
 
         $dns_records = $this->dashboard_service->get_dns_records($id);
 
@@ -434,7 +435,7 @@ class DashboardController
         $response = $this->dashboard_service->verify_nameservers($id);
 
         if (!$response['success']) {
-            if (search_object_by_properties($response['errors'], ['code' => '1224'])) {
+            if (find_object_by_properties($response['errors'], ['code' => '1224'])) {
                 return back()
                     ->with('message_header', 'Unable to check nameservers')
                     ->with('message_content', 'This request cannot be made because it can only be called once an hour')

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Framework\Base;
+namespace App\Framework\Foundation;
 
 use Throwable;
 
@@ -10,7 +10,7 @@ use Throwable;
  * This class is designed to facilitate the separation of concerns
  * in a web application by handling the rendering of HTML views.
  *
- * @package App\Framework\Base
+ * @package App\Framework\Foundation
  */
 class View
 {

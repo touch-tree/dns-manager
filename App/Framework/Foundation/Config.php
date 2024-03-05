@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Framework\Base;
+namespace App\Framework\Foundation;
 
 use Error;
 
 /**
  * The Config class provides a simple configuration management system.
  *
- * @package App\Framework\Base
+ * @package App\Framework\Foundation
  */
 class Config
 {

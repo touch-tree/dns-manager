@@ -2,7 +2,7 @@
 
 namespace App\Framework\Http;
 
-use App\Framework\Base\Validator;
+use App\Framework\Foundation\Validator;
 use Exception;
 
 /**

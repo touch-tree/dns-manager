@@ -2,7 +2,7 @@
 
 namespace App\Framework\Http;
 
-use App\Framework\Base\View;
+use App\Framework\Foundation\View;
 use App\Framework\Routing\Router;
 
 /**

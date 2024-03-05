@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Framework\Base\Container;
+use App\Framework\Foundation\Container;
 use App\Framework\Http\HeaderBag;
 
 class AppService

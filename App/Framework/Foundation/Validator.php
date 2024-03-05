@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Framework\Base;
+namespace App\Framework\Foundation;
 
 use Exception;
 
 /**
  * The Validator class provides a simple and extensible way to validate data based on specified rules.
  *
- * @package App\Framework\Base
+ * @package App\Framework\Foundation
  */
 class Validator
 {

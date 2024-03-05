@@ -1,3 +1,13 @@
+<?php
+
+use App\Domain\Site\Site;
+
+/**
+ * @var Site $domain ;
+ */
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +23,7 @@
     <div class="dashboard-container main-container">
         <?php if (isset($domain)) { ?>
             <div class="dashboard-header">
-                <h1 class="dashboard-header__header">Details for <?php echo $domain['name']; ?></h1>
+                <h1 class="dashboard-header__header">Details for <?php echo $domain->name(); ?></h1>
                 <div class="button-menu">
                     <a href="<?php echo route('dashboard'); ?>">
                         <button class="btn btn-outline-primary">

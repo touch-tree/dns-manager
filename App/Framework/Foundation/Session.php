@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Framework\Base;
+namespace App\Framework\Foundation;
 
 /**
  * The Session class provides a simple interface for working with session data.
  * It includes methods for flashing data, retrieving data, and checking if a
  * key exists in the session.
  *
- * @package App\Framework\Base
+ * @package App\Framework\Foundation
  */
 class Session
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Framework\Base;
+namespace App\Framework\Foundation;
 
 use App\Framework\Http\HeaderBag;
 use App\Framework\Support\Collection;
@@ -10,7 +10,7 @@ use App\Framework\Support\Collection;
  * It allows you to set custom headers and handle responses.
  * This class is designed to simplify the interaction with APIs.
  *
- * @package App\Framework\Base
+ * @package App\Framework\Foundation
  */
 class Http
 {
@@ -58,7 +58,7 @@ class Http
      *
      * @return bool|string
      */
-    public function get_response()
+    public function response()
     {
         return $this->response;
     }

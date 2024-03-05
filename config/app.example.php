@@ -70,7 +70,7 @@ return [
     | permissions over every account and zone to avoid conflicts.
     |
     */
-    'api_clientid' => '',
+    'api_client_id' => '',
 
     /*
     |--------------------------------------------------------------------------

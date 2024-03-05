@@ -2,8 +2,8 @@
 
 namespace App\Framework\Http;
 
-use App\Framework\Base\Session;
-use App\Framework\Base\Validator;
+use App\Framework\Foundation\Session;
+use App\Framework\Foundation\Validator;
 use Exception;
 
 /**

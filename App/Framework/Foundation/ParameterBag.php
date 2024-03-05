@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Framework\Base;
+namespace App\Framework\Foundation;
 
 /**
  * This class represents a simple class for managing a collection of parameters.
  *
- * @package App\Framework\Base
+ * @package App\Framework\Foundation
  */
 class ParameterBag
 {

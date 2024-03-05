@@ -78,7 +78,7 @@ class Route
      *
      * @return array The action.
      */
-    public function get_action(): array
+    public function action(): array
     {
         return $this->action;
     }
@@ -101,7 +101,7 @@ class Route
      *
      * @return string|null
      */
-    public function get_name(): ?string
+    public function name(): ?string
     {
         return $this->name;
     }

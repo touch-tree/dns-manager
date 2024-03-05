@@ -102,7 +102,7 @@ class Response
      *
      * @return mixed The content of the response.
      */
-    public function get_content()
+    public function content()
     {
         return $this->content;
     }
@@ -112,7 +112,7 @@ class Response
      *
      * @return int The HTTP status code.
      */
-    public function get_status_code(): int
+    public function status_code(): int
     {
         return $this->status_code;
     }
@@ -138,8 +138,8 @@ class Response
             header($key . ': ' . $value);
         }
 
-        http_response_code($this->get_status_code());
+        http_response_code($this->status_code());
 
-        return $this->get_content();
+        return $this->content();
     }
 }

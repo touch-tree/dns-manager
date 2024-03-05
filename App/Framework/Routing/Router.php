@@ -2,7 +2,7 @@
 
 namespace App\Framework\Routing;
 
-use App\Framework\Base\View;
+use App\Framework\Foundation\View;
 use App\Framework\Http\Redirect;
 use App\Framework\Http\Request;
 use Error;
@@ -31,7 +31,7 @@ class Router
      *
      * @return RouteCollection
      */
-    public static function get_routes(): RouteCollection
+    public static function routes(): RouteCollection
     {
         if (!isset(self::$routes)) {
             self::$routes = new RouteCollection();
@@ -49,7 +49,7 @@ class Router
      */
     public static function route(string $name, array $parameters = []): ?string
     {
-        $route = self::get_routes()->get($name);
+        $route = self::routes()->get($name);
 
         if (is_null($route)) {
             return null;
@@ -98,7 +98,7 @@ class Router
      */
     private static function add_route(string $method, string $uri, array $action): Router
     {
-        self::get_routes()->add(new Route($uri, $method, $action));
+        self::routes()->add(new Route($uri, $method, $action));
 
         return new self();
     }
@@ -113,7 +113,7 @@ class Router
      */
     public function name(string $name): Router
     {
-        $route = self::get_routes()->all()[count(self::get_routes()->all()) - 1];
+        $route = self::routes()->all()[count(self::routes()->all()) - 1];
 
         $route->set_name($name);
 
@@ -128,14 +128,14 @@ class Router
      */
     public static function dispatch(Request $request)
     {
-        $route = self::get_routes()->match($request);
+        $route = self::routes()->match($request);
 
         if (is_null($route)) {
             return null;
         }
 
         try {
-            [$class, $method] = $route->get_action();
+            [$class, $method] = $route->action();
 
             return self::resolve_controller([app($class), $method], self::get_parameters($route->uri(), $request->request_uri()));
         } catch (Exception $e) {
@@ -174,7 +174,7 @@ class Router
 
             if (is_subclass_of($type->getName(), Request::class)) {
                 $request = $type->getName();
-                $reflection_parameters[] = new $request;
+                $reflection_parameters[] = app($request);
 
                 continue;
             }

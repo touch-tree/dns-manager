@@ -1,3 +1,15 @@
+<?php
+
+use App\Domain\Site\Site;
+use App\Services\DashboardService;
+
+/**
+ * @var Site $domain
+ * @var DashboardService $dashboard_service
+ */
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,16 +60,16 @@
                     <?php foreach ($domains as $key => $domain) { ?>
                         <tr>
                             <td class="domain-name">
-                                <a href="<?php echo route('domain.edit', ['id' => $domain['id']]); ?>"
+                                <a href="<?php echo route('domain.edit', ['id' => $domain->id()]); ?>"
                                    class="link">
-                                    <?php echo $domain['name']; ?>
+                                    <?php echo $domain->name(); ?>
                                 </a>
                             </td>
-                            <td class="owner"><?php echo strtolower($domain['account']['name']); ?></td>
+                            <td class="owner"><?php echo strtolower($domain->account()->name()); ?></td>
                             <td>
                                 <?php
-                                if (isset($cloudflare_service)) {
-                                    foreach ($cloudflare_service->get_dns_records($domain['id'])['result'] as $dns_record) {
+                                if (isset($dashboard_service)) {
+                                    foreach ($dashboard_service->get_dns_records($domain->id())['result'] as $dns_record) {
                                         echo $dns_record['name'] . '<br>';
                                     }
                                 }
@@ -65,42 +77,42 @@
                             </td>
                             <td class="name-server">
                                 <?php
-                                foreach ($domain['name_servers'] as $name_server) {
+                                foreach ($domain->nameservers() as $name_server) {
                                     echo $name_server . '<br>';
                                 }
                                 ?>
                             </td>
                             <td class="domain-status">
                                 <?php
-                                $status = strtoupper($domain['status']);
+                                $status = strtoupper($domain->status());
 
                                 echo $status;
                                 ?>
                             </td>
-                            <td class="created-on"><?php echo date('Y-m-d H:i:s', strtotime($domain['created_on'])); ?></td>
+                            <td class="created-on"><?php echo date('Y-m-d H:i:s', strtotime($domain->created_on())); ?></td>
                             <td class="options-action">
                                 <div class="options-action__container">
                                     <?php if (strtolower($status) === 'pending') { ?>
-                                        <a href="<?php echo route('nameservers.verify', ['id' => $domain['id']]); ?>">
+                                        <a href="<?php echo route('nameservers.verify', ['id' => $domain->id()]); ?>">
                                             <button class="btn btn-outline-primary btn-activation-check">
                                                 <i class="fa-solid fa-check" aria-hidden="true"></i>
                                                 Check nameservers
                                             </button>
                                         </a>
                                     <?php } ?>
-                                    <a href="https://dash.cloudflare.com/<?php echo $domain['account']['id'] ?>/<?php echo $domain['name']; ?>"
+                                    <a href="https://dash.cloudflare.com/<?php echo $domain->account()->id() ?>/<?php echo $domain->name(); ?>"
                                        target="_blank">
                                         <button class="btn btn-cloudflare normal-icon">
                                             <i class="fa-brands fa-cloudflare"></i>
                                         </button>
                                     </a>
                                     <div class="options">
-                                        <div class="options-icon" data-popup-for="<?php echo $domain['id']; ?>">
+                                        <div class="options-icon" data-popup-for="<?php echo $domain->id(); ?>">
                                             <i class="bi bi-three-dots"></i>
                                         </div>
-                                        <div class="options-popup" data-popup="<?php echo $domain['id']; ?>">
-                                            <a href="<?php echo route('domain.edit', ['id' => $domain['id']]); ?>">Edit</a>
-                                            <a data-api-route="<?php echo route('domain.details.modal', ['id' => $domain['id']]); ?>"
+                                        <div class="options-popup" data-popup="<?php echo $domain->id(); ?>">
+                                            <a href="<?php echo route('domain.edit', ['id' => $domain->id()]); ?>">Edit</a>
+                                            <a data-api-route="<?php echo route('domain.details.modal', ['id' => $domain->id()]); ?>"
                                                data-toggle="modal"
                                                data-target="#modal-main">
                                                 Details

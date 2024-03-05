@@ -7,19 +7,19 @@ use App\Services\DashboardService;
 class SiteRepository
 {
     /**
-     * CloudflareService instance.
+     * DashboardService instance.
      *
      * @var DashboardService
      */
-    private DashboardService $cloudflare_service;
+    private DashboardService $dashboard_service;
 
     /**
      * SiteRepository constructor.
      *
-     * @param DashboardService $cloudflare_service
+     * @param DashboardService $dashboard_service
      */
-    public function __construct(DashboardService $cloudflare_service)
+    public function __construct(DashboardService $dashboard_service)
     {
-        $this->cloudflare_service = $cloudflare_service;
+        $this->dashboard_service = $dashboard_service;
     }
 }

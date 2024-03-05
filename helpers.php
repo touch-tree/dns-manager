@@ -12,10 +12,10 @@
 */
 
 use App\Framework\App;
-use App\Framework\Base\Config;
-use App\Framework\Base\Container;
-use App\Framework\Base\Session;
-use App\Framework\Base\View;
+use App\Framework\Foundation\Config;
+use App\Framework\Foundation\Container;
+use App\Framework\Foundation\Session;
+use App\Framework\Foundation\View;
 use App\Framework\Http\HeaderBag;
 use App\Framework\Http\Redirect;
 use App\Framework\Http\RedirectResponse;
@@ -315,7 +315,7 @@ function asset(string $path): string
  *
  * @return array|null The found object or null if not found.
  */
-function search_object_by_properties(array $array, array $search): ?array
+function find_object_by_properties(array $array, array $search): ?array
 {
     foreach ($array as $item) {
         if (is_array($item) && array_intersect_assoc($search, $item) == $search) {

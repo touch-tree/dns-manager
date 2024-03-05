@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Framework\Base;
+namespace App\Framework\Foundation;
 
 use Closure;
 use Error;
@@ -14,7 +14,7 @@ use ReflectionNamedType;
  * The Container class provides a simple Dependency Injection Container for managing and resolving instances of classes.
  * Representing a service container.
  *
- * @package App\Framework\Base
+ * @package App\Framework\Foundation
  */
 class Container
 {

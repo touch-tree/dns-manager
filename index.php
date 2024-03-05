@@ -13,9 +13,9 @@
 */
 
 use App\Framework\App;
-use App\Framework\Base\Config;
-use App\Framework\Base\Container;
-use App\Framework\Base\Session;
+use App\Framework\Foundation\Config;
+use App\Framework\Foundation\Container;
+use App\Framework\Foundation\Session;
 use App\Framework\Http\Kernel;
 
 require_once 'autoload.php';

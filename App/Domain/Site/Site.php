@@ -2,174 +2,457 @@
 
 namespace App\Domain\Site;
 
+use App\Domain\Account\Account;
+use App\Domain\Plan\Plan;
+
 class Site
 {
-    private $id;
-    private $name;
-    private $status;
-    private $paused;
-    private $nameservers;
-    private $original_nameservers;
-    private $modified_on;
-    private $created_on;
-    private $activated_on;
-    private $owner;
-    private $account;
-    private $permissions;
-    private $plan;
+    /**
+     * Site ID.
+     *
+     * @var string
+     */
+    private string $id;
 
-    public function get_id()
+    /**
+     * Site name.
+     *
+     * @var string
+     */
+    private string $name;
+
+    /**
+     * Site type.
+     *
+     * @var string
+     */
+    private string $type;
+
+    /**
+     * Original registrar.
+     *
+     * @var string|null
+     */
+    private ?string $original_registrar;
+
+    /**
+     * Original DNS host.
+     *
+     * @var string|null
+     */
+    private ?string $original_dnshost;
+
+    /**
+     * Site status.
+     *
+     * @var string
+     */
+    private string $status;
+
+    /**
+     * Whether site is paused or not.
+     *
+     * @var string
+     */
+    private string $paused;
+
+    /**
+     * The nameservers related to the site.
+     *
+     * @var array
+     */
+    private array $nameservers;
+
+    /**
+     * Original nameservers.
+     *
+     * @var array
+     */
+    private array $original_nameservers;
+
+    /**
+     * Modified on.
+     *
+     * @var string|null
+     */
+    private ?string $modified_on;
+
+    /**
+     * Created on.
+     *
+     * @var string
+     */
+    private string $created_on;
+
+    /**
+     * Activated on.
+     *
+     * @var string|null
+     */
+    private ?string $activated_on;
+
+    /**
+     * The account that manages the site.
+     *
+     * @var Account|null
+     */
+    private ?Account $account;
+
+    /**
+     * Site permissions.
+     *
+     * @var array
+     */
+    private array $permissions;
+
+    /**
+     * Payment plan for the site.
+     *
+     * @var Plan|null
+     */
+    private ?Plan $plan;
+
+    /**
+     * Get ID.
+     *
+     * @return string
+     */
+    public function id(): string
     {
         return $this->id;
     }
 
-    public function set_id($id): Site
+    /**
+     * Set ID.
+     *
+     * @param string $id
+     * @return $this
+     */
+    public function set_id(string $id): Site
     {
         $this->id = $id;
 
         return $this;
     }
 
-    public function get_name()
+    /**
+     * Get site name.
+     *
+     * @return string
+     */
+    public function name(): string
     {
         return $this->name;
     }
 
-    public function set_name($name): Site
+    /**
+     * Set site name.
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function set_name(string $name): Site
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function get_status()
+    /**
+     * Get site type.
+     *
+     * @return string
+     */
+    public function type(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set site type.
+     *
+     * @param string $type
+     * @return $this
+     */
+    public function set_type(string $type): Site
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get site status.
+     *
+     * @return string
+     */
+    public function status(): string
     {
         return $this->status;
     }
 
-    public function set_status($status): Site
+    /**
+     * Set site status.
+     *
+     * @param string $status
+     * @return $this
+     */
+    public function set_status(string $status): Site
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function get_paused()
+    /**
+     * Check whether the site is paused or not.
+     *
+     * @return string
+     */
+    public function is_paused(): string
     {
         return $this->paused;
     }
 
-    public function set_paused($paused): Site
+    /**
+     * Set paused.
+     *
+     * @param string $paused
+     * @return $this
+     */
+    public function set_paused(string $paused): Site
     {
         $this->paused = $paused;
 
         return $this;
     }
 
-    public function get_nameservers()
+    /**
+     * Get the nameservers related to the site.
+     *
+     * @return array
+     */
+    public function nameservers(): array
     {
         return $this->nameservers;
     }
 
-    public function set_nameservers($nameservers): Site
+    /**
+     * Set nameservers.
+     *
+     * @param array $nameservers
+     * @return $this
+     */
+    public function set_nameservers(array $nameservers): Site
     {
         $this->nameservers = $nameservers;
 
         return $this;
     }
 
-    public function get_original_nameservers()
+    /**
+     * Get original nameservers.
+     *
+     * @return array
+     */
+    public function original_nameservers(): array
     {
         return $this->original_nameservers;
     }
 
-    public function set_original_nameservers($original_nameservers): Site
+    /**
+     * Set original nameservers.
+     *
+     * @param array|null $original_nameservers
+     * @return $this
+     */
+    public function set_original_nameservers(?array $original_nameservers): Site
     {
-        $this->original_nameservers = $original_nameservers;
+        $this->original_nameservers = $original_nameservers ?? [];
 
         return $this;
     }
 
-    public function get_modified_on()
+    /**
+     * Get modified on.
+     *
+     * @return string|null
+     */
+    public function modified_on(): ?string
     {
         return $this->modified_on;
     }
 
-    public function set_modified_on($modified_on): Site
+    /**
+     * Set modified on.
+     *
+     * @param string|null $modified_on
+     * @return $this
+     */
+    public function set_modified_on(?string $modified_on): Site
     {
         $this->modified_on = $modified_on;
 
         return $this;
     }
 
-    public function get_created_on()
+    /**
+     * Get created on.
+     *
+     * @return string
+     */
+    public function created_on(): string
     {
         return $this->created_on;
     }
 
-    public function set_created_on($created_on): Site
+    /**
+     * Set created on.
+     *
+     * @param string $created_on
+     * @return $this
+     */
+    public function set_created_on(string $created_on): Site
     {
         $this->created_on = $created_on;
 
         return $this;
     }
 
-    public function get_activated_on()
+    /**
+     * Get activated on.
+     *
+     * @return string|null
+     */
+    public function activated_on(): ?string
     {
         return $this->activated_on;
     }
 
-    public function set_activated_on($activated_on): Site
+    /**
+     * Set activated on.
+     *
+     * @param string|null $activated_on
+     * @return $this
+     */
+    public function set_activated_on(?string $activated_on): Site
     {
         $this->activated_on = $activated_on;
 
         return $this;
     }
 
-    public function get_owner()
-    {
-        return $this->owner;
-    }
-
-    public function set_owner($owner): Site
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    public function get_account()
+    /**
+     * Get account related to the site.
+     *
+     * @return Account|null
+     */
+    public function account(): ?Account
     {
         return $this->account;
     }
 
-    public function set_account($account): Site
+    /**
+     * Set account.
+     *
+     * @param Account $account
+     * @return $this
+     */
+    public function set_account(Account $account): Site
     {
         $this->account = $account;
 
         return $this;
     }
 
-    public function get_permissions()
+    /**
+     * Get permissions.
+     *
+     * @return array
+     */
+    public function permissions(): array
     {
         return $this->permissions;
     }
 
-    public function set_permissions($permissions): Site
+    /**
+     * Set permissions.
+     *
+     * @param array $permissions
+     * @return $this
+     */
+    public function set_permissions(array $permissions): Site
     {
         $this->permissions = $permissions;
 
         return $this;
     }
 
-    public function get_plan()
+    /**
+     * Get payment plan.
+     *
+     * @return Plan|null
+     */
+    public function plan(): ?Plan
     {
         return $this->plan;
     }
 
-    public function set_plan($plan): Site
+    /**
+     * Set payment plan.
+     *
+     * @param Plan $plan
+     * @return $this
+     */
+    public function set_plan(Plan $plan): Site
     {
         $this->plan = $plan;
+
+        return $this;
+    }
+
+    /**
+     * Get original DNS host.
+     *
+     * @return string|null
+     */
+    public function original_dnshost(): ?string
+    {
+        return $this->original_dnshost;
+    }
+
+    /**
+     * Set original DNS host.
+     *
+     * @param string|null $original_dnshost
+     * @return $this
+     */
+    public function set_original_dnshost(?string $original_dnshost): Site
+    {
+        $this->original_dnshost = $original_dnshost;
+
+        return $this;
+    }
+
+    /**
+     * Get original registrar.
+     *
+     * @return string|null
+     */
+    public function original_registrar(): ?string
+    {
+        return $this->original_registrar;
+    }
+
+    /**
+     * Set original registrar.
+     *
+     * @param string|null $original_registrar
+     * @return $this
+     */
+    public function set_original_registrar(?string $original_registrar): Site
+    {
+        $this->original_registrar = $original_registrar;
 
         return $this;
     }
