@@ -50,7 +50,18 @@ class Session
      */
     public function get(string $key, $default = null)
     {
-        return $_SESSION[$key] ?? $default;
+        $keys = explode('.', $key);
+        $current = $_SESSION;
+
+        foreach ($keys as $nested_key) {
+            if (is_array($current) && array_key_exists($nested_key, $current)) {
+                $current = $current[$nested_key];
+            } else {
+                return $default;
+            }
+        }
+
+        return $current;
     }
 
     /**
@@ -63,7 +74,22 @@ class Session
     public function put($key, $value = null): Session
     {
         if (is_string($key) && !is_null($value)) {
-            $_SESSION[$key] = $value;
+            $keys = explode('.', $key);
+            $current = &$_SESSION;
+
+            foreach ($keys as $nested_key) {
+                if (!is_array($current)) {
+                    $current = [];
+                }
+
+                if (!isset($current[$nested_key])) {
+                    $current[$nested_key] = [];
+                }
+
+                $current = &$current[$nested_key];
+            }
+
+            $current = $value;
         }
 
         if (is_array($key) && is_null($value)) {

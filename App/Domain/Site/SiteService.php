@@ -6,7 +6,6 @@ use App\Domain\Account\Account;
 use App\Domain\Plan\Plan;
 use App\Framework\Foundation\ParameterBag;
 use App\Framework\Support\Collection;
-use App\Framework\Support\ErrorableBag;
 use App\Services\DashboardService;
 use Exception;
 
@@ -104,7 +103,7 @@ class SiteService
     /**
      * Add a new site.
      *
-     * @param array{name: string} $data
+     * @param array{name: string, account_id: string} $data
      * @return array{response: Site|null, errors: array}
      */
     public function add_site(array $data): array
@@ -112,10 +111,14 @@ class SiteService
         $site = $this->dashboard_service->add_site(
             [
                 'name' => $data['name'],
-                'jump_start' => true,
                 'type' => 'full',
-                'account' => ['id' => config('api_client_id')],
-                'plan' => ['id' => 'free']
+                'jump_start' => true,
+                'account' => [
+                    'id' => $data['account_id']
+                ],
+                'plan' => [
+                    'id' => 'free'
+                ],
             ]
         );
 
@@ -128,7 +131,7 @@ class SiteService
     /**
      * Get site by ID.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @return Site|null Returns null whenever the site cannot be resolved nor found.
      */
     public function get_site(string $id): ?Site
@@ -163,5 +166,77 @@ class SiteService
         }
 
         return $sites;
+    }
+
+    /**
+     * Delete a single DNS record by ID.
+     *
+     * @param string $id
+     * @param string $dns_record_id
+     * @return bool
+     */
+    public function delete_dns_record(string $id, string $dns_record_id): bool
+    {
+        $response = $this->dashboard_service->delete_dns_record($id, $dns_record_id);
+
+        return empty($response['error']);
+    }
+
+    /**
+     * Delete every single DNS record by Zone ID.
+     *
+     * @param string $id Zone ID.
+     * @return bool Returns false whenever a single DNS record is unable to be deleted.
+     */
+    public function reset_dns_records(string $id): bool
+    {
+        $records = $this->dashboard_service->get_dns_records($id);
+        $status = true;
+
+        foreach ($records['result'] as $record) {
+            $response = $this->delete_dns_record($id, $record['id']);
+
+            if (!$response) {
+                $status = false;
+            }
+        }
+
+        return $status;
+    }
+
+    /**
+     * Delete a single pagerule by ID.
+     *
+     * @param string $id
+     * @param string $pagerule_id
+     * @return bool
+     */
+    public function delete_pagerule(string $id, string $pagerule_id): bool
+    {
+        $response = $this->dashboard_service->delete_pagerule($id, $pagerule_id);
+
+        return empty($response['error']);
+    }
+
+    /**
+     * Delete every single DNS record by Zone ID.
+     *
+     * @param string $id Zone ID.
+     * @return bool Returns false whenever a single DNS record is unable to be deleted.
+     */
+    public function reset_pagerules(string $id): bool
+    {
+        $records = $this->dashboard_service->get_pagerules($id);
+        $status = true;
+
+        foreach ($records['result'] as $pagerule) {
+            $response = $this->delete_pagerule($id, $pagerule['id']);
+
+            if (!$response) {
+                $status = false;
+            }
+        }
+
+        return $status;
     }
 }

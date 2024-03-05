@@ -45,7 +45,7 @@ class FormRequest extends Request
             session()->forget(['errors', 'flash']);
         }
 
-        session()->put('errors', $errors);
+        session()->put('errors.form', $errors);
 
         return $validator;
     }

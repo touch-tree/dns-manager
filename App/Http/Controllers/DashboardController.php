@@ -220,49 +220,15 @@ class DashboardController
             return back();
         }
 
-        // check whether the pagerule targets are valid urls
-
-        $page_rules = [
-            $request->input('pagerule_url'),
-            $request->input('pagerule_full_url'),
-        ];
-
-        $page_destination = $request->input('pagerule_destination_url');
-
-        foreach ($page_rules as $rule) {
-            $parsed_url = parse_url($page_destination);
-
-            if (!isset($parsed_url['host'])) {
-                return back()->with_errors(
-                    [
-                        'pagerule_destination_url' => 'Forwarding URL should be a proper URL'
-                    ]
-                );
-            }
-
-            $host = $parsed_url['host'] . $parsed_url['path'];
-
-            if ($host === $rule || $host === 'www.' . $rule) {
-                return back()->with_errors(
-                    [
-                        'pagerule_destination_url' => 'Forwarding URL matches the target and would cause a redirect loop'
-                    ]
-                );
-            }
-        }
-
-        // add site
-
-        $response = $this->site_service->add_site(
+        $site = $this->site_service->add_site(
             [
-                'name' => $request->input('domain')
+                'name' => $request->input('domain'),
+                'account_id' => config('api_client_id')
             ]
         );
 
-        $site = $response['response'];
-
-        if (!empty($errors = $response['errors'])) {
-            if (find_object_by_properties($errors, ['code' => '1061'])) {
+        if ($site['errors']) {
+            if (find_object_by_properties($site['errors'], ['code' => '1061'])) {
                 return back()->with_errors(
                     [
                         'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
@@ -272,14 +238,12 @@ class DashboardController
 
             return back()
                 ->with('message_header', 'Unable to add site')
-                ->with('message_content', 'Unable to add site due to an error with the Cloudflare API.')
+                ->with('message_content', 'Unable to add site due to an internal server error.')
                 ->with('message_type', 'error');
         }
 
+        $site = $site['response'];
         $id = $site->id();
-        $warnings = [];
-
-        // settings for site setup
 
         $this->dashboard_service->set_ssl($id,
             [
@@ -299,21 +263,9 @@ class DashboardController
             ]
         );
 
-        // remove scanned dns records to prevent conflicts when we're adding new ones in
+        $this->site_service->reset_dns_records($id);
 
-        $dns_records = $this->dashboard_service->get_dns_records($id);
-
-        foreach ($dns_records['result'] as $dns_record) {
-            $dns_response = $this->dashboard_service->delete_dns_record($id, $dns_record['id']);
-
-            if (!$dns_response['success']) {
-                $warnings[] = 'Unable to delete DNS record with id: ' . $dns_record['id'];
-            }
-        }
-
-        // preparing to set up the dns records
-
-        $dns_root = $this->dashboard_service->add_dns_record($id,
+        $this->dashboard_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => '@',
@@ -323,11 +275,7 @@ class DashboardController
             ]
         );
 
-        if (!$dns_root['success']) {
-            $warnings[] = 'Unable to add CNAME ROOT';
-        }
-
-        $dns_sub = $this->dashboard_service->add_dns_record($id,
+        $this->dashboard_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => 'www',
@@ -337,23 +285,7 @@ class DashboardController
             ]
         );
 
-        if (!$dns_sub['success']) {
-            $warnings[] = 'Unable to add CNAME SUB';
-        }
-
-        // remove auto-added pagerules
-
-        $pagerules = $this->dashboard_service->get_pagerules($id);
-
-        foreach ($pagerules['result'] as $pagerule) {
-            $pagerule_response = $this->dashboard_service->delete_pagerule($id, $pagerule['id']);
-
-            if (!$pagerule_response['success']) {
-                $warnings[] = 'Unable to delete pagerule record with id: ' . $pagerule['id'];
-            }
-        }
-
-        // pagerule setup
+        $this->site_service->reset_pagerules($id);
 
         $pagerule_url = $this->dashboard_service->add_pagerule($id,
             [

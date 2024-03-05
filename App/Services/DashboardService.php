@@ -31,7 +31,7 @@ class DashboardService
     }
 
     /**
-     * Get DNS record by zone id and name.
+     * Get DNS record by Zone ID and name.
      *
      * @param string $id
      * @param string $name
@@ -53,7 +53,7 @@ class DashboardService
     /**
      * Update DNS record for a zone by id.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param string $name Record name.
      * @param array $options
      * @return array
@@ -84,7 +84,7 @@ class DashboardService
     /**
      * Get zone by ID.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @return array
      */
     public function get_site(string $id): array
@@ -106,7 +106,7 @@ class DashboardService
     /**
      * Set SSL settings for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param array $options
      * @return array
      */
@@ -118,7 +118,7 @@ class DashboardService
     /**
      * Set Https settings for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param array $options
      * @return array
      */
@@ -130,7 +130,7 @@ class DashboardService
     /**
      * Set pseudo IPv4 settings for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param array $options
      * @return array
      */
@@ -142,7 +142,7 @@ class DashboardService
     /**
      * Get DNS records for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @return array
      */
     public function get_dns_records(string $id): array
@@ -153,7 +153,7 @@ class DashboardService
     /**
      * Delete DNS record for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param string $dns_record_id
      * @return array
      */
@@ -165,7 +165,7 @@ class DashboardService
     /**
      * Add DNS record for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param array $options
      * @return array
      */
@@ -177,7 +177,7 @@ class DashboardService
     /**
      * Update page rule for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param array $options
      * @return array
      */
@@ -189,7 +189,7 @@ class DashboardService
     /**
      * Get all pagerules for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @return array
      */
     public function get_pagerules(string $id): array
@@ -200,7 +200,7 @@ class DashboardService
     /**
      * Update a specific pagerule for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param string $pagerule_id Pagerule id.
      * @param array $options
      * @return array
@@ -213,7 +213,7 @@ class DashboardService
     /**
      * Delete a pagerule for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @param string $pagerule_id Pagerule id.
      * @return array
      */
@@ -225,7 +225,7 @@ class DashboardService
     /**
      * Verify nameservers for a zone.
      *
-     * @param string $id Zone id.
+     * @param string $id Zone ID.
      * @return array
      */
     public function verify_nameservers(string $id): array

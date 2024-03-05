@@ -109,7 +109,7 @@ class RedirectResponse extends Response
     public function with_errors(array $errors): RedirectResponse
     {
         foreach ($errors as $key => $value) {
-            $_SESSION['errors'][$key][] = $value;
+            $_SESSION['errors']['form'][$key][] = $value;
         }
 
         return $this;

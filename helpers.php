@@ -109,7 +109,9 @@ function session(string $key = null, $value = null)
  */
 function error(string $key): ?string
 {
-    return $_SESSION['errors'][$key][0] ?? null;
+    $array = (array)session()->get('errors.form.' . $key);
+
+    return reset($array) ?? null;
 }
 
 /**
@@ -233,11 +235,7 @@ function dd(...$message)
 function app(string $class_name = null)
 {
     try {
-        if (is_null($class_name)) {
-            return Container::get(App::class);
-        }
-
-        return Container::get($class_name);
+        return Container::get($class_name ?: App::class);
     } catch (ReflectionException|Exception $exception) {
         return null;
     }
