@@ -9,6 +9,8 @@
 
 <body>
 
+<?php echo view('partials.dependencies')->render(); ?>
+
 <div class="center-wrap">
     <div class="dashboard-container main-container">
         <div class="dashboard-header">

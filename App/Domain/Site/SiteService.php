@@ -5,25 +5,25 @@ namespace App\Domain\Site;
 use App\Domain\Account\Account;
 use App\Domain\Plan\Plan;
 use App\Framework\Support\Collection;
-use App\Services\DashboardService;
+use App\Services\CloudflareService;
 
 class SiteService
 {
     /**
      * CloudflareService instance.
      *
-     * @var DashboardService
+     * @var CloudflareService
      */
-    private DashboardService $dashboard_service;
+    private CloudflareService $cloudflare_service;
 
     /**
      * SiteService constructor.
      *
-     * @param DashboardService $dashboard_service
+     * @param CloudflareService $cloudflare_service
      */
-    public function __construct(DashboardService $dashboard_service)
+    public function __construct(CloudflareService $cloudflare_service)
     {
-        $this->dashboard_service = $dashboard_service;
+        $this->cloudflare_service = $cloudflare_service;
     }
 
     /**
@@ -108,7 +108,7 @@ class SiteService
     {
         $site = null;
 
-        $response = $this->dashboard_service->add_site(
+        $response = $this->cloudflare_service->add_site(
             [
                 'name' => $data['name'],
                 'type' => 'full',
@@ -140,7 +140,7 @@ class SiteService
      */
     public function get_site(string $id): ?Site
     {
-        $site = $this->dashboard_service->get_site($id);
+        $site = $this->cloudflare_service->get_site($id);
 
         if (empty($site = $site['result'])) {
             return null;
@@ -156,7 +156,7 @@ class SiteService
      */
     public function get_sites(): Collection
     {
-        $zones = $this->dashboard_service->get_sites();
+        $zones = $this->cloudflare_service->get_sites();
         $sites = new Collection();
 
         foreach ($zones['result'] as $zone) {
@@ -173,6 +173,18 @@ class SiteService
     }
 
     /**
+     * Get DNS record.
+     *
+     * @param string $id Zone ID.
+     * @param string $name DNS record name.
+     * @return mixed|null
+     */
+    public function get_dns_record(string $id, string $name)
+    {
+        return $this->cloudflare_service->get_dns_record($id, $name);
+    }
+
+    /**
      * Delete a single DNS record by ID.
      *
      * @param string $id
@@ -181,7 +193,7 @@ class SiteService
      */
     public function delete_dns_record(string $id, string $dns_record_id): bool
     {
-        $response = $this->dashboard_service->delete_dns_record($id, $dns_record_id);
+        $response = $this->cloudflare_service->delete_dns_record($id, $dns_record_id);
 
         return empty($response['errors']);
     }
@@ -194,7 +206,7 @@ class SiteService
      */
     public function reset_dns_records(string $id): bool
     {
-        $records = $this->dashboard_service->get_dns_records($id);
+        $records = $this->cloudflare_service->get_dns_records($id);
         $status = true;
 
         foreach ($records['result'] as $record) {
@@ -217,7 +229,7 @@ class SiteService
      */
     public function delete_pagerule(string $id, string $pagerule_id): bool
     {
-        $response = $this->dashboard_service->delete_pagerule($id, $pagerule_id);
+        $response = $this->cloudflare_service->delete_pagerule($id, $pagerule_id);
 
         return empty($response['errors']);
     }
@@ -230,7 +242,7 @@ class SiteService
      */
     public function reset_pagerules(string $id): bool
     {
-        $records = $this->dashboard_service->get_pagerules($id);
+        $records = $this->cloudflare_service->get_pagerules($id);
         $status = true;
 
         foreach ($records['result'] as $pagerule) {
@@ -253,7 +265,7 @@ class SiteService
      */
     public function set_ssl(string $id, string $value): bool
     {
-        $response = $this->dashboard_service->set_ssl($id,
+        $response = $this->cloudflare_service->set_ssl($id,
             [
                 'value' => $value
             ]
@@ -271,7 +283,7 @@ class SiteService
      */
     public function set_pseudo_ip(string $id, string $value): bool
     {
-        $response = $this->dashboard_service->set_pseudo_ip($id,
+        $response = $this->cloudflare_service->set_pseudo_ip($id,
             [
                 'value' => $value
             ]
@@ -289,7 +301,7 @@ class SiteService
      */
     public function set_https(string $id, string $value): bool
     {
-        $response = $this->dashboard_service->set_https($id,
+        $response = $this->cloudflare_service->set_https($id,
             [
                 'value' => $value
             ]
@@ -307,7 +319,7 @@ class SiteService
      */
     public function add_dns_record(string $id, array $data): bool
     {
-        $response = $this->dashboard_service->add_dns_record($id,
+        $response = $this->cloudflare_service->add_dns_record($id,
             [
                 'type' => 'CNAME',
                 'name' => $data['name'],
@@ -329,7 +341,7 @@ class SiteService
      */
     public function update_dns_record(string $id, array $data): bool
     {
-        $response = $this->dashboard_service->update_dns_record($id, $data['name'],
+        $response = $this->cloudflare_service->update_dns_record($id, $data['name'],
             [
                 'content' => $data['content'],
             ]
@@ -347,7 +359,7 @@ class SiteService
      */
     public function add_pagerule(string $id, array $data): bool
     {
-        $response = $this->dashboard_service->add_pagerule($id,
+        $response = $this->cloudflare_service->add_pagerule($id,
             [
                 'status' => 'active',
                 'targets' => [
@@ -382,7 +394,7 @@ class SiteService
      */
     public function verify_nameservers(string $id): array
     {
-        $response = $this->dashboard_service->verify_nameservers($id);
+        $response = $this->cloudflare_service->verify_nameservers($id);
 
         return [
             'result' => $response,
@@ -398,7 +410,7 @@ class SiteService
      */
     public function get_pagerules(string $id): ?array
     {
-        $response = $this->dashboard_service->get_pagerules($id);
+        $response = $this->cloudflare_service->get_pagerules($id);
 
         if (!empty($response['errors'])) {
             return null;
@@ -417,7 +429,7 @@ class SiteService
      */
     public function update_pagerule(string $id, string $pagerule_id, array $data): bool
     {
-        $response = $this->dashboard_service->update_pagerule($id, $pagerule_id,
+        $response = $this->cloudflare_service->update_pagerule($id, $pagerule_id,
             [
                 'actions' => [
                     [

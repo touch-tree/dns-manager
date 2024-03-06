@@ -8,8 +8,6 @@ $(document).on('click', '[data-toggle="modal"]', function () {
             url: route,
             method: 'POST',
             success: function (data) {
-                console.log(data)
-
                 $('#modal-content-placeholder').html(data);
             },
             error: function (error) {

@@ -2,10 +2,6 @@
 
 use App\Domain\Site\Site;
 
-/**
- * @var Site $domain ;
- */
-
 ?>
 
 <!DOCTYPE html>
@@ -19,9 +15,11 @@ use App\Domain\Site\Site;
 
 <body>
 
+<?php echo view('partials.dependencies')->render(); ?>
+
 <div class="center-wrap">
     <div class="dashboard-container main-container">
-        <?php if (isset($domain)) { ?>
+        <?php if (isset($domain) && $domain instanceof Site) { ?>
             <div class="dashboard-header">
                 <h1 class="dashboard-header__header">Details for <?php echo $domain->name(); ?></h1>
                 <div class="button-menu">
@@ -34,7 +32,7 @@ use App\Domain\Site\Site;
                 </div>
             </div>
             <div class="dashboard-content">
-                <?php echo view(resource_path('views/domain/details_content.php'), ['domain' => $domain])->render(); ?>
+                <?php echo view(resource_path('views/domain/details.content.php'), ['domain' => $domain])->render(); ?>
             </div>
         <?php } ?>
     </div>

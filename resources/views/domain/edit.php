@@ -1,3 +1,9 @@
+<?php
+
+use App\Domain\Site\Site;
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,13 +15,13 @@
 
 <body>
 
-<?php echo view('partials.modal')->render(); ?>
+<?php echo view('partials.dependencies')->render(); ?>
 
 <div class="center-wrap">
     <div class="dashboard-container main-container">
-        <?php if (isset($domain)) { ?>
+        <?php if (isset($domain) && $domain instanceof Site) { ?>
             <div class="dashboard-header">
-                <h1 class="dashboard-header__header">Edit <?php echo $domain['name']; ?></h1>
+                <h1 class="dashboard-header__header">Edit <?php echo $domain->name(); ?></h1>
                 <div class="button-menu">
                     <a href="<?php echo route('dashboard'); ?>">
                         <button class="btn btn-outline-primary">
@@ -24,7 +30,7 @@
                         </button>
                     </a>
                     <button type="button" class="btn btn-secondary"
-                            data-api-route="<?php echo route('domain.details.modal', ['id' => $domain['id']]); ?>"
+                            data-api-route="<?php echo route('domain.details.modal', ['id' => $domain->id()]); ?>"
                             data-toggle="modal"
                             data-target="#modal-main">
                         Details
@@ -32,7 +38,7 @@
                 </div>
             </div>
             <div class="dashboard-content">
-                <form action="<?php echo route('domain.update', ['id' => $domain['id']]); ?>" method="post"
+                <form action="<?php echo route('domain.update', ['id' => $domain->id()]); ?>" method="post"
                       class="form js-form">
                     <div class="text-input-row">
                         <label for="root_cname_target" class="text-input-column">

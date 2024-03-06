@@ -31,6 +31,8 @@ class Request
 
     /**
      * Request constructor.
+     *
+     * @return void
      */
     public function __construct(Server $server)
     {

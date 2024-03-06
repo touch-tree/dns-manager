@@ -2,13 +2,9 @@
 
 use App\Domain\Site\Site;
 
-/**
- * @var Site $domain ;
- */
-
 ?>
 
-<?php if (isset($domain)) { ?>
+<?php if (isset($domain) && $domain instanceof Site) { ?>
     <div class="property">
         <label>ID:</label>
         <span><?php echo $domain->id(); ?></span>

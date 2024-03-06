@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Framework\Foundation\Http;
 use App\Framework\Http\HeaderBag;
 
-class DashboardService
+class CloudflareService
 {
     /**
      * Http instance.
@@ -15,7 +15,7 @@ class DashboardService
     private Http $http;
 
     /**
-     * DashboardService constructor.
+     * CloudflareService constructor.
      *
      * @return void
      */
@@ -51,7 +51,7 @@ class DashboardService
     }
 
     /**
-     * Update DNS record for a zone by id.
+     * Update DNS record for a zone by ID.
      *
      * @param string $id Zone ID.
      * @param string $name Record name.

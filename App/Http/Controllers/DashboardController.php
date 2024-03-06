@@ -8,19 +8,12 @@ use App\Framework\Foundation\View;
 use App\Framework\Http\RedirectResponse;
 use App\Http\Requests\CreateRequest;
 use App\Http\Requests\UpdateRequest;
-use App\Services\DashboardService;
+use App\Services\CloudflareService;
 use Exception;
 use function Sodium\add;
 
 class DashboardController
 {
-    /**
-     * DashboardService instance.
-     *
-     * @var DashboardService
-     */
-    private DashboardService $dashboard_service;
-
     /**
      * SiteService instance.
      *
@@ -33,9 +26,8 @@ class DashboardController
      *
      * @return void
      */
-    public function __construct(DashboardService $dashboard_service, SiteService $site_service)
+    public function __construct(SiteService $site_service)
     {
-        $this->dashboard_service = $dashboard_service;
         $this->site_service = $site_service;
     }
 
@@ -50,7 +42,7 @@ class DashboardController
 
         return view('dashboard.index')
             ->with('domains', $sites->all())
-            ->with('dashboard_service', $this->dashboard_service);
+            ->with('cloudflare_service', app(CloudflareService::class));
     }
 
     /**
@@ -61,17 +53,16 @@ class DashboardController
      */
     public function edit(string $id): View
     {
-        $zone = $this->dashboard_service->get_site($id);
-        $pagerules = $this->dashboard_service->get_pagerules($id);
+        $site = $this->site_service->get_site($id);
+        $pagerules = $this->site_service->get_pagerules($id);
 
-        // pagerule not always set for each domain fix this
-        // if pagerule not set then just don't display pagerule destination etc.
+        // pagerule not always set for each domain if pagerule not set then just don't display pagerule destination etc.
 
         return view('domain.edit')
-            ->with('domain', $zone['result'])
-            ->with('dns_root', $this->dashboard_service->get_dns_record($id, $zone['result']['name']))
-            ->with('dns_sub', $this->dashboard_service->get_dns_record($id, 'www.' . $zone['result']['name']))
-            ->with('pagerule_forwarding_url', $pagerules['result'][0]['actions'][0]['value']['url'] ?? '');
+            ->with('domain', $site)
+            ->with('dns_root', $this->site_service->get_dns_record($id, $site->name()))
+            ->with('dns_sub', $this->site_service->get_dns_record($id, 'www.' . $site->name()))
+            ->with('pagerule_forwarding_url', $pagerules[0]['actions'][0]['value']['url'] ?? '');
     }
 
     /**
@@ -160,10 +151,10 @@ class DashboardController
     {
         $domain = $this->site_service->get_site($id);
 
-        return view(resource_path('views/partials/modal_content.php'),
+        return view(resource_path('views/templates/modal.php'),
             [
                 'title' => 'Details for ' . $domain->name(),
-                'content' => view(resource_path('views/domain/details_content.php'), ['domain' => $domain])->render()
+                'content' => view(resource_path('views/domain/details.content.php'), ['domain' => $domain])->render()
             ]
         );
     }
