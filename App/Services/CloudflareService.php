@@ -3,9 +3,10 @@
 namespace App\Services;
 
 use App\Framework\Foundation\Http;
+use App\Framework\Foundation\ServiceProvider;
 use App\Framework\Http\HeaderBag;
 
-class CloudflareService
+class CloudflareService extends ServiceProvider
 {
     /**
      * Http instance.

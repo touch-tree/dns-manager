@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Site\SiteRepository;
 use App\Domain\Site\SiteService;
 use App\Framework\Foundation\ParameterBag;
 use App\Framework\Foundation\View;
@@ -22,13 +23,21 @@ class DashboardController
     private SiteService $site_service;
 
     /**
+     * SiteRepository instance.
+     *
+     * @var SiteRepository
+     */
+    private SiteRepository $site_repository;
+
+    /**
      * DashboardController constructor.
      *
      * @return void
      */
-    public function __construct(SiteService $site_service)
+    public function __construct(SiteService $site_service, SiteRepository $site_repository)
     {
         $this->site_service = $site_service;
+        $this->site_repository = $site_repository;
     }
 
     /**
@@ -38,7 +47,7 @@ class DashboardController
      */
     public function index(): View
     {
-        $sites = $this->site_service->get_sites();
+        $sites = $this->site_repository->sites();
 
         return view('dashboard.index')
             ->with('domains', $sites->all())
@@ -53,7 +62,7 @@ class DashboardController
      */
     public function edit(string $id): View
     {
-        $site = $this->site_service->get_site($id);
+        $site = $this->site_repository->get($id);
         $pagerules = $this->site_service->get_pagerules($id);
 
         // pagerule not always set for each domain if pagerule not set then just don't display pagerule destination etc.
@@ -80,7 +89,7 @@ class DashboardController
             return back();
         }
 
-        $site = $this->site_service->get_site($id);
+        $site = $this->site_repository->get($id);
 
         if (!$site) {
             return back()
@@ -136,7 +145,7 @@ class DashboardController
      */
     public function details(string $id): View
     {
-        $site = $this->site_service->get_site($id);
+        $site = $this->site_repository->get($id);
 
         return view('domain.details')->with('domain', $site);
     }
@@ -149,7 +158,7 @@ class DashboardController
      */
     public function details_modal(string $id): View
     {
-        $domain = $this->site_service->get_site($id);
+        $domain = $this->site_repository->get($id);
 
         return view(resource_path('views/templates/modal.php'),
             [
@@ -206,6 +215,8 @@ class DashboardController
         }
 
         $site = $response['result'];
+
+        $this->site_repository->save($site);
 
         if (!$this->site_service->set_ssl($site->id(), 'flexible')) {
             add_error('set_ssl', 'Unable to set SSL to flexible');

@@ -132,13 +132,17 @@ class Container
      * @param Closure|string|object $concrete The closure, class name, or instance.
      * @return void
      *
-     * @throws ReflectionException|Exception
+     * @throws Error
      */
     public static function singleton(string $abstract, $concrete): void
     {
         self::bind($abstract, $concrete);
 
-        self::$instances[$abstract] = self::resolve_instance($abstract);
+        try {
+            self::$instances[$abstract] = self::resolve_instance($abstract);
+        } catch (Exception $exception) {
+            throw new Error('Could not resolve this instance');
+        }
     }
 
     /**

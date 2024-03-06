@@ -2,24 +2,83 @@
 
 namespace App\Domain\Site;
 
-use App\Services\CloudflareService;
+use App\Framework\Support\Collection;
 
 class SiteRepository
 {
     /**
-     * CloudflareService instance.
+     * Sites.
      *
-     * @var CloudflareService
+     * @var Collection<Site>
      */
-    private CloudflareService $cloudflare_service;
+    private Collection $sites;
+
+    /**
+     * SiteService instance.
+     *
+     * @var SiteService
+     */
+    private SiteService $site_service;
 
     /**
      * SiteRepository constructor.
      *
-     * @param CloudflareService $cloudflare_service
+     * @param SiteService $site_service
      */
-    public function __construct(CloudflareService $cloudflare_service)
+    public function __construct(SiteService $site_service)
     {
-        $this->cloudflare_service = $cloudflare_service;
+        $this->site_service = $site_service;
+    }
+
+    /**
+     * Get sites.
+     *
+     * @return Collection
+     */
+    public function sites(): Collection
+    {
+        $session = session();
+
+        if (is_null($session->get('cache.sites'))) {
+            $session->put('cache.sites', $this->site_service->get_sites());
+        }
+
+        return $this->sites = $session->get('cache.sites');
+    }
+
+    /**
+     * Save a site.
+     *
+     * @param Site $site
+     * @return SiteRepository
+     */
+    public function save(Site $site): SiteRepository
+    {
+        $this->sites->set($site->id(), $site);
+
+        return $this;
+    }
+
+    /**
+     * Get a site.
+     *
+     * @param string $id Site ID.
+     * @return Site|null
+     */
+    public function get(string $id): ?Site
+    {
+        return $this->sites->get($id);
+    }
+
+    /**
+     * Removes every single site from this repository.
+     *
+     * @return $this
+     */
+    public function clear(): SiteRepository
+    {
+        $this->sites = new Collection();
+
+        return $this;
     }
 }
