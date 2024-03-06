@@ -20,7 +20,7 @@ class Session
      */
     public function flash(string $key, $value): Session
     {
-        $_SESSION[$key] = $value;
+        $this->put('flash.' . $key, $value);
 
         return $this;
     }

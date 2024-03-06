@@ -62,9 +62,10 @@ class DashboardService
     {
         $dns_record = $this->get_dns_record($id, $name);
 
-        if (is_null($dns_record)) {
+        if (!$dns_record) {
             return [
-                'success' => false
+                'result' => [],
+                'errors' => ['Unable to get DNS record to update.'],
             ];
         }
 

@@ -3,7 +3,7 @@
 namespace App\Framework\Http;
 
 /**
- * This class is responsible for wrapping up the object that is sent to a request in JSON format
+ * This class is responsible for wrapping up the object that is sent to a request in JSON format.
  *
  * @package App\Framework\Http
  */

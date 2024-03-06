@@ -3,7 +3,6 @@
 namespace App\Framework\Foundation;
 
 use App\Framework\Http\HeaderBag;
-use App\Framework\Support\Collection;
 
 /**
  * The Http class provides a simple interface for sending HTTP requests using cURL.

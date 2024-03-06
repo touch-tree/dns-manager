@@ -2,6 +2,7 @@
 
 namespace App\Framework\Http;
 
+use App\Framework\Foundation\ParameterBag;
 use App\Framework\Foundation\View;
 use App\Framework\Routing\Router;
 
@@ -26,16 +27,15 @@ class Kernel
     /**
      * Prepare response for request.
      *
-     * @param mixed $response The response to be prepared.
+     * @param View|RedirectResponse|JsonResponse|null $response The response to be prepared.
      * @param Request $request The HTTP request object.
      * @return void
      */
     private function prepare_response($response, Request $request): void
     {
-        // middleware should handle session request logic not prepare response lol, fix this
+        $session = $request->session();
 
         if ($response instanceof RedirectResponse) {
-            session()->forget('flash');
             $request->flash();
             $response->send();
         }
@@ -45,9 +45,12 @@ class Kernel
         }
 
         if ($response instanceof View) {
-            echo $response->render();
+            echo $response
+                ->with('form_errors', new ParameterBag($session->get('errors.form', [])))
+                ->with('errors', new ParameterBag($session->get('errors.errors', [])))
+                ->render();
         }
 
-        session()->forget(['flash', 'errors']);
+        $session->forget(['flash', 'errors']);
     }
 }

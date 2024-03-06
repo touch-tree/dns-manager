@@ -3,7 +3,8 @@
 namespace App\Framework\Routing;
 
 use App\Framework\Foundation\View;
-use App\Framework\Http\Redirect;
+use App\Framework\Http\JsonResponse;
+use App\Framework\Http\RedirectResponse;
 use App\Framework\Http\Request;
 use Error;
 use Exception;
@@ -124,7 +125,7 @@ class Router
      * Resolve the matching route and dispatch the associated controller action and parameters.
      *
      * @param Request $request The current request.
-     * @return array|Redirect|string|View|null True if a matching route was found and resolved, false otherwise.
+     * @return View|RedirectResponse|JsonResponse|null True if a matching route was found and resolved, false otherwise.
      */
     public static function dispatch(Request $request)
     {
@@ -148,7 +149,7 @@ class Router
      *
      * @param array $action An array containing the controller instance and method.
      * @param array $parameters Associative array of parameters.
-     * @return View|Redirect|array|string|null The result of invoking the controller method.
+     * @return View|RedirectResponse|JsonResponse|null The result of invoking the controller method.
      *
      * @throws Error
      * @throws ReflectionException
@@ -168,14 +169,11 @@ class Router
 
             if ($type->getName() == Request::class) {
                 $reflection_parameters[] = request();
-
                 continue;
             }
 
             if (is_subclass_of($type->getName(), Request::class)) {
-                $request = $type->getName();
-                $reflection_parameters[] = app($request);
-
+                $reflection_parameters[] = app($type->getName());
                 continue;
             }
 

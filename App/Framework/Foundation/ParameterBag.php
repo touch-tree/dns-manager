@@ -27,6 +27,16 @@ class ParameterBag
     }
 
     /**
+     * Check if there's any parameters set.
+     *
+     * @return bool
+     */
+    public function any(): bool
+    {
+        return !empty($this->parameters);
+    }
+
+    /**
      * Get all parameters.
      *
      * @return array An associative array of parameters.
@@ -53,10 +63,13 @@ class ParameterBag
      *
      * @param string $key The key of the parameter.
      * @param mixed $value The value of the parameter.
+     * @return ParameterBag
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): ParameterBag
     {
         $this->parameters[$key] = $value;
+
+        return $this;
     }
 
     /**

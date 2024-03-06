@@ -4,10 +4,8 @@ namespace App\Domain\Site;
 
 use App\Domain\Account\Account;
 use App\Domain\Plan\Plan;
-use App\Framework\Foundation\ParameterBag;
 use App\Framework\Support\Collection;
 use App\Services\DashboardService;
-use Exception;
 
 class SiteService
 {
@@ -104,11 +102,13 @@ class SiteService
      * Add a new site.
      *
      * @param array{name: string, account_id: string} $data
-     * @return array{response: Site|null, errors: array}
+     * @return array{result: Site|null, errors: array}
      */
     public function add_site(array $data): array
     {
-        $site = $this->dashboard_service->add_site(
+        $site = null;
+
+        $response = $this->dashboard_service->add_site(
             [
                 'name' => $data['name'],
                 'type' => 'full',
@@ -122,8 +122,12 @@ class SiteService
             ]
         );
 
+        if (!empty($response['result'])) {
+            $site = $this->make_site($response['result']);;
+        }
+
         return [
-            'response' => $site['errors'] ? null : $this->make_site($site['result']),
+            'result' => $site,
             'errors' => $site['errors'],
         ];
     }
@@ -179,7 +183,7 @@ class SiteService
     {
         $response = $this->dashboard_service->delete_dns_record($id, $dns_record_id);
 
-        return empty($response['error']);
+        return empty($response['errors']);
     }
 
     /**
@@ -215,7 +219,7 @@ class SiteService
     {
         $response = $this->dashboard_service->delete_pagerule($id, $pagerule_id);
 
-        return empty($response['error']);
+        return empty($response['errors']);
     }
 
     /**
@@ -231,6 +235,223 @@ class SiteService
 
         foreach ($records['result'] as $pagerule) {
             $response = $this->delete_pagerule($id, $pagerule['id']);
+
+            if (!$response) {
+                $status = false;
+            }
+        }
+
+        return $status;
+    }
+
+    /**
+     * Set SSL.
+     *
+     * @param string $id Zone ID.
+     * @param string $value
+     * @return bool
+     */
+    public function set_ssl(string $id, string $value): bool
+    {
+        $response = $this->dashboard_service->set_ssl($id,
+            [
+                'value' => $value
+            ]
+        );
+
+        return empty($response['errors']);
+    }
+
+    /**
+     * Set pseudo IP.
+     *
+     * @param string $id Zone ID.
+     * @param string $value
+     * @return bool
+     */
+    public function set_pseudo_ip(string $id, string $value): bool
+    {
+        $response = $this->dashboard_service->set_pseudo_ip($id,
+            [
+                'value' => $value
+            ]
+        );
+
+        return empty($response['errors']);
+    }
+
+    /**
+     * Set HTTPS.
+     *
+     * @param string $id Zone ID.
+     * @param string $value
+     * @return bool
+     */
+    public function set_https(string $id, string $value): bool
+    {
+        $response = $this->dashboard_service->set_https($id,
+            [
+                'value' => $value
+            ]
+        );
+
+        return empty($response['errors']);
+    }
+
+    /**
+     * Add DNS record.
+     *
+     * @param string $id Zone ID.
+     * @param array{content: string, name: string} $data
+     * @return bool
+     */
+    public function add_dns_record(string $id, array $data): bool
+    {
+        $response = $this->dashboard_service->add_dns_record($id,
+            [
+                'type' => 'CNAME',
+                'name' => $data['name'],
+                'content' => $data['content'],
+                'proxied' => true,
+                'ttl' => 1,
+            ]
+        );
+
+        return empty($response['errors']);
+    }
+
+    /**
+     * Update DNS record.
+     *
+     * @param string $id Zone ID.
+     * @param array{content: string, name: string} $data
+     * @return bool
+     */
+    public function update_dns_record(string $id, array $data): bool
+    {
+        $response = $this->dashboard_service->update_dns_record($id, $data['name'],
+            [
+                'content' => $data['content'],
+            ]
+        );
+
+        return empty($response['errors']);
+    }
+
+    /**
+     * Add pagerule.
+     *
+     * @param string $id Zone ID.
+     * @param array{url: string, forwarding_url: string} $data
+     * @return bool
+     */
+    public function add_pagerule(string $id, array $data): bool
+    {
+        $response = $this->dashboard_service->add_pagerule($id,
+            [
+                'status' => 'active',
+                'targets' => [
+                    [
+                        'target' => 'url',
+                        'constraint' => [
+                            'operator' => 'matches',
+                            'value' => $data['url'],
+                        ],
+                    ],
+                ],
+                'actions' => [
+                    [
+                        'id' => 'forwarding_url',
+                        'value' => [
+                            'url' => $data['forwarding_url'],
+                            'status_code' => 301,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        return empty($response['errors']);
+    }
+
+    /**
+     * Verify nameservers.
+     *
+     * @param string $id Zone ID.
+     * @return array{result: array, errors: array}
+     */
+    public function verify_nameservers(string $id): array
+    {
+        $response = $this->dashboard_service->verify_nameservers($id);
+
+        return [
+            'result' => $response,
+            'errors' => $response['errors'],
+        ];
+    }
+
+    /**
+     * Get pagerules.
+     *
+     * @param string $id Zone ID.
+     * @return array|null
+     */
+    public function get_pagerules(string $id): ?array
+    {
+        $response = $this->dashboard_service->get_pagerules($id);
+
+        if (!empty($response['errors'])) {
+            return null;
+        };
+
+        return $response['result'];
+    }
+
+    /**
+     * Update a pagerule.
+     *
+     * @param string $id Zone ID.
+     * @param string $pagerule_id
+     * @param array{forwarding_url: string} $data
+     * @return bool
+     */
+    public function update_pagerule(string $id, string $pagerule_id, array $data): bool
+    {
+        $response = $this->dashboard_service->update_pagerule($id, $pagerule_id,
+            [
+                'actions' => [
+                    [
+                        'id' => 'forwarding_url',
+                        'value' => [
+                            'url' => $data['forwarding_url'],
+                            'status_code' => 301,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        return empty($response['errors']);
+    }
+
+    /**
+     * Update pagerules.
+     *
+     * @param string $id Zone ID.
+     * @poram string $value
+     * @return bool Returns false whenever a single DNS record is unable to be deleted.
+     */
+    public function update_pagerules_forwarding_url(string $id, string $value): bool
+    {
+        $pagerules = $this->get_pagerules($id);
+        $status = true;
+
+        foreach ($pagerules as $pagerule) {
+            $response = $this->update_pagerule($id, $pagerule['id'],
+                [
+                    'forwarding_url' => $value,
+                ]
+            );
 
             if (!$response) {
                 $status = false;

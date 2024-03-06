@@ -14,7 +14,7 @@ class CreateRequest extends FormRequest
             'sub_cname_target' => 'required',
             'pagerule_url' => 'required',
             'pagerule_full_url' => 'required',
-            'pagerule_destination_url' => 'required',
+            'pagerule_forwarding_url' => 'required',
         ];
     }
 }

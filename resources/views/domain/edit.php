@@ -54,13 +54,13 @@
                         </label>
                     </div>
 
-                    <label for="pagerule_destination_url" class="text-input-column">
+                    <label for="pagerule_forwarding_url" class="text-input-column">
                         PAGERULE destination URL:
-                        <input type="text" name="pagerule_destination_url" id="pagerule_destination_url"
+                        <input type="text" name="pagerule_forwarding_url" id="pagerule_forwarding_url"
                                placeholder="For example: https://other.domain.sub.com/"
-                               value="<?php echo $pagerule_destination_url ?? ''; ?>">
-                        <?php if (error('pagerule_destination_url')) { ?>
-                            <span class="validation-text error"><?php echo error('pagerule_destination_url') ?></span>
+                               value="<?php echo $pagerule_forwarding_url ?? ''; ?>">
+                        <?php if (error('pagerule_forwarding_url')) { ?>
+                            <span class="validation-text error"><?php echo error('pagerule_forwarding_url') ?></span>
                         <?php } ?>
                     </label>
 

@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Site\Site;
 use App\Domain\Site\SiteService;
-use App\Framework\App;
 use App\Framework\Foundation\ParameterBag;
 use App\Framework\Foundation\View;
-use App\Framework\Http\HeaderBag;
 use App\Framework\Http\RedirectResponse;
 use App\Http\Requests\CreateRequest;
 use App\Http\Requests\UpdateRequest;
 use App\Services\DashboardService;
 use Exception;
-use http\Header;
+use function Sodium\add;
 
 class DashboardController
 {
@@ -43,7 +40,7 @@ class DashboardController
     }
 
     /**
-     * Default view
+     * Default view.
      *
      * @return View
      */
@@ -57,7 +54,7 @@ class DashboardController
     }
 
     /**
-     * Edit domain view
+     * Edit domain view.
      *
      * @param string $id
      * @return View
@@ -74,11 +71,11 @@ class DashboardController
             ->with('domain', $zone['result'])
             ->with('dns_root', $this->dashboard_service->get_dns_record($id, $zone['result']['name']))
             ->with('dns_sub', $this->dashboard_service->get_dns_record($id, 'www.' . $zone['result']['name']))
-            ->with('pagerule_destination_url', $pagerules['result'][0]['actions'][0]['value']['url'] ?? '');
+            ->with('pagerule_forwarding_url', $pagerules['result'][0]['actions'][0]['value']['url'] ?? '');
     }
 
     /**
-     * Update domain action
+     * Update domain action.
      *
      * @param UpdateRequest $request
      * @param string $id
@@ -88,74 +85,49 @@ class DashboardController
      */
     public function update(UpdateRequest $request, string $id): RedirectResponse
     {
-        if ($request->validate()->errors()) {
+        if ($request->validate()->errors()->any()) {
             return back();
         }
 
-        $zone = $this->site_service->get_site($id);
+        $site = $this->site_service->get_site($id);
 
-        if (is_null($zone)) {
+        if (!$site) {
             return back()
                 ->with('message_header', 'Unable to resolve site option')
                 ->with('message_content', 'No zone found with given id')
                 ->with('message_type', 'error');
         }
 
-        // instead of using warning array, use error session and report all errors if not fetched manually to glob in view
-        // errors()->any() etc.
-
-        $warnings = [];
-
-        // update dns records
-
-        $dns_root = $this->dashboard_service->update_dns_record($id, $zone->name(),
+        $root_dns = $this->site_service->update_dns_record($site->id(),
             [
+                'name' => $site->name(),
                 'content' => $request->input('root_cname_target'),
             ]
         );
 
-        if (!$dns_root['success']) {
-            $warnings[] = 'Unable to update CNAME ROOT';
+        if (!$root_dns) {
+            add_error('update_root_dns_record', 'Unable to update root DNS record');
         }
 
-        $sub_root = $this->dashboard_service->update_dns_record($id, 'www.' . $zone->name(),
+        $sub_dns = $this->site_service->update_dns_record($site->id(),
             [
+                'name' => 'www.' . $site->name(),
                 'content' => $request->input('sub_cname_target'),
             ]
         );
 
-        if (!$sub_root['success']) {
-            $warnings[] = 'Unable to update CNAME SUB';
+        if (!$sub_dns) {
+            add_error('update_sub_dns_record', 'Unable to update sub DNS record');
         }
 
-        // update pagerules
-
-        $pagerules = $this->dashboard_service->get_pagerules($id);
-
-        foreach ($pagerules['result'] as $pagerule) {
-            $pagerule_response = $this->dashboard_service->update_pagerule($id, $pagerule['id'],
-                [
-                    'actions' => [
-                        [
-                            'id' => 'forwarding_url',
-                            'value' => [
-                                'url' => $request->input('pagerule_destination_url'),
-                                'status_code' => 301,
-                            ],
-                        ],
-                    ],
-                ]
-            );
-
-            if (!$pagerule_response['success']) {
-                $warnings[] = 'Unable to update pagerule record with id: ' . $pagerule['id'];
-            }
+        if ($this->site_service->update_pagerules_forwarding_url($site->id(), $request->input('pagerule_forwarding_url'))) {
+            add_error('update_pagerules_forwarding_url', 'Unable to update forwarding URL for every pagerule.');
         }
 
-        if (count($warnings)) {
+        if (retrieve_error_bag()->any()) {
             return back()
                 ->with('message_header', 'Problems with updating site')
-                ->with('message_content', 'Failed update requests: ' . join(', ', $warnings))
+                ->with('message_content', 'Failed update request.')
                 ->with('message_type', 'error');
         }
 
@@ -166,7 +138,7 @@ class DashboardController
     }
 
     /**
-     * Details domain view
+     * Details domain view.
      *
      * @param string $id
      * @return View
@@ -179,7 +151,7 @@ class DashboardController
     }
 
     /**
-     * Details domain modal
+     * Details domain modal.
      *
      * @param string $id
      * @return View
@@ -197,7 +169,7 @@ class DashboardController
     }
 
     /**
-     * Add domain view
+     * Add domain view.
      *
      * @return View
      */
@@ -207,28 +179,28 @@ class DashboardController
     }
 
     /**
-     * Create domain action
+     * Create domain action.
      *
-     * @param CreateRequest $request Form request
+     * @param CreateRequest $request Form request.
      * @return RedirectResponse
      *
      * @throws Exception
      */
     public function create(CreateRequest $request): RedirectResponse
     {
-        if ($request->validate()->errors()) {
+        if ($request->validate()->errors()->any()) {
             return back();
         }
 
-        $site = $this->site_service->add_site(
+        $response = $this->site_service->add_site(
             [
                 'name' => $request->input('domain'),
                 'account_id' => config('api_client_id')
             ]
         );
 
-        if ($site['errors']) {
-            if (find_object_by_properties($site['errors'], ['code' => '1061'])) {
+        if (!empty($response['errors'])) {
+            if (find_object_by_properties($response['errors'], ['code' => '1061'])) {
                 return back()->with_errors(
                     [
                         'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
@@ -242,131 +214,96 @@ class DashboardController
                 ->with('message_type', 'error');
         }
 
-        $site = $site['response'];
-        $id = $site->id();
+        $site = $response['result'];
 
-        $this->dashboard_service->set_ssl($id,
+        if (!$this->site_service->set_ssl($site->id(), 'flexible')) {
+            add_error('set_ssl', 'Unable to set SSL to flexible');
+        }
+
+        if (!$this->site_service->set_pseudo_ip($site->id(), 'overwrite_header')) {
+            add_error('set_pseudo_ip', 'Unable to set pseudo IP to overwrite header');
+        };
+
+        if (!$this->site_service->set_https($site->id(), 'on')) {
+            add_error('set_https', 'Unable to turn on HTTPS');
+        }
+
+        if (!$this->site_service->reset_dns_records($site->id())) {
+            add_error('reset_dns_records', 'Encountered some issues resetting DNS records due to being unable to delete some DNS records');
+        }
+
+        $root_dns = $this->site_service->add_dns_record($site->id(),
             [
-                'value' => 'flexible'
-            ]
-        );
-
-        $this->dashboard_service->set_pseudo_ip($id,
-            [
-                'value' => 'overwrite_header'
-            ]
-        );
-
-        $this->dashboard_service->set_https($id,
-            [
-                'value' => 'on'
-            ]
-        );
-
-        $this->site_service->reset_dns_records($id);
-
-        $this->dashboard_service->add_dns_record($id,
-            [
-                'type' => 'CNAME',
                 'name' => '@',
                 'content' => $request->input('root_cname_target'),
-                'proxied' => true,
-                'ttl' => 1,
             ]
         );
 
-        $this->dashboard_service->add_dns_record($id,
+        if (!$root_dns) {
+            add_error('add_root_dns_record', 'Unable to add root DNS record');
+        }
+
+        $sub_dns = $this->site_service->add_dns_record($site->id(),
             [
-                'type' => 'CNAME',
                 'name' => 'www',
                 'content' => $request->input('sub_cname_target'),
-                'proxied' => true,
-                'ttl' => 1,
             ]
         );
 
-        $this->site_service->reset_pagerules($id);
-
-        $pagerule_url = $this->dashboard_service->add_pagerule($id,
-            [
-                'status' => 'active',
-                'targets' => [
-                    [
-                        'target' => 'url',
-                        'constraint' => [
-                            'operator' => 'matches',
-                            'value' => $request->input('pagerule_url'),
-                        ],
-                    ],
-                ],
-                'actions' => [
-                    [
-                        'id' => 'forwarding_url',
-                        'value' => [
-                            'url' => $request->input('pagerule_destination_url'),
-                            'status_code' => 301,
-                        ],
-                    ],
-                ],
-            ]
-        );
-
-        if (!$pagerule_url['success']) {
-            $warnings[] = 'Unable to set value for PAGERULE URL';
+        if (!$sub_dns) {
+            add_error('add_sub_dns_record', 'Unable to add sub DNS record');
         }
 
-        $pagerule_full_url = $this->dashboard_service->add_pagerule($id,
+        if (!$this->site_service->reset_pagerules($site->id())) {
+            add_error('reset_pagerules', 'Encountered some issues resetting pagerules due to being unable to delete some pagerules');
+        }
+
+        $pagerule = $this->site_service->add_pagerule($site->id(),
             [
-                'status' => 'active',
-                'targets' => [
-                    [
-                        'target' => 'url',
-                        'constraint' => [
-                            'operator' => 'matches',
-                            'value' => $request->input('pagerule_full_url'),
-                        ],
-                    ],
-                ],
-                'actions' => [
-                    [
-                        'id' => 'forwarding_url',
-                        'value' => [
-                            'url' => $request->input('pagerule_destination_url'),
-                            'status_code' => 301,
-                        ],
-                    ],
-                ],
+                'url' => $request->input('pagerule_url'),
+                'forwarding_url' => $request->input('pagerule_forwarding_url')
             ]
         );
 
-        if (!$pagerule_full_url['success']) {
-            $warnings[] = 'Unable to set value for PAGERULE FULL URL';
+        if (!$pagerule) {
+            add_error('pagerule', 'Unable to add pagerule URL');
         }
 
-        if (count($warnings)) {
+        $pagerule_full = $this->site_service->add_pagerule($site->id(),
+            [
+                'url' => $request->input('pagerule_full_url'),
+                'forwarding_url' => $request->input('pagerule_forwarding_url')
+            ]
+        );
+
+        if (!$pagerule_full) {
+            add_error('pagerule', 'Unable to add full pagerule URL');
+        }
+
+        if (retrieve_error_bag()->any()) {
             return back()
                 ->with('message_header', 'Encountered issues with site setup')
-                ->with('message_content', 'Site is added, but setup encountered some issues: ' . join(', ', $warnings))
+                ->with('message_content', 'Site is added, but setup encountered some issues.')
                 ->with('message_type', 'error');
         }
 
         return back()
             ->with('message_header', 'Added site')
-            ->with('message_content', 'Site added and setup is done')
+            ->with('message_content', 'Site added and setup is done.')
             ->with('message_type', 'success');
     }
 
     /**
-     * Verify nameservers domain action
+     * Verify nameservers domain action.
      *
      * @param string $id
      * @return RedirectResponse
      */
     public function verify_nameservers(string $id): RedirectResponse
     {
-        $response = $this->dashboard_service->verify_nameservers($id);
+        $response = $this->site_service->verify_nameservers($id);
 
-        if (!$response['success']) {
+        if (!empty($response['errors'])) {
             if (find_object_by_properties($response['errors'], ['code' => '1224'])) {
                 return back()
                     ->with('message_header', 'Unable to check nameservers')

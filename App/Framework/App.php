@@ -3,7 +3,6 @@
 namespace App\Framework;
 
 use App\Framework\Foundation\Container;
-use App\Framework\Http\HeaderBag;
 
 class App
 {

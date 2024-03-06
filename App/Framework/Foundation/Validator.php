@@ -28,9 +28,9 @@ class Validator
     /**
      * The array to store validation errors.
      *
-     * @var array
+     * @var ParameterBag
      */
-    protected array $errors = [];
+    protected ParameterBag $errors;
 
     /**
      * Validator constructor.
@@ -42,6 +42,8 @@ class Validator
     {
         $this->data = $data;
         $this->rules = $rules;
+
+        $this->errors = new ParameterBag();
     }
 
     /**
@@ -57,7 +59,7 @@ class Validator
             array_map(fn($rule) => $this->apply_rule($field, $rule), explode('|', $rules));
         }
 
-        return empty($this->errors);
+        return empty($this->errors->all());
     }
 
     /**
@@ -106,21 +108,17 @@ class Validator
      */
     protected function add_error(string $field, string $rule)
     {
-        if (!isset($this->errors[$field])) {
-            $this->errors[$field] = [];
-        }
-
-        $this->errors[$field][] = $rule;
+        $this->errors->set($field, $this->errors->get($field, [$rule]));
     }
 
     /**
-     * Retrieves the array of validation errors.
+     * Retrieves the errors.
      *
-     * @return array|null The array of validation errors, or null if no errors exist.
+     * @return ParameterBag
      */
-    public function errors(): ?array
+    public function errors(): ParameterBag
     {
-        return empty($this->errors) ? null : $this->errors;
+        return $this->errors;
     }
 
     /**

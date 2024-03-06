@@ -139,7 +139,7 @@ class Request
      */
     public function flash(): Session
     {
-        return $this->session()->flash('flash', $_POST);
+        return $this->session()->flash('form', $_POST);
     }
 
     /**

@@ -14,6 +14,7 @@
 use App\Framework\App;
 use App\Framework\Foundation\Config;
 use App\Framework\Foundation\Container;
+use App\Framework\Foundation\ParameterBag;
 use App\Framework\Foundation\Session;
 use App\Framework\Foundation\View;
 use App\Framework\Http\HeaderBag;
@@ -109,7 +110,7 @@ function session(string $key = null, $value = null)
  */
 function error(string $key): ?string
 {
-    $array = (array)session()->get('errors.form.' . $key);
+    $array = (array)session()->get('errors.form.' . $key, []);
 
     return reset($array) ?? null;
 }
@@ -265,7 +266,7 @@ function base_path(?string $path = null): string
  */
 function base_url(): string
 {
-    return ($_SERVER['REQUEST_SCHEME'] ?? 'Http') . PATH_SEPARATOR . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . DIRECTORY_SEPARATOR;
+    return ($_SERVER['REQUEST_SCHEME'] ?? 'http') . PATH_SEPARATOR . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . DIRECTORY_SEPARATOR;
 }
 
 /**
@@ -276,6 +277,8 @@ function base_url(): string
  * for `redirect()->back()`.
  *
  * @return RedirectResponse
+ *
+ * @see Redirect::back()
  */
 function back(): RedirectResponse
 {
@@ -322,4 +325,34 @@ function find_object_by_properties(array $array, array $search): ?array
     }
 
     return null;
+}
+
+/**
+ * Add an error message to the 'errors' session.
+ *
+ * These errors are accessible in the next request and in views through the 'errors' variable.
+ * Errors added through this function are distinct from form validation errors and won't be accessed via the 'error' function in views.
+ *
+ * @param string $key The key associated with the custom error.
+ * @param string $value The custom error message to be added.
+ * @return void
+ *
+ * @see error()
+ */
+function add_error(string $key, string $value): void
+{
+    session()->put('errors.errors', array_merge(session()->get('errors.errors', []), [$key => $value]));
+}
+
+/**
+ * Get errors from 'errors' session.
+ *
+ * @return ParameterBag
+ *
+ * @see add_error()
+ * @see error()
+ */
+function retrieve_error_bag(): ParameterBag
+{
+    return new ParameterBag(session()->get('errors.errors', []));
 }

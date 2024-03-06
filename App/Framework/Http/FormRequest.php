@@ -41,11 +41,11 @@ class FormRequest extends Request
         $validator = parent::validate(empty($rules) ? $this->rules() : []);
         $errors = $validator->errors();
 
-        if (is_null($errors)) {
+        if (!$errors->any()) {
             session()->forget(['errors', 'flash']);
         }
 
-        session()->put('errors.form', $errors);
+        session()->put('errors.form', $errors->all());
 
         return $validator;
     }
