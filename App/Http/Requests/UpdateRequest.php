@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Framework\Http\FormRequest;
+use Framework\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
 {

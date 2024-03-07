@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Framework\Foundation\Http;
-use App\Framework\Foundation\ServiceProvider;
-use App\Framework\Http\HeaderBag;
+use Framework\Foundation\Http;
+use Framework\Foundation\ServiceProvider;
+use Framework\Http\HeaderBag;
 
 class CloudflareService extends ServiceProvider
 {
@@ -225,12 +225,12 @@ class CloudflareService extends ServiceProvider
     }
 
     /**
-     * Verify nameservers for a zone.
+     * Check nameservers for a zone.
      *
      * @param string $id Zone ID.
      * @return array
      */
-    public function verify_nameservers(string $id): array
+    public function check_nameservers(string $id): array
     {
         return $this->http->put(config('api_url') . '/zones/' . $id . '/activation_check')->json();
     }

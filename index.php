@@ -12,30 +12,18 @@
 |--------------------------------------------------------------------------
 */
 
-use App\Framework\App;
-use App\Framework\Foundation\Config;
-use App\Framework\Foundation\Container;
-use App\Framework\Foundation\Session;
-use App\Framework\Http\Kernel;
-use App\Services\AppService;
-use App\Services\CloudflareService;
+use Framework\Foundation\App;
+use Framework\Foundation\Config;
+use Framework\Foundation\Container;
+use Framework\Foundation\Session;
+use Framework\Http\Kernel;
 
 require_once 'autoload.php';
-require_once 'helpers.php';
+require_once 'Framework/helpers.php';
 require_once 'routes/web.php';
 
 Session::start();
-Config::resolve(base_path('/config/app.php'));
 
-Container::singleton(App::class, function () {
-    return new App(new Container());
-});
-
-app()->register(
-    [
-        CloudflareService::class,
-        AppService::class
-    ]
-);
+Config::set('directory', __DIR__)::resolve(__DIR__ . '/config/app.php');
 
 app(Kernel::class)->handle(request());

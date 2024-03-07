@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Site\SiteRepository;
-use App\Domain\Site\SiteService;
-use App\Framework\Foundation\ParameterBag;
-use App\Framework\Foundation\View;
-use App\Framework\Http\RedirectResponse;
 use App\Http\Requests\CreateRequest;
 use App\Http\Requests\UpdateRequest;
+use App\Repositories\SiteRepository;
 use App\Services\CloudflareService;
+use App\Services\SiteService;
 use Exception;
-use function Sodium\add;
+use Framework\Foundation\View;
+use Framework\Http\RedirectResponse;
 
 class DashboardController
 {
@@ -47,7 +45,7 @@ class DashboardController
      */
     public function index(): View
     {
-        $sites = $this->site_repository->sites();
+        $sites = $this->site_repository->all();
 
         return view('dashboard.index')
             ->with('domains', $sites->all())
@@ -296,14 +294,14 @@ class DashboardController
     }
 
     /**
-     * Verify nameservers domain action.
+     * Check nameservers domain action.
      *
      * @param string $id
      * @return RedirectResponse
      */
-    public function verify_nameservers(string $id): RedirectResponse
+    public function check_nameservers(string $id): RedirectResponse
     {
-        $response = $this->site_service->verify_nameservers($id);
+        $response = $this->site_service->check_nameservers($id);
 
         if (!empty($response['errors'])) {
             if (find_object_by_properties($response['errors'], ['code' => '1224'])) {

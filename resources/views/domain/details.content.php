@@ -1,6 +1,6 @@
 <?php
 
-use App\Domain\Site\Site;
+use App\Models\Site;
 
 ?>
 

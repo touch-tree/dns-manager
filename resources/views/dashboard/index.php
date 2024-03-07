@@ -1,7 +1,6 @@
 <?php
 
-use App\Domain\Site\Site;
-use App\Services\CloudflareService;
+use App\Models\Site;
 
 ?>
 
@@ -43,7 +42,6 @@ use App\Services\CloudflareService;
                 <tr>
                     <th>Domain</th>
                     <th>Owner</th>
-                    <th>CNAME</th>
                     <th>Nameservers</th>
                     <th>Status</th>
                     <th>Created On</th>
@@ -62,15 +60,6 @@ use App\Services\CloudflareService;
                                     </a>
                                 </td>
                                 <td class="owner"><?php echo strtolower($domain->account()->name()); ?></td>
-                                <td>
-                                    <?php
-                                    if (isset($cloudflare_service) && $cloudflare_service instanceof CloudflareService) {
-                                        foreach ($cloudflare_service->get_dns_records($domain->id())['result'] as $dns_record) {
-                                            echo $dns_record['name'] . '<br>';
-                                        }
-                                    }
-                                    ?>
-                                </td>
                                 <td class="name-server">
                                     <?php
                                     foreach ($domain->nameservers() as $name_server) {
@@ -89,7 +78,7 @@ use App\Services\CloudflareService;
                                 <td class="options-action">
                                     <div class="options-action__container">
                                         <?php if (strtolower($status) === 'pending') { ?>
-                                            <a href="<?php echo route('nameservers.verify', ['id' => $domain->id()]); ?>">
+                                            <a href="<?php echo route('nameservers.check', ['id' => $domain->id()]); ?>">
                                                 <button class="btn btn-outline-primary btn-activation-check">
                                                     <i class="fa-solid fa-check" aria-hidden="true"></i>
                                                     Check nameservers

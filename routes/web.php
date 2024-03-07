@@ -12,14 +12,14 @@
 |--------------------------------------------------------------------------
 */
 
-use App\Framework\Routing\Router;
 use App\Http\Controllers\DashboardController;
+use Framework\Routing\Router;
 
 Router::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Router::get('/domain/add', [DashboardController::class, 'add'])->name('domain.add');
 Router::get('/domain/details/{id}', [DashboardController::class, 'details'])->name('domain.details');
 Router::get('/domain/edit/{id}', [DashboardController::class, 'edit'])->name('domain.edit');
-Router::get('/domain/{id}/nameservers/verify', [DashboardController::class, 'verify_nameservers'])->name('nameservers.verify');
+Router::get('/domain/{id}/nameservers/check', [DashboardController::class, 'check_nameservers'])->name('nameservers.check');
 
 Router::post('/domain/edit/{id}', [DashboardController::class, 'update'])->name('domain.update');
 Router::post('/domain/create/{id}', [DashboardController::class, 'create'])->name('domain.create');
