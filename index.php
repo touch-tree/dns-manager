@@ -21,6 +21,7 @@ require_once 'Framework/helpers.php';
 require_once 'routes/web.php';
 
 Session::start();
+
 Config::resolve(__DIR__ . '/config/app.php');
 
 app(Kernel::class)->handle(request());

@@ -15,42 +15,80 @@ use Framework\Routing\Router;
 class Kernel
 {
     /**
-     * Handle request.
+     * Router instance.
      *
-     * @param Request $request The incoming HTTP request to be handled.
+     * @var Router
      */
-    public function handle(Request $request)
+    protected Router $router;
+
+    /**
+     * Kernel constructor.
+     *
+     * @param Router $router
+     */
+    public function __construct(Router $router)
     {
-        $this->prepare_response(app(Router::class)::dispatch($request), $request);
+        $this->router = $router;
     }
 
     /**
-     * Prepare response for request.
+     * Handle HTTP request.
      *
-     * @param View|RedirectResponse|JsonResponse|null $response The response to be prepared.
-     * @param Request $request The HTTP request object.
-     * @return void
+     * @param Request $request The incoming HTTP request to be handled.
+     * @return Response|null
      */
-    private function prepare_response($response, Request $request): void
+    public function handle(Request $request): ?Response
     {
-        $session = $request->session();
+        $response = $this->prepare_response($request, $this->router::dispatch($request));
 
-        if ($response instanceof RedirectResponse) {
-            $request->flash();
-            $response->send();
-        }
-
-        if ($response instanceof JsonResponse) {
+        if (is_a($response, Response::class)) {
             echo $response->send();
         }
 
-        if ($response instanceof View) {
-            echo $response
-                ->with('form_errors', new ParameterBag($session->get('errors.form', [])))
-                ->with('errors', new ParameterBag($session->get('errors.errors', [])))
-                ->render();
+        $this->terminate($request, $response);
+
+        return $response;
+    }
+
+    /**
+     * Perform any final actions for the request lifecycle.
+     *
+     * @param Request $request The HTTP request object.
+     * @return void
+     */
+    protected function terminate(Request $request, $response)
+    {
+        $request->session()->forget(
+            [
+                'flash',
+                'errors'
+            ]
+        );
+    }
+
+    /**
+     * Prepare a response for the request.
+     *
+     * @param Request $request The HTTP request object.
+     * @param View|RedirectResponse|JsonResponse|null $response The response to be prepared.
+     * @return Response|null
+     */
+    private function prepare_response(Request $request, $response): ?Response
+    {
+        if ($response instanceof RedirectResponse) {
+            $request->flash();
+
+            return null;
         }
 
-        $session->forget(['flash', 'errors']);
+        if ($response instanceof JsonResponse) {
+            return $response;
+        }
+
+        if ($response instanceof View) {
+            return new Response($response->render(), 200, $response->get_headers());
+        }
+
+        return new Response(view('errors.404')->render(), 404, new HeaderBag());
     }
 }

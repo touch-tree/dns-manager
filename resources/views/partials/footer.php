@@ -17,5 +17,4 @@
 <script src="<?php echo asset('js/notification.js'); ?>"></script>
 <script src="<?php echo asset('js/popup.js'); ?>"></script>
 <script src="<?php echo asset('js/datatable.js'); ?>"></script>
-<script src="<?php echo asset('js/app.js'); ?>"></script>
 

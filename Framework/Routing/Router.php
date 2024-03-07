@@ -139,7 +139,7 @@ class Router
             [$class, $method] = $route->action();
 
             return self::resolve_controller([app($class), $method], self::get_parameters($route->uri(), $request->request_uri()));
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             return null;
         }
     }
