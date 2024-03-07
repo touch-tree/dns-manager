@@ -250,17 +250,13 @@ function app(string $class_name = null)
  */
 function base_path(string $path = null): string
 {
-    $_path = config('directory');
-
-    if (!$_path) {
-        throw new Error('Unable to resolve path since directory is not set in the application configuration');
-    }
+    $directory = dirname(__DIR__);
 
     if ($path) {
-        $_path .= DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR);
+        $directory .= DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR);
     }
 
-    return $_path;
+    return $directory;
 }
 
 /**
@@ -283,6 +279,7 @@ function base_url(): string
  * @return RedirectResponse
  *
  * @see Redirect::back()
+ * @see redirect()
  */
 function back(): RedirectResponse
 {
@@ -298,7 +295,7 @@ function back(): RedirectResponse
  */
 function url(?string $path): string
 {
-    return helpers . phpbase_url() . ltrim($path, DIRECTORY_SEPARATOR);
+    return base_url() . ltrim($path, DIRECTORY_SEPARATOR);
 }
 
 /**

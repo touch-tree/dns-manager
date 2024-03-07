@@ -34,19 +34,13 @@ class Config
 
         $config = @include $path;
 
-        if (!$config) {
-            throw new Error('Error loading configuration file: ' . $path);
-        }
-
-        $result = [];
-
         foreach ($config as $key => $value) {
             if (!empty($value)) {
-                $result[$key] = $value;
+                $config[$key] = $value;
             }
         }
 
-        self::$config = array_merge(self::$config, $result);
+        self::$config = array_merge(self::$config, $config);
     }
 
     /**

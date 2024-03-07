@@ -12,9 +12,7 @@
 |--------------------------------------------------------------------------
 */
 
-use Framework\Foundation\App;
 use Framework\Foundation\Config;
-use Framework\Foundation\Container;
 use Framework\Foundation\Session;
 use Framework\Http\Kernel;
 
@@ -23,7 +21,6 @@ require_once 'Framework/helpers.php';
 require_once 'routes/web.php';
 
 Session::start();
-
-Config::set('directory', __DIR__)::resolve(__DIR__ . '/config/app.php');
+Config::resolve(__DIR__ . '/config/app.php');
 
 app(Kernel::class)->handle(request());
