@@ -3,7 +3,7 @@
 namespace Framework\Foundation;
 
 /**
- * This class represents a simple class for managing a collection of parameters.
+ * The ParameterBag represents a simple class for managing a collection of parameters.
  *
  * @package Framework\Foundation
  */

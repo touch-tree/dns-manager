@@ -6,7 +6,7 @@ use Error;
 use Framework\Foundation\Session;
 
 /**
- * This class provides functionality for creating redirects with flash data.
+ * The Redirect class provides functionality for creating redirects with flash data.
  *
  * @package Framework\Http
  */

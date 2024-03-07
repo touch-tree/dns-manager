@@ -3,7 +3,9 @@
 namespace Framework\Support;
 
 /**
- * This class represents a collection of items, supporting both indexed and associative arrays.
+ * The Collection class represents a collection of items.
+ *
+ * This class provides a set of methods to manipulate and interact with the collection's items.
  *
  * @template T
  * @package Framework\Support

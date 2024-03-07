@@ -19,7 +19,7 @@ class Cache
      *
      * @param string $key The unique identifier for the cached item.
      * @param mixed $default The default value to return if the item is not found in the cache.
-     * @return mixed The cached item value or the default value if the item is not found.
+     * @return mixed|null The cached item value or the default value if the item is not found.
      */
     public static function get(string $key, $default = null)
     {

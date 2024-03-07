@@ -7,7 +7,7 @@ use Framework\Foundation\View;
 use Framework\Routing\Router;
 
 /**
- * This class is the central component of our application responsible for handling HTTP requests
+ * The Kernel class is the central component of our application responsible for handling HTTP requests
  * and preparing responses, including middleware processing and event emits.
  *
  * @package Framework\Http

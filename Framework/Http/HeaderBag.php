@@ -5,7 +5,7 @@ namespace Framework\Http;
 use Framework\Foundation\ParameterBag;
 
 /**
- * This class represents the HTTP header object.
+ * The HeaderBag class represents an HTTP header.
  *
  * @package Framework\Http
  */

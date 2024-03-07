@@ -28,7 +28,7 @@ class Router
     private static RouteCollection $routes;
 
     /**
-     * Get routes.
+     * Get every registered route as a RouteCollection of this application.
      *
      * @return RouteCollection
      */
@@ -90,7 +90,7 @@ class Router
     }
 
     /**
-     * Add a route to the internal Routing.
+     * Add a route to the internal routing.
      *
      * @param string $method The HTTP method for the route.
      * @param string $uri The URI pattern for the route.

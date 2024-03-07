@@ -3,7 +3,7 @@
 namespace Framework\Routing;
 
 /**
- * Represents a route in the application's Routing system.
+ * Represents a route in the application's routing system.
  *
  * @package Framework\Routing
  */

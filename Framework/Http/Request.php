@@ -152,7 +152,7 @@ class Request
      */
     public function old(string $key)
     {
-        return $this->session()->get('flash')[$key] ?? null;
+        return $this->session()->get('flash.' . $key);
     }
 
     /**

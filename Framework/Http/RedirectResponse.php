@@ -7,7 +7,7 @@ use Framework\Foundation\Session;
 use LogicException;
 
 /**
- * This class represents a redirect response, allowing for easy redirection in a web application.
+ * This RedirectResponse class represents a redirect response, allowing for easy redirection in a web application.
  *
  * @package Framework\Http
  */

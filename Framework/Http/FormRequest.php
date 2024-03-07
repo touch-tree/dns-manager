@@ -6,7 +6,7 @@ use Exception;
 use Framework\Foundation\Validator;
 
 /**
- * This class represents a form request entity and extends the Base Request class.
+ * The FormRequest class represents a form request entity and extends the Base Request class.
  * It provides methods to handle and validate form data based on specified rules.
  * You can define custom validation rules within this class for specific use cases.
  *

@@ -3,7 +3,7 @@
 namespace Framework\Http;
 
 /**
- * This class represents a wrapper for the server variables.
+ * The Server class provides easy access for server variables.
  *
  * @package Framework\Http
  */
