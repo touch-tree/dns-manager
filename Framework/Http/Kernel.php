@@ -45,7 +45,7 @@ class Kernel
             echo $response->send();
         }
 
-        $this->terminate($request, $response);
+        $this->terminate($request);
 
         return $response;
     }
@@ -56,7 +56,7 @@ class Kernel
      * @param Request $request The HTTP request object.
      * @return void
      */
-    protected function terminate(Request $request, $response)
+    protected function terminate(Request $request)
     {
         $request->session()->forget(['flash', 'errors']);
     }
