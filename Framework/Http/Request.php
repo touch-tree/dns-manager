@@ -108,6 +108,17 @@ class Request
     }
 
     /**
+     * Checks if the form input exists in the POST request.
+     *
+     * @param string $parameter The name of the form post data parameter.
+     * @return bool
+     */
+    public function exists(string $parameter): bool
+    {
+        return isset($_POST[$parameter]);
+    }
+
+    /**
      * Retrieve all form post data as an associative array.
      *
      * @return array The associative array of form post data.

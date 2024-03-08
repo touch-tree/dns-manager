@@ -32,15 +32,15 @@ class SiteRepository
     {
         $this->site_service = $site_service;
 
-        $this->all();
+        $this->import();
     }
 
     /**
-     * Get sites.
+     * Register the sites into our repository.
      *
-     * @return Collection
+     * @return void
      */
-    public function all(): Collection
+    public function import()
     {
         $sites = Cache::get('cache.sites');
 
@@ -50,14 +50,24 @@ class SiteRepository
             Cache::put('cache.sites', $sites, 3600);
         }
 
-        return $this->sites = $sites;
+        $this->sites = $sites;
+    }
+
+    /**
+     * Get sites.
+     *
+     * @return Collection<Site>
+     */
+    public function all(): Collection
+    {
+        return $this->sites;
     }
 
     /**
      * Save a site.
      *
      * @param Site $site
-     * @return SiteRepository
+     * @return $this
      */
     public function save(Site $site): SiteRepository
     {

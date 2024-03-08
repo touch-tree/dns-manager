@@ -56,7 +56,7 @@ class App
         foreach ($services as $service) {
             $class = app($service);
 
-            if (is_subclass_of($class, ServiceProvider::class)) {
+            if (is_a($class, ServiceProvider::class)) {
                 $class->register($this->container);
             }
         }

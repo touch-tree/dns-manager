@@ -34,13 +34,17 @@ class CloudflareService extends ServiceProvider
     /**
      * Get DNS record by Zone ID and name.
      *
-     * @param string $id
+     * @param string $id Zone ID.
      * @param string $name
      * @return mixed|null
      */
     public function get_dns_record(string $id, string $name)
     {
         $dns_records = $this->get_dns_records($id);
+
+        if (!isset($dns_records['result'])) {
+            return null;
+        }
 
         foreach ($dns_records['result'] as $record) {
             if ($record['name'] === $name) {
@@ -186,6 +190,18 @@ class CloudflareService extends ServiceProvider
     public function add_pagerule(string $id, array $options): array
     {
         return $this->http->post(config('api_url') . '/zones/' . $id . '/pagerules', $options)->json();
+    }
+
+    /**
+     * Update page rule for a zone.
+     *
+     * @param string $id Zone ID.
+     * @param string $pagerule_id
+     * @return array
+     */
+    public function get_pagerule(string $id, string $pagerule_id): array
+    {
+        return $this->http->get(config('api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id)->json();
     }
 
     /**

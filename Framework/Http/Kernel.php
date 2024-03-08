@@ -2,7 +2,6 @@
 
 namespace Framework\Http;
 
-use Framework\Foundation\ParameterBag;
 use Framework\Foundation\View;
 use Framework\Routing\Router;
 
@@ -72,8 +71,7 @@ class Kernel
     {
         if ($response instanceof RedirectResponse) {
             $request->flash();
-
-            return null;
+            return $response;
         }
 
         if ($response instanceof JsonResponse) {

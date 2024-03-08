@@ -28,7 +28,7 @@ use App\Models\Site;
                         Add a site
                     </button>
                 </a>
-                <a href="<?php echo route('dashboard'); ?>">
+                <a href="<?php echo route('domain.refresh'); ?>">
                     <button class="btn btn-outline-primary">
                         <i class="fa fa-refresh" aria-hidden="true"></i>
                         Refresh entries
@@ -42,6 +42,7 @@ use App\Models\Site;
                 <tr>
                     <th>Domain</th>
                     <th>Owner</th>
+                    <th>CNAME</th>
                     <th>Nameservers</th>
                     <th>Status</th>
                     <th>Created On</th>
@@ -60,6 +61,13 @@ use App\Models\Site;
                                     </a>
                                 </td>
                                 <td class="owner"><?php echo strtolower($domain->account()->name()); ?></td>
+                                <td>
+                                    <?php
+                                    foreach ($domain->get_dns_records()->all() as $dns_record) {
+                                        echo $dns_record->name() . '<br>';
+                                    }
+                                    ?>
+                                </td>
                                 <td class="name-server">
                                     <?php
                                     foreach ($domain->nameservers() as $name_server) {

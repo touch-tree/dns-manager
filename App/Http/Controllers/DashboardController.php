@@ -6,10 +6,13 @@ use App\Http\Requests\CreateRequest;
 use App\Http\Requests\UpdateRequest;
 use App\Repositories\SiteRepository;
 use App\Services\CloudflareService;
+use App\Services\PageruleService;
+use App\Services\RecordService;
 use App\Services\SiteService;
 use Exception;
 use Framework\Foundation\View;
 use Framework\Http\RedirectResponse;
+use Framework\Support\Cache;
 
 class DashboardController
 {
@@ -28,14 +31,38 @@ class DashboardController
     private SiteRepository $site_repository;
 
     /**
+     * CloudflareService instance.
+     *
+     * @var CloudflareService
+     */
+    private CloudflareService $cloudflare_service;
+
+    /**
+     * RecordService instance.
+     *
+     * @var RecordService
+     */
+    private RecordService $record_service;
+
+    /**
+     * PageruleService instance.
+     *
+     * @var PageruleService
+     */
+    private PageruleService $pagerule_service;
+
+    /**
      * DashboardController constructor.
      *
      * @return void
      */
-    public function __construct(SiteService $site_service, SiteRepository $site_repository)
+    public function __construct(CloudflareService $cloudflare_service, RecordService $record_service, SiteService $site_service, SiteRepository $site_repository, PageruleService $pagerule_service)
     {
         $this->site_service = $site_service;
+        $this->record_service = $record_service;
         $this->site_repository = $site_repository;
+        $this->cloudflare_service = $cloudflare_service;
+        $this->pagerule_service = $pagerule_service;
     }
 
     /**
@@ -49,7 +76,20 @@ class DashboardController
 
         return view('dashboard.index')
             ->with('domains', $sites->all())
-            ->with('cloudflare_service', app(CloudflareService::class));
+            ->with('cloudflare_service', $this->cloudflare_service);
+    }
+
+    /**
+     * Refresh domains.
+     *
+     * @return View
+     */
+    public function refresh(): View
+    {
+        Cache::forget('cache.sites');
+        Cache::forget('cache.dns_records');
+
+        return $this->index();
     }
 
     /**
@@ -61,15 +101,10 @@ class DashboardController
     public function edit(string $id): View
     {
         $site = $this->site_repository->get($id);
-        $pagerules = $this->site_service->get_pagerules($id);
 
         // pagerule not always set for each domain if pagerule not set then just don't display pagerule destination etc.
 
-        return view('domain.edit')
-            ->with('domain', $site)
-            ->with('dns_root', $this->site_service->get_dns_record($id, $site->name()))
-            ->with('dns_sub', $this->site_service->get_dns_record($id, 'www.' . $site->name()))
-            ->with('pagerule_forwarding_url', $pagerules[0]['actions'][0]['value']['url'] ?? '');
+        return view('domain.edit')->with('domain', $site);
     }
 
     /**
@@ -87,6 +122,16 @@ class DashboardController
             return back();
         }
 
+        $pagerule_input = $request->input('pagerule_forwarding_url');
+
+        // not all domains have pagerules so only validate if domain has pagerules
+
+        if ($request->exists('pagerule_forwarding_url') && empty($pagerule_input)) {
+            session()->put('errors.form.pagerule_forwarding_url', 'This field is required');
+
+            return back();
+        }
+
         $site = $this->site_repository->get($id);
 
         if (!$site) {
@@ -96,7 +141,7 @@ class DashboardController
                 ->with('message_type', 'error');
         }
 
-        $root_dns = $this->site_service->update_dns_record($site->id(),
+        $root_dns = $this->record_service->update_dns_record($site->id(),
             [
                 'name' => $site->name(),
                 'content' => $request->input('root_cname_target'),
@@ -107,7 +152,7 @@ class DashboardController
             add_error('update_root_dns_record', 'Unable to update root DNS record');
         }
 
-        $sub_dns = $this->site_service->update_dns_record($site->id(),
+        $sub_dns = $this->record_service->update_dns_record($site->id(),
             [
                 'name' => 'www.' . $site->name(),
                 'content' => $request->input('sub_cname_target'),
@@ -118,8 +163,12 @@ class DashboardController
             add_error('update_sub_dns_record', 'Unable to update sub DNS record');
         }
 
-        if ($this->site_service->update_pagerules_forwarding_url($site->id(), $request->input('pagerule_forwarding_url'))) {
-            add_error('update_pagerules_forwarding_url', 'Unable to update forwarding URL for every pagerule.');
+        // if domain has pagerules and the pagerule input is not empty
+
+        if ($request->exists('pagerule_forwarding_url') && !empty($pagerule_input)) {
+            if (!$this->pagerule_service->update_pagerules_forwarding_url($site->id(), $request->input('pagerule_forwarding_url'))) {
+                add_error('update_pagerules_forwarding_url', 'Unable to update forwarding URL for every pagerule.');
+            }
         }
 
         if (retrieve_error_bag()->any()) {
@@ -222,17 +271,17 @@ class DashboardController
 
         if (!$this->site_service->set_pseudo_ip($site->id(), 'overwrite_header')) {
             add_error('set_pseudo_ip', 'Unable to set pseudo IP to overwrite header');
-        };
+        }
 
         if (!$this->site_service->set_https($site->id(), 'on')) {
             add_error('set_https', 'Unable to turn on HTTPS');
         }
 
-        if (!$this->site_service->reset_dns_records($site->id())) {
+        if (!$this->record_service->reset_dns_records($site->id())) {
             add_error('reset_dns_records', 'Encountered some issues resetting DNS records due to being unable to delete some DNS records');
         }
 
-        $root_dns = $this->site_service->add_dns_record($site->id(),
+        $root_dns = $this->record_service->add_dns_record($site->id(),
             [
                 'name' => '@',
                 'content' => $request->input('root_cname_target'),
@@ -243,7 +292,7 @@ class DashboardController
             add_error('add_root_dns_record', 'Unable to add root DNS record');
         }
 
-        $sub_dns = $this->site_service->add_dns_record($site->id(),
+        $sub_dns = $this->record_service->add_dns_record($site->id(),
             [
                 'name' => 'www',
                 'content' => $request->input('sub_cname_target'),
@@ -254,11 +303,11 @@ class DashboardController
             add_error('add_sub_dns_record', 'Unable to add sub DNS record');
         }
 
-        if (!$this->site_service->reset_pagerules($site->id())) {
+        if (!$this->pagerule_service->reset_pagerules($site->id())) {
             add_error('reset_pagerules', 'Encountered some issues resetting pagerules due to being unable to delete some pagerules');
         }
 
-        $pagerule = $this->site_service->add_pagerule($site->id(),
+        $pagerule = $this->pagerule_service->add_pagerule($site->id(),
             [
                 'url' => $request->input('pagerule_url'),
                 'forwarding_url' => $request->input('pagerule_forwarding_url')
@@ -269,7 +318,7 @@ class DashboardController
             add_error('pagerule', 'Unable to add pagerule URL');
         }
 
-        $pagerule_full = $this->site_service->add_pagerule($site->id(),
+        $pagerule_full = $this->pagerule_service->add_pagerule($site->id(),
             [
                 'url' => $request->input('pagerule_full_url'),
                 'forwarding_url' => $request->input('pagerule_forwarding_url')

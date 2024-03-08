@@ -17,6 +17,7 @@ use Framework\Routing\Router;
 
 Router::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Router::get('/domain/add', [DashboardController::class, 'add'])->name('domain.add');
+Router::get('/domain/refresh', [DashboardController::class, 'refresh'])->name('domain.refresh');
 Router::get('/domain/details/{id}', [DashboardController::class, 'details'])->name('domain.details');
 Router::get('/domain/edit/{id}', [DashboardController::class, 'edit'])->name('domain.edit');
 Router::get('/domain/{id}/nameservers/check', [DashboardController::class, 'check_nameservers'])->name('nameservers.check');

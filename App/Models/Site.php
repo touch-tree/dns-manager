@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Framework\Support\Collection;
+
 class Site
 {
     /**
@@ -66,6 +68,20 @@ class Site
      * @var array
      */
     private array $original_nameservers;
+
+    /**
+     * DNS records.
+     *
+     * @var Collection<Record>
+     */
+    private Collection $dns_records;
+
+    /**
+     * Pagerules.
+     *
+     * @var Collection<Pagerule>
+     */
+    private Collection $pagerules;
 
     /**
      * Modified on.
@@ -450,6 +466,51 @@ class Site
     public function set_original_registrar(?string $original_registrar): Site
     {
         $this->original_registrar = $original_registrar;
+
+        return $this;
+    }
+
+    /**
+     * Get DNS records.
+     *
+     * @return Collection<Record>
+     */
+    public function get_dns_records(): Collection
+    {
+        return $this->dns_records;
+    }
+
+    /**
+     *
+     * @param Collection<Record> $dns_records
+     * @return $this
+     */
+    public function set_dns_records(Collection $dns_records): Site
+    {
+        $this->dns_records = $dns_records;
+
+        return $this;
+    }
+
+    /**
+     * Get pagerules.
+     *
+     * @return Collection
+     */
+    public function pagerules(): Collection
+    {
+        return $this->pagerules;
+    }
+
+    /**
+     * Set pagerules.
+     *
+     * @param Collection $pagerules
+     * @return $this
+     */
+    public function set_pagerules(Collection $pagerules): Site
+    {
+        $this->pagerules = $pagerules;
 
         return $this;
     }

@@ -1,9 +1,4 @@
 
-.btn-primary, .page-item.active .page-link {
-    background-color: #686bfe;
-    border-color: #686bfe;
-}
-
 .btn-outline-primary {
     border-color: #686bfe;
     color: #686bfe;
@@ -62,7 +57,3 @@
     margin-right: 5px;
 }
 
-.btn-primary:focus, .page-item.active .page-link:focus, .form-control:focus, .options-icon:focus, .btn-outline-primary:focus, input:focus {
-    box-shadow: 0 0 0 0.2rem rgba(95, 97, 230, 0.5) !important;
-    border-color: #aeaff1 !important;
-}

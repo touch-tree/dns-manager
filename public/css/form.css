@@ -23,10 +23,6 @@ label {
     color: #ff0f11;
 }
 
-.js-form .info {
-    color: #8d8d8d;
-}
-
 .form .text-input-row .text-input-column {
     width: 100%;
 }
@@ -57,10 +53,6 @@ label {
     color: #495057;
     background-color: #fff;
     outline: 0;
-}
-
-.form-control {
-    height: 35px;
 }
 
 label.text-input-column:has(.validation-text.error) input {

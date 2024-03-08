@@ -11,7 +11,6 @@ class UpdateRequest extends FormRequest
         return [
             'root_cname_target' => 'required',
             'sub_cname_target' => 'required',
-            'pagerule_forwarding_url' => 'required'
         ];
     }
 }

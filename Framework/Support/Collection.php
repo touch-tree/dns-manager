@@ -101,6 +101,26 @@ class Collection
     }
 
     /**
+     * Get the first item in the collection.
+     *
+     * @return T|null The first item in the collection or null if the collection is empty.
+     */
+    public function first()
+    {
+        return reset($this->items);
+    }
+
+    /**
+     * Get the last item in the collection.
+     *
+     * @return T|null The last item in the collection or null if the collection is empty.
+     */
+    public function last()
+    {
+        return end($this->items);
+    }
+
+    /**
      * Convert the collection to a plain array.
      *
      * @return array<T> The collection items as a plain array.

@@ -5,9 +5,10 @@ namespace App\Services;
 use App\Models\Account;
 use App\Models\Plan;
 use App\Models\Site;
+use Framework\Foundation\ServiceProvider;
 use Framework\Support\Collection;
 
-class SiteService
+class SiteService extends ServiceProvider
 {
     /**
      * CloudflareService instance.
@@ -17,13 +18,31 @@ class SiteService
     private CloudflareService $cloudflare_service;
 
     /**
+     * RecordRepository instance.
+     *
+     * @var RecordService
+     */
+    private RecordService $record_service;
+
+    /**
+     * PageruleService
+     *
+     * @var PageruleService
+     */
+    private PageruleService $pagerule_service;
+
+    /**
      * SiteService constructor.
      *
      * @param CloudflareService $cloudflare_service
+     * @param RecordService $record_service
+     * @param PageruleService $pagerule_service
      */
-    public function __construct(CloudflareService $cloudflare_service)
+    public function __construct(CloudflareService $cloudflare_service, RecordService $record_service, PageruleService $pagerule_service)
     {
         $this->cloudflare_service = $cloudflare_service;
+        $this->record_service = $record_service;
+        $this->pagerule_service = $pagerule_service;
     }
 
     /**
@@ -78,6 +97,9 @@ class SiteService
         $account = $this->make_account($data['account']);
         $plan = $this->make_plan($data['plan']);
 
+        $records = $this->record_service->get_dns_records($data['id']);
+        $pagerules = $this->pagerule_service->get_pagerules($data['id']);
+
         $site
             ->set_id($data['id'])
             ->set_name($data['name'])
@@ -93,7 +115,9 @@ class SiteService
             ->set_original_nameservers($data['original_name_servers'])
             ->set_status($data['status'])
             ->set_account($account)
-            ->set_plan($plan);
+            ->set_plan($plan)
+            ->set_dns_records($records)
+            ->set_pagerules($pagerules);
 
         return $site;
     }
@@ -140,13 +164,13 @@ class SiteService
      */
     public function get_site(string $id): ?Site
     {
-        $site = $this->cloudflare_service->get_site($id);
+        $response = $this->cloudflare_service->get_site($id);
 
-        if (empty($site = $site['result'])) {
+        if (empty($response = $response['result'])) {
             return null;
         }
 
-        return $this->make_site($site);
+        return $this->make_site($response);
     }
 
     /**
@@ -156,10 +180,10 @@ class SiteService
      */
     public function get_sites(): Collection
     {
-        $zones = $this->cloudflare_service->get_sites();
+        $response = $this->cloudflare_service->get_sites();
         $sites = new Collection();
 
-        foreach ($zones['result'] as $zone) {
+        foreach ($response['result'] as $zone) {
             $site = $this->get_site($zone['id']);
 
             if (is_null($site)) {
@@ -170,90 +194,6 @@ class SiteService
         }
 
         return $sites;
-    }
-
-    /**
-     * Get DNS record.
-     *
-     * @param string $id Zone ID.
-     * @param string $name DNS record name.
-     * @return mixed|null
-     */
-    public function get_dns_record(string $id, string $name)
-    {
-        return $this->cloudflare_service->get_dns_record($id, $name);
-    }
-
-    /**
-     * Delete a single DNS record by ID.
-     *
-     * @param string $id
-     * @param string $dns_record_id
-     * @return bool
-     */
-    public function delete_dns_record(string $id, string $dns_record_id): bool
-    {
-        $response = $this->cloudflare_service->delete_dns_record($id, $dns_record_id);
-
-        return empty($response['errors']);
-    }
-
-    /**
-     * Delete every single DNS record by Zone ID.
-     *
-     * @param string $id Zone ID.
-     * @return bool Returns false whenever a single DNS record is unable to be deleted.
-     */
-    public function reset_dns_records(string $id): bool
-    {
-        $records = $this->cloudflare_service->get_dns_records($id);
-        $status = true;
-
-        foreach ($records['result'] as $record) {
-            $response = $this->delete_dns_record($id, $record['id']);
-
-            if (!$response) {
-                $status = false;
-            }
-        }
-
-        return $status;
-    }
-
-    /**
-     * Delete a single pagerule by ID.
-     *
-     * @param string $id
-     * @param string $pagerule_id
-     * @return bool
-     */
-    public function delete_pagerule(string $id, string $pagerule_id): bool
-    {
-        $response = $this->cloudflare_service->delete_pagerule($id, $pagerule_id);
-
-        return empty($response['errors']);
-    }
-
-    /**
-     * Delete every single DNS record by Zone ID.
-     *
-     * @param string $id Zone ID.
-     * @return bool Returns false whenever a single DNS record is unable to be deleted.
-     */
-    public function reset_pagerules(string $id): bool
-    {
-        $records = $this->cloudflare_service->get_pagerules($id);
-        $status = true;
-
-        foreach ($records['result'] as $pagerule) {
-            $response = $this->delete_pagerule($id, $pagerule['id']);
-
-            if (!$response) {
-                $status = false;
-            }
-        }
-
-        return $status;
     }
 
     /**
@@ -311,82 +251,6 @@ class SiteService
     }
 
     /**
-     * Add DNS record.
-     *
-     * @param string $id Zone ID.
-     * @param array{content: string, name: string} $data
-     * @return bool
-     */
-    public function add_dns_record(string $id, array $data): bool
-    {
-        $response = $this->cloudflare_service->add_dns_record($id,
-            [
-                'type' => 'CNAME',
-                'name' => $data['name'],
-                'content' => $data['content'],
-                'proxied' => true,
-                'ttl' => 1,
-            ]
-        );
-
-        return empty($response['errors']);
-    }
-
-    /**
-     * Update DNS record.
-     *
-     * @param string $id Zone ID.
-     * @param array{content: string, name: string} $data
-     * @return bool
-     */
-    public function update_dns_record(string $id, array $data): bool
-    {
-        $response = $this->cloudflare_service->update_dns_record($id, $data['name'],
-            [
-                'content' => $data['content'],
-            ]
-        );
-
-        return empty($response['errors']);
-    }
-
-    /**
-     * Add pagerule.
-     *
-     * @param string $id Zone ID.
-     * @param array{url: string, forwarding_url: string} $data
-     * @return bool
-     */
-    public function add_pagerule(string $id, array $data): bool
-    {
-        $response = $this->cloudflare_service->add_pagerule($id,
-            [
-                'status' => 'active',
-                'targets' => [
-                    [
-                        'target' => 'url',
-                        'constraint' => [
-                            'operator' => 'matches',
-                            'value' => $data['url'],
-                        ],
-                    ],
-                ],
-                'actions' => [
-                    [
-                        'id' => 'forwarding_url',
-                        'value' => [
-                            'url' => $data['forwarding_url'],
-                            'status_code' => 301,
-                        ],
-                    ],
-                ],
-            ]
-        );
-
-        return empty($response['errors']);
-    }
-
-    /**
      * Verify nameservers.
      *
      * @param string $id Zone ID.
@@ -400,76 +264,5 @@ class SiteService
             'result' => $response,
             'errors' => $response['errors'],
         ];
-    }
-
-    /**
-     * Get pagerules.
-     *
-     * @param string $id Zone ID.
-     * @return array|null
-     */
-    public function get_pagerules(string $id): ?array
-    {
-        $response = $this->cloudflare_service->get_pagerules($id);
-
-        if (!empty($response['errors'])) {
-            return null;
-        }
-
-        return $response['result'];
-    }
-
-    /**
-     * Update a pagerule.
-     *
-     * @param string $id Zone ID.
-     * @param string $pagerule_id
-     * @param array{forwarding_url: string} $data
-     * @return bool
-     */
-    public function update_pagerule(string $id, string $pagerule_id, array $data): bool
-    {
-        $response = $this->cloudflare_service->update_pagerule($id, $pagerule_id,
-            [
-                'actions' => [
-                    [
-                        'id' => 'forwarding_url',
-                        'value' => [
-                            'url' => $data['forwarding_url'],
-                            'status_code' => 301,
-                        ],
-                    ],
-                ],
-            ]
-        );
-
-        return empty($response['errors']);
-    }
-
-    /**
-     * Update pagerules.
-     *
-     * @param string $id Zone ID.
-     * @poram string $value
-     * @return bool Returns false whenever a single DNS record is unable to be deleted.
-     */
-    public function update_pagerules_forwarding_url(string $id, string $value): bool
-    {
-        $pagerules = $this->get_pagerules($id);
-        $status = true;
-
-        foreach ($pagerules as $pagerule) {
-            $response = $this->update_pagerule($id, $pagerule['id'],
-                [
-                    'forwarding_url' => $value,
-                ]
-            );
-
-            if (!$response) {
-                $status = false;
-            }
-        }
-
-        return $status;
     }
 }

@@ -14,6 +14,16 @@ use App\Models\Site;
         <span><?php echo $domain->name(); ?></span>
     </div>
     <div class="property">
+        <label>CNAME:</label>
+        <span>
+            <?php
+            foreach ($domain->get_dns_records()->all() as $dns_record) {
+                echo $dns_record->name() . '<br>';
+            }
+            ?>
+        </span>
+    </div>
+    <div class="property">
         <label>Status:</label>
         <span><?php echo $domain->status(); ?></span>
     </div>
