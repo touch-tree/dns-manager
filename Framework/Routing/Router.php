@@ -62,7 +62,7 @@ class Router
             $uri = str_replace('{' . $key . '}', $value, $uri);
         }
 
-        return $uri;
+        return config('url') . ltrim($uri, '/');
     }
 
     /**
@@ -138,7 +138,9 @@ class Router
         try {
             [$class, $method] = $route->action();
 
-            return self::resolve_controller([app($class), $method], self::get_parameters($route->uri(), $request->request_uri()));
+            $uri = config('url') . ltrim($route->uri(), '/');
+
+            return self::resolve_controller([app($class), $method], self::get_parameters($uri, $request->request_uri()));
         } catch (Exception $exception) {
             return null;
         }
