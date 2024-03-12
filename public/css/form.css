@@ -51,6 +51,11 @@ label {
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
+input[readonly] {
+    user-select: none;
+    pointer-events: none;
+}
+
 .checkbox-enable__label:hover {
     cursor: pointer;
 }
