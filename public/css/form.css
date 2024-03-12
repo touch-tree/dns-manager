@@ -23,6 +23,10 @@ label {
     color: #ff0f11;
 }
 
+.js-form .info {
+    color: #8d8d8d;
+}
+
 .form .text-input-row .text-input-column {
     width: 100%;
 }
@@ -32,13 +36,10 @@ label {
 }
 
 .form input[type="text"] {
-    padding: 0.25rem 0.5rem;
-}
-
-.form input[type="text"], .form-control-sm {
     display: inline-block;
     width: auto;
     height: 35px;
+    padding: 0.25rem 0.5rem;
     font-size: 13px;
     line-height: 1.5;
     border-radius: 0.2rem;
@@ -50,12 +51,16 @@ label {
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
-.form input:focus, .form-control-sm:focus {
+.form input:focus {
     box-shadow: 0 0 0 0.2rem rgba(95, 97, 230, 0.5) !important;
     border-color: #aeaff1 !important;
     color: #495057;
     background-color: #fff;
     outline: 0;
+}
+
+.form-control {
+    height: 35px;
 }
 
 label.text-input-column:has(.validation-text.error) input {
