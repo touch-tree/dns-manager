@@ -79,9 +79,9 @@ class Kernel
         }
 
         if ($response instanceof View) {
-            return response($response->render(), 200, $response->get_headers());
+            return response($response->render(), Response::HTTP_OK, $response->get_headers());
         }
 
-        return response(view('errors.404')->render(), 404);
+        return response(view('errors.404')->render(), Response::HTTP_NOT_FOUND);
     }
 }

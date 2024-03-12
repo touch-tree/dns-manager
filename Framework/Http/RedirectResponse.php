@@ -33,7 +33,7 @@ class RedirectResponse extends Response
      * @param Session $session The session manager for storing flash data.
      * @param int $status_code The status code for the redirect.
      */
-    public function __construct(Session $session, int $status_code = 301)
+    public function __construct(Session $session, int $status_code = Response::HTTP_MOVED_PERMANENTLY)
     {
         parent::__construct(null, $status_code, request()->headers());
 

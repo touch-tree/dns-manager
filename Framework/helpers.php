@@ -44,7 +44,7 @@ function redirect(string $route = null): RedirectResponse
  * @param HeaderBag|null $headers The HeaderBag instance containing HTTP headers.
  * @return Response
  */
-function response($content = null, int $status_code = 200, HeaderBag $headers = null): Response
+function response($content = null, int $status_code = Response::HTTP_OK, HeaderBag $headers = null): Response
 {
     return new Response($content, $status_code, $headers ?: new HeaderBag());
 }

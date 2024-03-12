@@ -87,8 +87,7 @@ class DashboardController
      */
     public function clear_cache(): RedirectResponse
     {
-        Cache::forget('cache.sites');
-        Cache::forget('cache.dns_records');
+        Cache::clear();
 
         return back();
     }

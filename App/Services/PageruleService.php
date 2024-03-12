@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Pagerule;
+use Framework\Http\Response;
 use Framework\Support\Collection;
 
 class PageruleService
@@ -109,7 +110,7 @@ class PageruleService
                         'id' => 'forwarding_url',
                         'value' => [
                             'url' => $data['forwarding_url'],
-                            'status_code' => 301,
+                            'status_code' => Response::HTTP_MOVED_PERMANENTLY,
                         ],
                     ],
                 ],
@@ -136,7 +137,7 @@ class PageruleService
                         'id' => 'forwarding_url',
                         'value' => [
                             'url' => $data['forwarding_url'],
-                            'status_code' => 301,
+                            'status_code' => Response::HTTP_MOVED_PERMANENTLY,
                         ],
                     ],
                 ],

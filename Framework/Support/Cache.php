@@ -86,4 +86,14 @@ class Cache
     {
         return apcu_dec($key, $value);
     }
+
+    /**
+     * Clear all entries from the APCu cache.
+     *
+     * @return void
+     */
+    public static function clear()
+    {
+        apcu_clear_cache();
+    }
 }
