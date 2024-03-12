@@ -184,12 +184,7 @@ class SiteService extends ServiceProvider
         $sites = new Collection();
 
         foreach ($response['result'] as $zone) {
-            $site = $this->get_site($zone['id']);
-
-            if (is_null($site)) {
-                continue;
-            }
-
+            $site = $this->make_site($zone);
             $sites->set($site->id(), $site);
         }
 

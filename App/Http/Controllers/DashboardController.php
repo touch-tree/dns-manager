@@ -11,6 +11,7 @@ use App\Services\RecordService;
 use App\Services\SiteService;
 use Exception;
 use Framework\Foundation\View;
+use Framework\Http\JsonResponse;
 use Framework\Http\RedirectResponse;
 use Framework\Support\Cache;
 
@@ -70,26 +71,42 @@ class DashboardController
      *
      * @return View
      */
-    public function index(): View
+    public function dashboard(): View
     {
         $sites = $this->site_repository->all();
 
-        return view('dashboard.index')
+        return view('dashboard.dashboard')
             ->with('domains', $sites->all())
             ->with('cloudflare_service', $this->cloudflare_service);
     }
 
     /**
-     * Refresh domains.
+     * Clear domain cache.
      *
-     * @return View
+     * @return RedirectResponse
      */
-    public function refresh(): View
+    public function clear_cache(): RedirectResponse
     {
         Cache::forget('cache.sites');
         Cache::forget('cache.dns_records');
 
-        return $this->index();
+        return back();
+    }
+
+    /**
+     * Get sites view.
+     *
+     * @return JsonResponse
+     */
+    public function sites(): JsonResponse
+    {
+        $sites = [];
+
+        foreach ($this->site_repository->all()->all() as $site) {
+            $sites[] = $site->to_array();
+        }
+
+        return response()->json($sites);
     }
 
     /**
@@ -101,8 +118,6 @@ class DashboardController
     public function edit(string $id): View
     {
         $site = $this->site_repository->get($id);
-
-        // pagerule not always set for each domain if pagerule not set then just don't display pagerule destination etc.
 
         return view('domain.edit')->with('domain', $site);
     }
@@ -165,8 +180,14 @@ class DashboardController
 
         // if domain has pagerules and the pagerule input is not empty
 
-        if ($request->exists('pagerule_forwarding_url') && !empty($pagerule_input)) {
-            if (!$this->pagerule_service->update_pagerules_forwarding_url($site->id(), $request->input('pagerule_forwarding_url'))) {
+        if ($request->exists('pagerule_forwarding_url')) {
+            $response = $this->pagerule_service->update_pagerules($site->id(),
+                [
+                    'forwarding_url' => $request->input('pagerule_forwarding_url')
+                ]
+            );
+
+            if (!$response) {
                 add_error('update_pagerules_forwarding_url', 'Unable to update forwarding URL for every pagerule.');
             }
         }

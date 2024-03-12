@@ -53,17 +53,12 @@ class PageruleService
         $response = $this->cloudflare_service->get_pagerules($id);
         $pagerules = new Collection();
 
-        if (empty($response['result'])) {
+        if (empty($response = $response['result'])) {
             return $pagerules;
         }
 
-        foreach ($response['result'] as $pagerule) {
-            $rule = $this->get_pagerule($id, $pagerule['id']);
-
-            if (is_null($rule)) {
-                continue;
-            }
-
+        foreach ($response as $pagerule) {
+            $rule = $this->make_pagerule($pagerule);
             $pagerules->set($rule->url(), $rule);
         }
 
@@ -177,9 +172,7 @@ class PageruleService
         $status = true;
 
         foreach ($response['result'] as $pagerule) {
-            $response = $this->delete_pagerule($id, $pagerule['id']);
-
-            if (!$response) {
+            if (!$this->delete_pagerule($id, $pagerule['id'])) {
                 $status = false;
             }
         }
@@ -191,22 +184,15 @@ class PageruleService
      * Update pagerules.
      *
      * @param string $id Zone ID.
-     * @poram string $value
+     * @param array{forwarding_url: string} $data
      * @return bool Returns false whenever a single DNS record is unable to be deleted.
      */
-    public function update_pagerules_forwarding_url(string $id, string $value): bool
+    public function update_pagerules(string $id, array $data): bool
     {
-        $pagerules = $this->get_pagerules($id);
         $status = true;
 
-        foreach ($pagerules->all() as $pagerule) {
-            $response = $this->update_pagerule($id, $pagerule->id(),
-                [
-                    'forwarding_url' => $value,
-                ]
-            );
-
-            if (!$response) {
+        foreach ($this->get_pagerules($id)->all() as $pagerule) {
+            if (!$this->update_pagerule($id, $pagerule->id(), $data)) {
                 $status = false;
             }
         }

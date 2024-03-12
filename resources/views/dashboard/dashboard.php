@@ -28,7 +28,7 @@ use App\Models\Site;
                         Add a site
                     </button>
                 </a>
-                <a href="<?php echo route('domain.refresh'); ?>">
+                <a href="<?php echo route('domain.clear'); ?>">
                     <button class="btn btn-outline-primary">
                         <i class="fa fa-refresh" aria-hidden="true"></i>
                         Refresh entries

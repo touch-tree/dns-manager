@@ -514,4 +514,31 @@ class Site
 
         return $this;
     }
+
+    /**
+     * Model to array.
+     *
+     * @return array
+     */
+    public function to_array(): array
+    {
+        $record_names = [];
+
+        foreach ($this->get_dns_records()->all() as $record) {
+            $record_names[] = $record->name();
+        }
+
+        return [
+            'id' => $this->id(),
+            'name' => $this->name(),
+            'account' => [
+                'id' => $this->account()->id(),
+                'name' => $this->account()->name()
+            ],
+            'dns_records' => $record_names,
+            'nameservers' => $this->nameservers(),
+            'status' => $this->status(),
+            'created_on' => $this->created_on(),
+        ];
+    }
 }

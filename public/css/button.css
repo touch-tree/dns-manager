@@ -29,10 +29,14 @@
     transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
 }
 
-
 .btn-outline-primary i {
     color: #686bfe;
     margin-right: 5px;
+}
+
+.btn-outline-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(95, 97, 230, 0.5) !important;
+    border-color: #aeaff1 !important;
 }
 
 .btn-outline-primary:hover i {
@@ -44,6 +48,16 @@
     color: #fff !important;
     background-color: #5f61e6 !important;
     border-color: #5f61e6 !important;
+}
+
+.btn-primary, .page-item.active .page-link {
+    border-color: #686bfe;
+    background-color: #686bfe !important;
+}
+
+.btn-primary:focus, .page-item.active .page-link:focus, .options-icon:focus {
+    box-shadow: 0 0 0 0.2rem rgba(95, 97, 230, 0.5) !important;
+    border-color: #aeaff1 !important;
 }
 
 .btn-primary:hover {

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     let $activePopup = null;
 
-    $('[data-popup-for]').on('click', function (event) {
+    $(document).on('click', '[data-popup-for]', function (event) {
         const popupFor = $(this).data('popup-for');
         const $popup = $('[data-popup="' + popupFor + '"]');
 

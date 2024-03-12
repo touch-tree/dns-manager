@@ -55,13 +55,12 @@ class RecordService extends ServiceProvider
         $response = $this->cloudflare_service->get_dns_records($id);
         $records = new Collection();
 
-        foreach ($response['result'] as $dns_record) {
-            $record = $this->get_dns_record($id, $dns_record['name']);
+        if (empty($response = $response['result'])) {
+            return $records;
+        }
 
-            if (is_null($record)) {
-                continue;
-            }
-
+        foreach ($response as $dns_record) {
+            $record = $this->make_dns_record($dns_record);
             $records->set($record->name(), $record);
         }
 

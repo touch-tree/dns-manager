@@ -5,12 +5,12 @@ $(document).on('click', '[data-toggle="modal"]', function () {
 
     if (route) {
         $.ajax({
-            url: route,
-            method: 'POST',
-            success: function (data) {
+            'url': route,
+            'method': 'POST',
+            'success': function (data) {
                 $('#modal-content-placeholder').html(data);
             },
-            error: function (error) {
+            'error': function (error) {
                 console.error('Error fetching data: ', error);
             }
         });

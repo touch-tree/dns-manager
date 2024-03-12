@@ -128,6 +128,18 @@ class Response
     }
 
     /**
+     * Get JSON response.
+     *
+     * @param array $data The data to be JSON-encoded and sent in the response.
+     * @param int $status_code The HTTP status code for the response. Default is 200 (OK).
+     * @return JsonResponse
+     */
+    public function json(array $data, int $status_code = 200): JsonResponse
+    {
+        return new JsonResponse($data, $status_code);
+    }
+
+    /**
      * Send the response by sending HTTP headers and content.
      *
      * @return mixed The content of the response.

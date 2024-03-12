@@ -119,14 +119,4 @@ class Collection
     {
         return end($this->items);
     }
-
-    /**
-     * Convert the collection to a plain array.
-     *
-     * @return array<T> The collection items as a plain array.
-     */
-    public function to_array(): array
-    {
-        return $this->items;
-    }
 }
