@@ -64,12 +64,18 @@ function view(string $path, array $data = []): View
 /**
  * Get path to 'resources' directory.
  *
- * @param string $path
+ * @param string|null $path
  * @return false|string
  */
-function resource_path(string $path)
+function resource_path(string $path = null)
 {
-    return realpath(base_path('resources/' . ltrim($path)));
+    $resource = 'resources/';
+
+    if ($path) {
+        $resource .= ltrim($path);
+    }
+
+    return realpath(base_path($resource));
 }
 
 /**
@@ -253,7 +259,7 @@ function base_path(string $path = null): string
     $directory = dirname(__DIR__);
 
     if ($path) {
-        $directory .= DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR);
+        $directory .= '/' . trim($path, '/');
     }
 
     return $directory;
@@ -266,7 +272,7 @@ function base_path(string $path = null): string
  */
 function base_url(): string
 {
-    return ($_SERVER['REQUEST_SCHEME'] ?? 'http') . ':' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . DIRECTORY_SEPARATOR;
+    return ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . '/';
 }
 
 /**
@@ -295,7 +301,7 @@ function back(): RedirectResponse
  */
 function url(?string $path): string
 {
-    return base_url() . ltrim($path, DIRECTORY_SEPARATOR);
+    return base_url() . ltrim($path, '/');
 }
 
 /**
@@ -306,7 +312,7 @@ function url(?string $path): string
  */
 function asset(string $path): string
 {
-    return config('url', base_url()) . '/public/' . trim($path, DIRECTORY_SEPARATOR);
+    return config('url', base_url()) . '/public/' . trim($path, '/');
 }
 
 /**

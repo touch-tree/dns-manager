@@ -67,7 +67,7 @@ class RouteCollection
     public function match(Request $request): ?Route
     {
         foreach ($this->routes as $route) {
-            if ($request->method() === $route->method() && preg_match(app(Router::class)::get_pattern(config('url') . ltrim($route->uri(), '/')), $request->path())) {
+            if ($request->method() === $route->method() && preg_match(app(Router::class)::get_pattern($route->uri()), $request->path())) {
                 return $route;
             }
         }

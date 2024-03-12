@@ -120,7 +120,7 @@ class View
      */
     public function render(): ?string
     {
-        $path = realpath($this->path) ?: realpath(base_path() . '/resources/views/' . str_replace('.', DIRECTORY_SEPARATOR, $this->path) . '.php');
+        $path = realpath($this->path) ?: realpath(resource_path() . '/views/' . str_replace('.', '/', $this->path) . '.php');
 
         try {
             extract($this->data);
