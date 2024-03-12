@@ -6,6 +6,6 @@ $(document).ready(function () {
 
         $('body').append($n);
 
-        setTimeout(() => $n.remove(), 10000);
+        setTimeout(() => $n.remove(), 5000);
     }
 });

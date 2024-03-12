@@ -89,7 +89,10 @@ class DashboardController
     {
         Cache::clear();
 
-        return back();
+        return back()
+            ->with('message_header', 'Cache has been cleared')
+            ->with('message_content', 'Cleared server-side cache and requested refreshed entries.')
+            ->with('message_type', 'success');
     }
 
     /**
@@ -271,6 +274,14 @@ class DashboardController
                 return back()->with_errors(
                     [
                         'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
+                    ]
+                );
+            }
+
+            if (find_object_by_properties($response['errors'], ['code' => '1105'])) {
+                return back()->with_errors(
+                    [
+                        'domain' => 'You attempted to add this domain too many times within a short period. Wait at least 3 hours and try adding it again.'
                     ]
                 );
             }

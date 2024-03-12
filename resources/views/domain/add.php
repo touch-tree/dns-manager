@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="dashboard-content">
-            <form action="<?php echo route('domain.create'); ?>" method="post" class="form js-form">
+            <form action="<?php echo route('domain.create'); ?>" method="post" class="form js-form" data-blockui-form>
                 <form action="<?php echo route('domain.create'); ?>" method="post" class="form js-form">
                     <label for="domain" class="text-input-column">
                         Domain:
@@ -37,19 +37,27 @@
                     </label>
 
                     <div class="text-input-row">
-                        <label for="root_cname_target" class="text-input-column">
+                        <label for="root_cname_target" class="text-input-column checkbox-enable">
                             Root CNAME target:
-                            <input type="text" name="root_cname_target" id="root_cname_target"
+                            <input type="text" name="root_cname_target" id="root_cname_target" readonly
                                    value="<?php echo old('root_cname_target', config('root_cname_target', '')) ?>">
+                            <label class="checkbox-enable__label">
+                                <input type="checkbox" data-enable-input="#root_cname_target">
+                                <span>Enable input field</span>
+                            </label>
                             <?php if (error('root_cname_target')) { ?>
                                 <span class="validation-text error"><?php echo error('root_cname_target') ?></span>
                             <?php } ?>
                         </label>
 
-                        <label for="sub_cname_target" class="text-input-column">
+                        <label for="sub_cname_target" class="text-input-column checkbox-enable">
                             Sub CNAME target:
-                            <input type="text" name="sub_cname_target" id="sub_cname_target"
+                            <input type="text" name="sub_cname_target" id="sub_cname_target" readonly
                                    value="<?php echo old('sub_cname_target', config('sub_cname_target', '')) ?>">
+                            <label class="checkbox-enable__label">
+                                <input type="checkbox" data-enable-input="#sub_cname_target">
+                                <span>Enable input field</span>
+                            </label>
                             <?php if (error('sub_cname_target')) { ?>
                                 <span class="validation-text error"><?php echo error('sub_cname_target') ?></span>
                             <?php } ?>

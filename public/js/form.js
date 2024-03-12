@@ -12,3 +12,8 @@ $(document).ready(function () {
         $('#pagerule_full_url').val('www.' + domainValue);
     });
 });
+
+$(document).on('click', 'input[data-enable-input]', function () {
+    const targetInput = $($(this).data('enable-input'));
+    targetInput.prop('readonly', !this.checked);
+});

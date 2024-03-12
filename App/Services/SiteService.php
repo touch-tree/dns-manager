@@ -152,7 +152,7 @@ class SiteService extends ServiceProvider
 
         return [
             'result' => $site,
-            'errors' => $site['errors'],
+            'errors' => $response['errors'],
         ];
     }
 

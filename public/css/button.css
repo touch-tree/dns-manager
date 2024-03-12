@@ -71,7 +71,7 @@
     margin-right: 5px;
 }
 
-.btn-primary:focus, .page-item.active .page-link:focus, .form-control:focus, .options-icon:focus, .btn-outline-primary:focus, input:focus {
+.btn-primary:focus, .page-item.active .page-link:focus, .form-control:focus, .options-icon:focus, .btn-outline-primary:focus, input[type="text"]:focus, input[type="search"]:focus {
     box-shadow: 0 0 0 0.2rem rgba(95, 97, 230, 0.5) !important;
     border-color: #aeaff1 !important;
 }

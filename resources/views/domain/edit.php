@@ -39,7 +39,7 @@ use App\Models\Site;
             </div>
             <div class="dashboard-content">
                 <form action="<?php echo route('domain.update', ['id' => $domain->id()]); ?>" method="post"
-                      class="form js-form">
+                      class="form js-form" data-blockui-form>
                     <div class="text-input-row">
                         <label for="root_cname_target" class="text-input-column">
                             Root CNAME target:

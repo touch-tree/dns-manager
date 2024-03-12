@@ -5,6 +5,7 @@
 
 @import url('button.css');
 @import url('form.css');
+@import url('blockui.css');
 
 * {
     box-sizing: border-box;
@@ -12,6 +13,10 @@
     padding: 0;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
+}
+
+label {
+    user-select: none;
 }
 
 .domain-name a {
@@ -273,8 +278,29 @@ input[type="search"]::-webkit-search-results-decoration {
     height: 35px;
 }
 
-input[type="text"]:disabled {
-    background-color: #f8f9fb !important;
+input[type="text"]:disabled, input[type="text"]:read-only {
+    background-color: #fafbfd !important;
+    color: #aeb6c5;
+}
+
+input[type="text"]::placeholder, input[type="search"]::placeholder {
+    color: #a4b1c5 !important;
+}
+
+.btn-secondary {
+    background-color: #7786a2;
+    border: #7786a2;
+}
+
+.btn-secondary:hover {
+    background-color: #677795 !important;
+    border: #677795 !important;
+}
+
+.btn-secondary:focus {
+    background-color: #677795 !important;
+    border: #677795 !important;
+    box-shadow: 0 0 0 .2rem rgb(188, 197, 211) !important;
 }
 
 .normal-icon i {

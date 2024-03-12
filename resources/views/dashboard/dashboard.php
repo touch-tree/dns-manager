@@ -28,7 +28,7 @@ use App\Models\Site;
                         Add a site
                     </button>
                 </a>
-                <a href="<?php echo route('domain.clear'); ?>">
+                <a href="<?php echo route('domain.clear'); ?>" data-blockui>
                     <button class="btn btn-outline-primary">
                         <i class="fa fa-refresh" aria-hidden="true"></i>
                         Refresh entries

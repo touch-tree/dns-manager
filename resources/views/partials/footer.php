@@ -9,10 +9,16 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
 
 <!-- your own scripts -->
 
+<script>
+    $ = jQuery.noConflict();
+</script>
+
 <script src="<?php echo asset('js/form.js'); ?>"></script>
+<script src="<?php echo asset('js/blockui.js'); ?>"></script>
 <script src="<?php echo asset('js/modal.js'); ?>"></script>
 <script src="<?php echo asset('js/notification.js'); ?>"></script>
 <script src="<?php echo asset('js/popup.js'); ?>"></script>

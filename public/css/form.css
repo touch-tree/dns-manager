@@ -51,7 +51,11 @@ label {
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
-.form input:focus {
+.checkbox-enable__label:hover {
+    cursor: pointer;
+}
+
+.form input[type="text"]:focus {
     box-shadow: 0 0 0 0.2rem rgba(95, 97, 230, 0.5) !important;
     border-color: #aeaff1 !important;
     color: #495057;
@@ -65,4 +69,30 @@ label {
 
 label.text-input-column:has(.validation-text.error) input {
     border-color: #ff0f11 !important;
+}
+
+.checkbox-enable input {
+    margin-top: 0;
+    vertical-align: middle;
+}
+
+input[type="checkbox"], input[type="checkbox"]:hover {
+    accent-color: #686bfe
+}
+
+.checkbox-enable .checkbox-enable__label {
+    margin-bottom: 0;
+    margin-top: 6px;
+    display: flex;
+}
+
+.checkbox-enable .checkbox-enable__label input {
+    vertical-align: middle;
+    margin-top: 0;
+}
+
+.checkbox-enable .checkbox-enable__label span {
+    margin-left: 6px;
+    vertical-align: middle;
+    font-size: 13px;
 }
