@@ -114,13 +114,65 @@ class View
     }
 
     /**
+     * Get the full path to the view file.
+     *
+     * @param string $path The path to the view file.
+     * @return string|null The full path to the view file, or null if the file does not exist.
+     */
+    public static function file(string $path): ?string
+    {
+        $resolve_path = self::resolve_path($path);
+
+        return file_exists($resolve_path) ? $resolve_path : null;
+    }
+
+    /**
+     * Check if the view file exists.
+     *
+     * @param string $path The path to the view file.
+     * @return bool True if the view file exists, otherwise false.
+     */
+    public static function exists(string $path): bool
+    {
+        return !is_null(self::file($path));
+    }
+
+    /**
+     * Get the path to the view file.
+     *
+     * @param string $path The path to the view file.
+     * @return string|null The path to the view file, or null if the file does not exist.
+     */
+    public static function path(string $path): ?string
+    {
+        return self::resolve_path($path);
+    }
+
+    /**
+     * Resolve the path to the view file.
+     *
+     * @param string $path The path to the view file.
+     * @return string|null The resolved path to the view file, or null if the file does not exist.
+     */
+    private static function resolve_path(string $path): ?string
+    {
+        $path = realpath($path) ?: realpath(resource_path() . '/views/' . str_replace('.', DIRECTORY_SEPARATOR, $path) . '.php');
+
+        return $path ?: null;
+    }
+
+    /**
      * Render the view and return the content as a string.
      *
      * @return string|null The rendered view content, or null on failure.
      */
     public function render(): ?string
     {
-        $path = realpath($this->path) ?: realpath(resource_path() . '/views/' . str_replace('.', '/', $this->path) . '.php');
+        $path = self::file($this->path);
+
+        if (is_null($path)) {
+            return null;
+        }
 
         try {
             extract($this->data);

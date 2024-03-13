@@ -9,7 +9,10 @@
 
 <body>
 
-<p>Page not found</p>
+<p>Page not found.</p>
+
+<p>Tried to access: <?php echo url()->current(); ?></p>
+<p>Base URL: <?php echo url('/'); ?></p>
 
 <?php echo view('partials.footer')->render(); ?>
 

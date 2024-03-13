@@ -4,6 +4,7 @@ namespace Framework\Http;
 
 use Error;
 use Framework\Foundation\Session;
+use Framework\Support\URL;
 use LogicException;
 
 /**
@@ -51,7 +52,7 @@ class RedirectResponse extends Response
      */
     public function back(): RedirectResponse
     {
-        $this->path = request()->headers()->get('referer') ?? base_url();
+        $this->path = request()->headers()->get('referer') ?? URL::app_url();
 
         return $this;
     }

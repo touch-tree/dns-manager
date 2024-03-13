@@ -29,18 +29,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Project Directory
-    |--------------------------------------------------------------------------
-    |
-    | The full path to the project directory of the application. Set this
-    | whenever assets are not being loaded properly. It should point to
-    | the root directory of your project.
-    |
-    */
-    'directory' => '',
-
-    /*
-    |--------------------------------------------------------------------------
     | Development Mode
     |--------------------------------------------------------------------------
     |

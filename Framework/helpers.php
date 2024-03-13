@@ -24,6 +24,7 @@ use Framework\Http\Request;
 use Framework\Http\Response;
 use Framework\Http\Server;
 use Framework\Routing\Router;
+use Framework\Support\URL;
 
 /**
  * Redirect to a specified route.
@@ -266,16 +267,6 @@ function base_path(string $path = null): string
 }
 
 /**
- * Get the Base URL of the application.
- *
- * @return string The Base URL.
- */
-function base_url(): string
-{
-    return ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_ADDR']) . '/';
-}
-
-/**
  * Generate a redirect response back to the previous page.
  *
  * This function creates a redirect response to the URL specified in the 'Referer' header
@@ -297,11 +288,11 @@ function back(): RedirectResponse
  *
  * @param string|null $path The path for the URL.
  *
- * @return string The generated URL.
+ * @return URL|string The generated URL.
  */
-function url(?string $path): string
+function url(string $path = null)
 {
-    return base_url() . ltrim($path, '/');
+    return $path ? URL::to($path) : app(URL::class);
 }
 
 /**
@@ -312,7 +303,7 @@ function url(?string $path): string
  */
 function asset(string $path): string
 {
-    return config('url', base_url()) . '/public/' . trim($path, '/');
+    return URL::to('/public/') . trim($path, '/');
 }
 
 /**

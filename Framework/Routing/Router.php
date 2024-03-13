@@ -8,6 +8,7 @@ use Framework\Foundation\View;
 use Framework\Http\JsonResponse;
 use Framework\Http\RedirectResponse;
 use Framework\Http\Request;
+use Framework\Support\URL;
 use ReflectionException;
 use ReflectionMethod;
 
@@ -56,13 +57,13 @@ class Router
             return null;
         }
 
-        $uri = $route->uri();
+        $route_uri = URL::to($route->uri(), [], true);
 
         foreach ($parameters as $key => $value) {
-            $uri = str_replace('{' . $key . '}', $value, $uri);
+            $route_uri = str_replace('{' . $key . '}', $value, $route_uri);
         }
 
-        return $uri;
+        return $route_uri;
     }
 
     /**
@@ -138,7 +139,9 @@ class Router
         try {
             [$class, $method] = $route->action();
 
-            return self::resolve_controller([app($class), $method], self::get_parameters($route->uri(), $request->request_uri()));
+            $route_uri = URL::to($route->uri(), [], true);
+
+            return self::resolve_controller([app($class), $method], self::get_parameters($route_uri, $request->request_uri()));
         } catch (Exception $exception) {
             return null;
         }

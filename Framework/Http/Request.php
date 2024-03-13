@@ -40,50 +40,6 @@ class Request
     }
 
     /**
-     * Get the HTTP method of the request.
-     *
-     * @return string The HTTP method (GET, POST, PUT, DELETE, etc.).
-     */
-    public function method(): string
-    {
-        return strtoupper($this->server->get('REQUEST_METHOD'));
-    }
-
-    /**
-     * Get the full request URI including query parameters.
-     *
-     * @return mixed|string|null The full request URI.
-     */
-    public function request_uri()
-    {
-        return $this->server->get('REQUEST_URI');
-    }
-
-    /**
-     * Get the path component of the request URI.
-     *
-     * @return array|false|int|string|null The path component of the request URI.
-     */
-    public function path()
-    {
-        return parse_url($this->request_uri(), PHP_URL_PATH);
-    }
-
-    /**
-     * Get the HTTP headers from the request.
-     *
-     * @return HeaderBag The HTTP headers.
-     */
-    public function headers(): HeaderBag
-    {
-        if (!isset($this->headers)) {
-            $this->headers = new HeaderBag(array_change_key_case(getallheaders()));
-        }
-
-        return $this->headers;
-    }
-
-    /**
      * Retrieve the value of a query parameter.
      *
      * @param string $parameter The name of the query parameter.
@@ -164,6 +120,93 @@ class Request
     public function old(string $key)
     {
         return $this->session()->get('flash.' . $key);
+    }
+
+    /**
+     * Get the HTTP method of the request.
+     *
+     * @return string The HTTP method (GET, POST, PUT, DELETE, etc.).
+     */
+    public function method(): string
+    {
+        return strtoupper($this->server->get('REQUEST_METHOD'));
+    }
+
+    /**
+     * Get the full request URI including query parameters.
+     *
+     * @return mixed|string|null The full request URI.
+     */
+    public function request_uri()
+    {
+        return $this->server->get('REQUEST_URI');
+    }
+
+    /**
+     * Get the request scheme (HTTP or HTTPS).
+     *
+     * @return string The request scheme.
+     */
+    public function scheme(): string
+    {
+        return $this->server->get('REQUEST_SCHEME') ?? 'http';
+    }
+
+    /**
+     * Get the HTTP host from the request headers. If not available, fallback to the server IP address.
+     *
+     * @return string The HTTP host or the server IP address.
+     */
+    public function host(): string
+    {
+        return $this->server->get('HTTP_HOST') ?? $this->server->get('SERVER_ADDR');
+    }
+
+    /**
+     * Get the base URL of the current request.
+     *
+     * This method constructs and returns the base URL, including the scheme (HTTP or HTTPS)
+     * and HTTP host, from the current request object, formatted as a URL.
+     *
+     * @return string The base URL formatted as a URL.
+     */
+    public function base_url(): string
+    {
+        return $this->scheme() . ':' . '/' . '/' . $this->host() . '/';
+    }
+
+    /**
+     * Determine if the request is served over HTTPS.
+     *
+     * @return bool
+     */
+    public function is_secure(): bool
+    {
+        return $this->server->get('HTTPS') === 'on';
+    }
+
+    /**
+     * Get the path component of the request URI.
+     *
+     * @return string|null The path component of the request URI.
+     */
+    public function path(): ?string
+    {
+        return parse_url($this->request_uri(), PHP_URL_PATH);
+    }
+
+    /**
+     * Get the HTTP headers from the request.
+     *
+     * @return HeaderBag The HTTP headers.
+     */
+    public function headers(): HeaderBag
+    {
+        if (!isset($this->headers)) {
+            $this->headers = new HeaderBag(array_change_key_case(getallheaders()));
+        }
+
+        return $this->headers;
     }
 
     /**
