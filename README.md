@@ -5,6 +5,7 @@ to make it easier to manage websites. You can also preset certain settings so yo
 
 ## Requirements
 - PHP version 7.4
+- opcache for PHP 7.4
 
 ## Installation
 First, navigate to your webserver's document root and clone this repo:
