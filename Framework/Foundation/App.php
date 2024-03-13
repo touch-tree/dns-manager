@@ -3,7 +3,7 @@
 namespace Framework\Foundation;
 
 /**
- * The Application class is responsible for bootstrapping our application and registering services.
+ * The Application class is responsible for bootstrapping the application and registering services.
  *
  * @package Framework\Foundation
  */

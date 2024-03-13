@@ -3,7 +3,7 @@
 namespace Framework\Http;
 
 /**
- * The Response class represents an HTTP response in a web application.
+ * The Response class represents an HTTP response in the application.
  *
  * @package Framework\Http
  */

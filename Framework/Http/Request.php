@@ -7,9 +7,8 @@ use Framework\Foundation\Session;
 use Framework\Foundation\Validator;
 
 /**
- * The Request class represents an HTTP request entity and provides methods
- * to work with query parameters. It is designed to simplify the extraction
- * of query parameters from a URL.
+ * The Request class represents an HTTP request entity and provides methods to work with query parameters.
+ * It is designed to simplify the extraction of query parameters from a URL.
  *
  * @package Framework\Http
  */

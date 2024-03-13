@@ -6,7 +6,7 @@ use Framework\Http\Request;
 use Framework\Support\URL;
 
 /**
- * This class represents a collection of routes.
+ * The RouteCollection class represents a collection of routes.
  *
  * @package Framework\Routing
  */

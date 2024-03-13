@@ -9,7 +9,7 @@
 
 <body>
 
-<?php echo view('partials.dependencies')->render(); ?>
+<?php echo view('partials.addons')->render(); ?>
 
 <div class="center-wrap">
     <div class="dashboard-container main-container">
@@ -40,7 +40,7 @@
                         <label for="root_cname_target" class="text-input-column checkbox-enable">
                             Root CNAME target:
                             <input type="text" name="root_cname_target" id="root_cname_target" readonly
-                                   value="<?php echo old('root_cname_target', config('root_cname_target', '')) ?>">
+                                   value="<?php echo old('root_cname_target', config('api.root_cname_target', '')) ?>">
                             <label class="checkbox-enable__label">
                                 <input type="checkbox" data-enable-input="#root_cname_target">
                                 <span>Enable input field</span>
@@ -53,7 +53,7 @@
                         <label for="sub_cname_target" class="text-input-column checkbox-enable">
                             Sub CNAME target:
                             <input type="text" name="sub_cname_target" id="sub_cname_target" readonly
-                                   value="<?php echo old('sub_cname_target', config('sub_cname_target', '')) ?>">
+                                   value="<?php echo old('sub_cname_target', config('api.sub_cname_target', '')) ?>">
                             <label class="checkbox-enable__label">
                                 <input type="checkbox" data-enable-input="#sub_cname_target">
                                 <span>Enable input field</span>

@@ -15,7 +15,7 @@ use App\Models\Site;
 
 <body>
 
-<?php echo view('partials.dependencies')->render(); ?>
+<?php echo view('partials.addons')->render(); ?>
 
 <div class="center-wrap">
     <div class="dashboard-container main-container">

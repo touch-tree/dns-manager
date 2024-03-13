@@ -6,7 +6,11 @@ use Framework\Foundation\Config;
 use Framework\Http\Request;
 
 /**
- * The URL class represents a utility for generating URLs.
+ * The URL class represents a utility for generating and manipulating URLs.
+ *
+ * This class provides methods for generating absolute URLs, retrieving the base URL for the application,
+ * and getting the current URL. It supports handling of query parameters and provides options to exclude
+ * the host from the generated URLs if needed.
  *
  * @package Framework\Support
  */
@@ -19,12 +23,12 @@ class URL
      */
     public static function app_url(): ?string
     {
-        $url = config('app_url');
-
+        $url = config('app.app_url');
         $document_path = realpath(server()->get('DOCUMENT_ROOT'));
         $path = str_replace('\\', '/', str_replace($document_path, '', base_path()));
+        $path = !empty($path) ? ltrim($path, '/') . '/' : '';
 
-        return !empty($url) ? $url : request()->base_url() . ltrim($path, '/') . '/';
+        return !empty($url) ? $url : request()->base_url() . $path;
     }
 
     /**s

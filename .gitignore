@@ -1,3 +1,3 @@
-config/app.php
+config/api.php
 .idea
 storage/Framework/cache/

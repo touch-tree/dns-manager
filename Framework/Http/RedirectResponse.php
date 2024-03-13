@@ -8,7 +8,7 @@ use Framework\Support\URL;
 use LogicException;
 
 /**
- * This RedirectResponse class represents a redirect response, allowing for easy redirection in a web application.
+ * This RedirectResponse class represents a redirect response.
  *
  * @package Framework\Http
  */

@@ -22,6 +22,11 @@ require_once 'routes/web.php';
 
 Session::start();
 
-Config::resolve(__DIR__ . '/config/app.php');
+Config::set_many(
+    [
+        'app' => include base_path('/config/app.php'),
+        'api' => include base_path('/config/api.php')
+    ]
+);
 
 app(Kernel::class)->handle(request());

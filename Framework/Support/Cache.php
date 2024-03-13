@@ -3,9 +3,11 @@
 namespace Framework\Support;
 
 /**
- * The Cache class provides file-based caching.
+ * The Cache class provides file-based caching for storing and retrieving data from the filesystem.
  *
- * This class allows you to store and retrieve data from files in the filesystem.
+ * This class offers methods to interact with the cache, including storing, retrieving, checking existence,
+ * and removing items from the cache. It supports setting a time-to-live (TTL) for cached items and provides methods
+ * for incrementing and decrementing cached values.
  *
  * @package Framework\Support
  */

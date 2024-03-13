@@ -7,7 +7,6 @@ use Framework\Http\HeaderBag;
 /**
  * The Http class provides a simple interface for sending HTTP requests using cURL.
  * It allows you to set custom headers and handle responses.
- * This class is designed to simplify the interaction with APIs.
  *
  * @package Framework\Foundation
  */

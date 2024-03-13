@@ -265,7 +265,7 @@ class DashboardController
         $response = $this->site_service->add_site(
             [
                 'name' => $request->input('domain'),
-                'account_id' => config('api_client_id')
+                'account_id' => config('api.api_client_id')
             ]
         );
 

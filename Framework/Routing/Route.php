@@ -3,7 +3,7 @@
 namespace Framework\Routing;
 
 /**
- * Represents a route in the application's routing system.
+ * The Route class represents a singular route in the routing system.
  *
  * @package Framework\Routing
  */

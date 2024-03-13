@@ -3,7 +3,7 @@
 namespace Framework\Http;
 
 /**
- * This class is responsible for wrapping up the object that is sent to a request in JSON format.
+ * The JsonResponse class is responsible for wrapping up the object that is sent to a request in JSON format.
  *
  * @package Framework\Http
  */

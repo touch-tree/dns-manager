@@ -26,7 +26,7 @@ class CloudflareService extends ServiceProvider
 
         $header = $header
             ->set('Content-Type', 'application/json')
-            ->set('Authorization', 'Bearer ' . config('api_token'));
+            ->set('Authorization', 'Bearer ' . config('api.api_token'));
 
         $this->http = $http::set_headers($header);
     }
@@ -74,7 +74,7 @@ class CloudflareService extends ServiceProvider
             ];
         }
 
-        return $this->http->patch(config('api_url') . '/zones/' . $id . '/dns_records/' . $dns_record['id'], $options)->json();
+        return $this->http->patch(config('api.api_url') . '/zones/' . $id . '/dns_records/' . $dns_record['id'], $options)->json();
     }
 
     /**
@@ -84,7 +84,7 @@ class CloudflareService extends ServiceProvider
      */
     public function get_sites(): array
     {
-        return $this->http->get(config('api_url') . '/zones')->json();
+        return $this->http->get(config('api.api_url') . '/zones')->json();
     }
 
     /**
@@ -95,7 +95,7 @@ class CloudflareService extends ServiceProvider
      */
     public function get_site(string $id): array
     {
-        return $this->http->get(config('api_url') . '/zones/' . $id)->json();
+        return $this->http->get(config('api.api_url') . '/zones/' . $id)->json();
     }
 
     /**
@@ -106,7 +106,7 @@ class CloudflareService extends ServiceProvider
      */
     public function add_site(array $options): array
     {
-        return $this->http->post(config('api_url') . '/zones/', $options)->json();
+        return $this->http->post(config('api.api_url') . '/zones/', $options)->json();
     }
 
     /**
@@ -118,7 +118,7 @@ class CloudflareService extends ServiceProvider
      */
     public function set_ssl(string $id, array $options): array
     {
-        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/ssl', $options)->json();
+        return $this->http->patch(config('api.api_url') . '/zones/' . $id . '/settings/ssl', $options)->json();
     }
 
     /**
@@ -130,7 +130,7 @@ class CloudflareService extends ServiceProvider
      */
     public function set_https(string $id, array $options): array
     {
-        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/always_use_https', $options)->json();
+        return $this->http->patch(config('api.api_url') . '/zones/' . $id . '/settings/always_use_https', $options)->json();
     }
 
     /**
@@ -142,7 +142,7 @@ class CloudflareService extends ServiceProvider
      */
     public function set_pseudo_ip(string $id, array $options): array
     {
-        return $this->http->patch(config('api_url') . '/zones/' . $id . '/settings/pseudo_ipv4', $options)->json();
+        return $this->http->patch(config('api.api_url') . '/zones/' . $id . '/settings/pseudo_ipv4', $options)->json();
     }
 
     /**
@@ -153,7 +153,7 @@ class CloudflareService extends ServiceProvider
      */
     public function get_dns_records(string $id): array
     {
-        return $this->http->get(config('api_url') . '/zones/' . $id . '/dns_records')->json();
+        return $this->http->get(config('api.api_url') . '/zones/' . $id . '/dns_records')->json();
     }
 
     /**
@@ -165,7 +165,7 @@ class CloudflareService extends ServiceProvider
      */
     public function delete_dns_record(string $id, string $dns_record_id): array
     {
-        return $this->http->delete(config('api_url') . '/zones/' . $id . '/dns_records/' . $dns_record_id)->json();
+        return $this->http->delete(config('api.api_url') . '/zones/' . $id . '/dns_records/' . $dns_record_id)->json();
     }
 
     /**
@@ -177,7 +177,7 @@ class CloudflareService extends ServiceProvider
      */
     public function add_dns_record(string $id, array $options): array
     {
-        return $this->http->post(config('api_url') . '/zones/' . $id . '/dns_records', $options)->json();
+        return $this->http->post(config('api.api_url') . '/zones/' . $id . '/dns_records', $options)->json();
     }
 
     /**
@@ -189,7 +189,7 @@ class CloudflareService extends ServiceProvider
      */
     public function add_pagerule(string $id, array $options): array
     {
-        return $this->http->post(config('api_url') . '/zones/' . $id . '/pagerules', $options)->json();
+        return $this->http->post(config('api.api_url') . '/zones/' . $id . '/pagerules', $options)->json();
     }
 
     /**
@@ -201,7 +201,7 @@ class CloudflareService extends ServiceProvider
      */
     public function get_pagerule(string $id, string $pagerule_id): ?array
     {
-        return $this->http->get(config('api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id)->json();
+        return $this->http->get(config('api.api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id)->json();
     }
 
     /**
@@ -212,7 +212,7 @@ class CloudflareService extends ServiceProvider
      */
     public function get_pagerules(string $id): ?array
     {
-        return $this->http->get(config('api_url') . '/zones/' . $id . '/pagerules')->json();
+        return $this->http->get(config('api.api_url') . '/zones/' . $id . '/pagerules')->json();
     }
 
     /**
@@ -225,7 +225,7 @@ class CloudflareService extends ServiceProvider
      */
     public function update_pagerule(string $id, string $pagerule_id, array $options): array
     {
-        return $this->http->patch(config('api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id, $options)->json();
+        return $this->http->patch(config('api.api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id, $options)->json();
     }
 
     /**
@@ -237,7 +237,7 @@ class CloudflareService extends ServiceProvider
      */
     public function delete_pagerule(string $id, string $pagerule_id): array
     {
-        return $this->http->delete(config('api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id)->json();
+        return $this->http->delete(config('api.api_url') . '/zones/' . $id . '/pagerules/' . $pagerule_id)->json();
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Framework\Foundation;
 
+use Framework\Support\Collector;
+
 /**
  * The Session class provides a simple interface for working with session data.
  * It includes methods for flashing data, retrieving data, and checking if a
@@ -12,7 +14,7 @@ namespace Framework\Foundation;
 class Session
 {
     /**
-     * Flash a key-value pair to the session.
+     * Flash a key-value pair to the session using 'dot' notation.
      *
      * @param string $key The key to flash to the session.
      * @param mixed $value The value to associate with the key.
@@ -20,13 +22,13 @@ class Session
      */
     public function flash(string $key, $value): Session
     {
-        $this->put('flash.' . $key, $value);
+        Collector::set($_SESSION, 'flash.' . $key, $value);
 
-        return $this;
+        return new self();
     }
 
     /**
-     * Get the value of a key from the session and remove it.
+     * Get the value of a key from the session and remove it using 'dot' notation.
      *
      * @param string $key The key to retrieve and remove from the session.
      * @param mixed $default The default value to return if the key is not found.
@@ -36,13 +38,13 @@ class Session
     {
         $value = $this->get($key, $default);
 
-        unset($_SESSION[$key]);
+        Collector::forget($_SESSION, $key);
 
         return $value;
     }
 
     /**
-     * Get the value of a key from the session.
+     * Get the value of a key from the session using 'dot' notation.
      *
      * @param string $key The key to retrieve from the session.
      * @param mixed $default The default value to return if the key is not found.
@@ -50,22 +52,11 @@ class Session
      */
     public function get(string $key, $default = null)
     {
-        $keys = explode('.', $key);
-        $current = $_SESSION;
-
-        foreach ($keys as $nested_key) {
-            if (is_array($current) && array_key_exists($nested_key, $current)) {
-                $current = $current[$nested_key];
-            } else {
-                return $default;
-            }
-        }
-
-        return $current;
+        return Collector::get($_SESSION, $key, $default);
     }
 
     /**
-     * Set a key-value pair or multiple key-value pairs in the session.
+     * Set a key-value pair or multiple key-value pairs in the session using 'dot' notation.
      *
      * @param string|array $key The key or array of key-value pairs to set in the session.
      * @param mixed $value The value to associate with the key if a single key is provided.
@@ -74,27 +65,12 @@ class Session
     public function put($key, $value = null): Session
     {
         if (is_string($key) && !is_null($value)) {
-            $keys = explode('.', $key);
-            $current = &$_SESSION;
-
-            foreach ($keys as $nested_key) {
-                if (!is_array($current)) {
-                    $current = [];
-                }
-
-                if (!isset($current[$nested_key])) {
-                    $current[$nested_key] = [];
-                }
-
-                $current = &$current[$nested_key];
-            }
-
-            $current = $value;
+            Collector::set($_SESSION, $key, $value);
         }
 
         if (is_array($key) && is_null($value)) {
-            foreach ($key as $k => $v) {
-                $_SESSION[$k] = $v;
+            foreach ($key as $_key => $value) {
+                Collector::set($_SESSION, $_key, $value);
             }
         }
 
@@ -102,32 +78,32 @@ class Session
     }
 
     /**
-     * Determine if a key exists in the session.
+     * Determine if a key exists in the session using 'dot' notation.
      *
      * @param string $key The key to check for existence in the session.
      * @return bool True if the key exists in the session, false otherwise.
      */
     public function has(string $key): bool
     {
-        return isset($_SESSION[$key]);
+        return Collector::has($_SESSION, $key);
     }
 
     /**
-     * Remove a key from the session.
+     * Remove one or more array items from the session using 'dot' notation.
      *
-     * @param string|array $key The key to remove from the session.
+     * @param string|array $key The key or array of keys to remove from the session.
      * @return Session The current Session instance.
      */
     public function forget($key): Session
     {
-        if (is_string($key)) {
-            unset($_SESSION[$key]);
+        if (is_array($key)) {
+            foreach ($key as $_key) {
+                Collector::forget($_SESSION, $_key);
+            }
         }
 
-        if (is_array($key)) {
-            foreach ($key as $k) {
-                unset($_SESSION[$k]);
-            }
+        if (is_string($key)) {
+            Collector::forget($_SESSION, $key);
         }
 
         return $this;

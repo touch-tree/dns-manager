@@ -13,8 +13,9 @@ use ReflectionException;
 use ReflectionMethod;
 
 /**
- * The Router class provides a simple and flexible way to define and handle
- * routes in your application. It supports GET and POST routes, route naming,
+ * The Router class provides a simple way to define and handle routes in the application.
+ *
+ * This class offers support for routes based on HTTP method, route naming,
  * and parameter extraction from URLs.
  *
  * @package Framework\Routing
@@ -22,7 +23,7 @@ use ReflectionMethod;
 class Router
 {
     /**
-     * RouteCollection instance containing routes of this application.
+     * RouteCollection instance containing routes of the application.
      *
      * @var RouteCollection
      */

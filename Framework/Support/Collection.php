@@ -3,11 +3,13 @@
 namespace Framework\Support;
 
 /**
- * The Collection class represents a collection of items.
+ * The Collection class represents a generic collection of items.
  *
- * This class provides a set of methods to manipulate and interact with the collection's items.
+ * This class provides a set of methods to manipulate and interact with the collection's items,
+ * such as retrieving, setting, and removing items, as well as applying transformations and filters.
+ * It supports iteration, mapping, filtering, and retrieval of the first and last items in the collection.
  *
- * @template T
+ * @template T The type of items in the collection.
  * @package Framework\Support
  */
 class Collection

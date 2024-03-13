@@ -3,6 +3,7 @@
 namespace Framework\Foundation;
 
 use Error;
+use Framework\Support\Collector;
 
 /**
  * The Config class provides a simple configuration management system.
@@ -16,32 +17,7 @@ class Config
      *
      * @var array
      */
-    private static array $config = [];
-
-    /**
-     * Load the configuration values from the file.
-     *
-     * @param string $path
-     * @return void
-     *
-     * @throws Error Unable to find config file.
-     */
-    public static function resolve(string $path)
-    {
-        if (!file_exists($path)) {
-            throw new Error('Unable to import configuration due to not being able to find file: ' . $path);
-        }
-
-        $config = @include $path;
-
-        foreach ($config as $key => $value) {
-            if (!empty($value)) {
-                $config[$key] = $value;
-            }
-        }
-
-        self::$config = array_merge(self::$config, $config);
-    }
+    private static array $items = [];
 
     /**
      * Get the entire configuration array.
@@ -50,17 +26,19 @@ class Config
      */
     public static function all(): array
     {
-        return self::$config;
+        return self::$items;
     }
 
     /**
      * Set multiple configuration values at runtime.
      *
-     * @param array $values
+     * @param array $keys
      */
-    public static function set_many(array $values)
+    public static function set_many(array $keys)
     {
-        self::$config = array_merge(self::$config, $values);
+        foreach ($keys as $key => $value) {
+            Collector::set(self::$items, $key, $value);
+        }
     }
 
     /**
@@ -72,7 +50,7 @@ class Config
      */
     public static function get(string $key, $default = null)
     {
-        return self::$config[$key] ?? $default;
+        return Collector::get(self::$items, $key, $default);
     }
 
     /**
@@ -83,7 +61,7 @@ class Config
      */
     public static function has(string $key): bool
     {
-        return isset(self::$config[$key]);
+        return Collector::has(self::$items, $key);
     }
 
     /**
@@ -95,7 +73,7 @@ class Config
      */
     public static function set(string $key, $value): Config
     {
-        self::$config[$key] = $value;
+        Collector::set(self::$items, $key, $value);
 
         return new self();
     }

@@ -2,14 +2,10 @@
 
 /*
 |--------------------------------------------------------------------------
-| Application Configuration
+| API Configuration
 |--------------------------------------------------------------------------
 |
-| This file contains configuration settings for your application,
-| including the base URL, project directory, development mode, and API details.
 | Ensure that the provided API token and client ID have the necessary permissions.
-|
-| For more information, refer to the config function in Base.php.
 |
 |--------------------------------------------------------------------------
 */
@@ -17,36 +13,14 @@
 return [
 
     /*
-    |--------------------------------------------------------------------------
-    | Base URL
-    |--------------------------------------------------------------------------
-    |
-    | This value sets the base URL of the application. If provided, it should
-    | be the full URL, including the protocol. Leave empty for a relative URL.
-    |
-    */
-    'url' => '',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Development Mode
-    |--------------------------------------------------------------------------
-    |
-    | Set this to true for development, and false for production. It controls
-    | whether the application is in development mode or not.
-    |
-    */
-    'development_mode' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | API Token
-    |--------------------------------------------------------------------------
-    |
-    | The API token for authentication. Make sure the token contains the
-    | necessary permissions for the application to function properly.
-    |
-    */
+     |--------------------------------------------------------------------------
+     | API Token
+     |--------------------------------------------------------------------------
+     |
+     | The API token for authentication. Make sure the token contains the
+     | necessary permissions for the application to function properly.
+     |
+     */
     'api_token' => '',
 
     /*
