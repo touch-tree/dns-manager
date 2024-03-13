@@ -157,13 +157,13 @@ class Collector
         $results = [];
 
         foreach ($array as $item) {
-            $itemValue = is_array($item) ? static::get($item, $value) : null;
+            $item_value = is_array($item) ? static::get($item, $value) : null;
 
             if (is_null($key)) {
-                $results[] = $itemValue;
+                $results[] = $item_value;
             } else {
-                $itemKey = is_array($item) ? static::get($item, $key) : null;
-                $results[$itemKey] = $itemValue;
+                $item_key = is_array($item) ? static::get($item, $key) : null;
+                $results[$item_key] = $item_value;
             }
         }
 
