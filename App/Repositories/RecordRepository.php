@@ -41,12 +41,12 @@ class RecordRepository
      */
     public function all(string $id): Collection
     {
-        $records = Cache::get('cache.dns_records');
+        $records = Cache::get('dns_records');
 
         if (!$records) {
             $records = $this->record_service->get_dns_records($id);
 
-            Cache::put('cache.dns_records', $records, 3600);
+            Cache::put('dns_records', $records, 3600);
         }
 
         return $this->dns_records = $records;

@@ -42,12 +42,12 @@ class SiteRepository
      */
     public function import()
     {
-        $sites = Cache::get('cache.sites');
+        $sites = Cache::get('sites');
 
         if (!$sites) {
             $sites = $this->site_service->get_sites();
 
-            Cache::put('cache.sites', $sites, 3600);
+            Cache::put('sites', $sites, 3600);
         }
 
         $this->sites = $sites;
