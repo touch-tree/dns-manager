@@ -248,6 +248,6 @@ class CloudflareService extends ServiceProvider
      */
     public function check_nameservers(string $id): array
     {
-        return $this->http->put(config('api_url') . '/zones/' . $id . '/activation_check')->json();
+        return $this->http->put(config('api.api_url') . '/zones/' . $id . '/activation_check')->json();
     }
 }
