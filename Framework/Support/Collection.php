@@ -9,7 +9,7 @@ namespace Framework\Support;
  * such as retrieving, setting, and removing items, as well as applying transformations and filters.
  * It supports iteration, mapping, filtering, and retrieval of the first and last items in the collection.
  *
- * @template T The type of items in the collection.
+ * @template T
  * @package Framework\Support
  */
 class Collection

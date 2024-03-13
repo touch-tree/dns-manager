@@ -76,11 +76,7 @@ use App\Models\Site;
                                     ?>
                                 </td>
                                 <td class="domain-status">
-                                    <?php
-                                    $status = strtoupper($domain->status());
-
-                                    echo $status;
-                                    ?>
+                                    <?php echo $status = strtoupper($domain->status()); ?>
                                 </td>
                                 <td class="created-on"><?php echo date('Y-m-d H:i:s', strtotime($domain->created_on())); ?></td>
                                 <td class="options-action">
