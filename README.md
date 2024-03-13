@@ -1,6 +1,6 @@
 # @cloudflare-panel
 
-An website management platform that provides DNS management, SSL and TLS configuration, pagerule configuration and URL forwarding and redirections
+A website management platform that provides DNS management, SSL and TLS configuration, pagerule configuration and URL forwarding and redirections
 to make it easier to manage websites. You can also preset certain settings so you don't have to configure settings that are default for each website.
 
 ## Requirements
