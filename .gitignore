@@ -1,2 +1,3 @@
 config/app.php
 .idea
+storage/Framework/cache/

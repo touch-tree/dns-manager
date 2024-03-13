@@ -66,9 +66,9 @@ function view(string $path, array $data = []): View
  * Get path to 'resources' directory.
  *
  * @param string|null $path
- * @return false|string
+ * @return string
  */
-function resource_path(string $path = null)
+function resource_path(string $path = null): string
 {
     $resource = 'resources/';
 
@@ -76,7 +76,24 @@ function resource_path(string $path = null)
         $resource .= ltrim($path);
     }
 
-    return realpath(base_path($resource));
+    return base_path($resource);
+}
+
+/**
+ * Get path to 'storage' directory.
+ *
+ * @param string|null $path
+ * @return string
+ */
+function storage_path(string $path = null): string
+{
+    $storage = 'storage/';
+
+    if ($path) {
+        $storage .= ltrim($path);
+    }
+
+    return base_path($storage);
 }
 
 /**

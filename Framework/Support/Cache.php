@@ -3,12 +3,9 @@
 namespace Framework\Support;
 
 /**
- * The Cache class provides caching using the APCu extension.
+ * The Cache class provides file-based caching.
  *
- * This class allows you to store and retrieve data from the APCu cache in shared memory.
- *
- * This class should be used in environments where the APCu extension is available and enabled.
- * Ensure that APCu is installed and configured in your PHP environment before using this class.
+ * This class allows you to store and retrieve data from files in the filesystem.
  *
  * @package Framework\Support
  */
@@ -23,9 +20,27 @@ class Cache
      */
     public static function get(string $key, $default = null)
     {
-        $result = apcu_fetch($key, $success);
+        if (!file_exists($file = self::get_cache_file($key))) {
+            return $default;
+        }
 
-        return $success ? $result : $default;
+        if (self::is_expired($cached = unserialize(file_get_contents($file)))) {
+            self::forget($key);
+            return $default;
+        }
+
+        return $cached['value'];
+    }
+
+    /**
+     * Check if a cached item is expired.
+     *
+     * @param array $cached The cached item data.
+     * @return bool True if the item is expired, false otherwise.
+     */
+    private static function is_expired(array $cached): bool
+    {
+        return $cached['expires'] > 0 && $cached['expires'] < time();
     }
 
     /**
@@ -38,7 +53,18 @@ class Cache
      */
     public static function put(string $key, $value, int $ttl)
     {
-        apcu_store($key, $value, $ttl);
+        $file = self::get_cache_file($key);
+
+        if (!file_exists($file)) {
+            touch($file);
+        }
+
+        file_put_contents($file, serialize(
+            [
+                'expires' => $ttl > 0 ? time() + $ttl : 0,
+                'value' => $value,
+            ]
+        ));
     }
 
     /**
@@ -49,7 +75,7 @@ class Cache
      */
     public static function has(string $key): bool
     {
-        return apcu_exists($key);
+        return file_exists(self::get_cache_file($key));
     }
 
     /**
@@ -60,7 +86,11 @@ class Cache
      */
     public static function forget(string $key): bool
     {
-        return apcu_delete($key);
+        if (file_exists($file = self::get_cache_file($key))) {
+            return unlink($file);
+        }
+
+        return false;
     }
 
     /**
@@ -72,7 +102,9 @@ class Cache
      */
     public static function increment(string $key, int $value = 1)
     {
-        return apcu_inc($key, $value);
+        self::put($key, $new = self::get($key, 0) + $value, 0);
+
+        return $new;
     }
 
     /**
@@ -84,16 +116,35 @@ class Cache
      */
     public static function decrement(string $key, int $value = 1)
     {
-        return apcu_dec($key, $value);
+        return self::increment($key, -$value);
     }
 
     /**
-     * Clear all entries from the APCu cache.
+     * Clear all entries from the cache.
      *
      * @return void
      */
     public static function clear()
     {
-        apcu_clear_cache();
+        foreach (glob(storage_path('Framework/cache') . '/*.cache') as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+    }
+
+    /**
+     * Get the filename for the cache key.
+     *
+     * @param string $key The cache key.
+     * @return string The filename for the cache key.
+     */
+    protected static function get_cache_file(string $key): string
+    {
+        if (!file_exists($path = storage_path('Framework/cache'))) {
+            mkdir($path, 0777, true);
+        }
+
+        return $path . '/' . md5($key) . '.cache';
     }
 }
