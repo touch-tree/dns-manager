@@ -35,5 +35,5 @@ For the `php.ini` we need to enable the extension opcache.
 
 ## Additional Notes
 
-- The api_token inside of `api.php` needs to have sufficient rights and permissions to make changes to zones. See [API token permissions](https://developers.cloudflare.com/fundamentals/api/reference/permissions/).
+- The api_token inside of `api.php` needs to have sufficient rights and permissions to make changes to zones. See [permissions](https://developers.cloudflare.com/fundamentals/api/reference/permissions/).
 - This application relies on opcache. See [opcache installation](https://www.php.net/manual/en/opcache.installation.php).
