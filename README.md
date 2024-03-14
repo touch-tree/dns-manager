@@ -3,6 +3,8 @@
 A website management platform that provides DNS management, SSL and TLS configuration, pagerule configuration and URL forwarding and redirections
 to make it easier to manage websites. You can also preset certain settings so you don't have to configure settings that are default for each website.
 
+This application is build upon the [echtyushi/framework-template](https://github.com/echtyushi/framework-template/tree/master) framework.
+
 ## Requirements
 - PHP version 7.4
 - opcache for PHP 7.4
