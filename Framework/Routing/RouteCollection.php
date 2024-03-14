@@ -6,23 +6,26 @@ use Framework\Http\Request;
 use Framework\Support\URL;
 
 /**
- * The RouteCollection class represents a collection of routes.
+ * The RouteCollection class represents a collection of routes in the routing system.
+ *
+ * This class manages a collection of routes, allowing for the addition,
+ * retrieval, and matching of routes based on incoming requests.
  *
  * @package Framework\Routing
  */
 class RouteCollection
 {
     /**
-     * Routes of this application.
+     * The routes registered in this collection.
      *
-     * @var Route[]
+     * @var array<Route>
      */
     private array $routes = [];
 
     /**
-     * Get all routes.
+     * Get all routes registered in the collection.
      *
-     * @return Route[]
+     * @return array<Route> An array of Route objects.
      */
     public function all(): array
     {
@@ -30,9 +33,9 @@ class RouteCollection
     }
 
     /**
-     * Add route.
+     * Add a route to the collection.
      *
-     * @param Route $route
+     * @param Route $route The route to be added.
      * @return $this
      */
     public function add(Route $route): RouteCollection
@@ -43,10 +46,10 @@ class RouteCollection
     }
 
     /**
-     * Get route.
+     * Get a route from the collection by its name.
      *
-     * @param string $key
-     * @return Route|null
+     * @param string $key The name of the route to retrieve.
+     * @return Route|null The Route object if found, otherwise null.
      */
     public function get(string $key): ?Route
     {
@@ -60,10 +63,10 @@ class RouteCollection
     }
 
     /**
-     * Match a route with request.
+     * Match an incoming request to a route in the collection.
      *
-     * @param Request $request
-     * @return Route|null
+     * @param Request $request The incoming HTTP request.
+     * @return Route|null The matched Route object if found, otherwise null.
      */
     public function match(Request $request): ?Route
     {

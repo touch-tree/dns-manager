@@ -49,7 +49,7 @@ class Validator
     /**
      * Validates the data based on the specified rules.
      *
-     * @return bool True if validation passes, false otherwise.
+     * @return bool true if validation passes, false otherwise.
      *
      * @throws Exception If an unsupported validation rule is encountered.
      */
@@ -67,7 +67,7 @@ class Validator
      *
      * @param string $field The field to validate.
      * @param string $rule The validation rule to apply.
-     * @return bool
+     * @return bool true if the field passes the rule, false otherwise.
      *
      * @throws Exception If an unsupported validation rule is encountered.
      */
@@ -112,9 +112,9 @@ class Validator
     }
 
     /**
-     * Retrieves the errors.
+     * Retrieves the validation errors.
      *
-     * @return ParameterBag
+     * @return ParameterBag The collection of validation errors.
      */
     public function errors(): ParameterBag
     {
@@ -125,7 +125,7 @@ class Validator
      * Validates that the specified field is required and not empty.
      *
      * @param string $field The field to validate.
-     * @return bool True if the validation passes, false otherwise.
+     * @return bool true if the validation passes, false otherwise.
      */
     protected function is_required(string $field): bool
     {
@@ -143,7 +143,7 @@ class Validator
      * Validates that the specified field contains only letters (alphabetic characters).
      *
      * @param string $field The field to validate.
-     * @return bool True if the validation passes, false otherwise.
+     * @return bool true if the validation passes, false otherwise.
      */
     protected function is_alpha(string $field): bool
     {
@@ -161,7 +161,7 @@ class Validator
      * Validates that the specified field contains only alphanumeric characters.
      *
      * @param string $field The field to validate.
-     * @return bool True if the validation passes, false otherwise.
+     * @return bool true if the validation passes, false otherwise.
      */
     protected function is_alpha_num(string $field): bool
     {
@@ -179,7 +179,7 @@ class Validator
      * Validates that the specified field is a string.
      *
      * @param string $field The field to validate.
-     * @return bool True if the validation passes, false otherwise.
+     * @return bool true if the validation passes, false otherwise.
      */
     protected function is_string(string $field): bool
     {
@@ -197,7 +197,7 @@ class Validator
      * Validates that the specified field is numeric.
      *
      * @param string $field The field to validate.
-     * @return bool True if the validation passes, false otherwise.
+     * @return bool true if the validation passes, false otherwise.
      */
     protected function is_numeric(string $field): bool
     {
@@ -215,7 +215,7 @@ class Validator
      * Validates that the specified field is a valid email address.
      *
      * @param string $field The field to validate.
-     * @return bool True if the validation passes, false otherwise.
+     * @return bool true if the validation passes, false otherwise.
      */
     protected function is_email(string $field): bool
     {

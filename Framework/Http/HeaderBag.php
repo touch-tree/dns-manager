@@ -5,7 +5,9 @@ namespace Framework\Http;
 use Framework\Foundation\ParameterBag;
 
 /**
- * The HeaderBag class represents an HTTP header.
+ * The HeaderBag class represents a collection of HTTP headers.
+ *
+ * This class provides methods to manipulate HTTP headers easily.
  *
  * @package Framework\Http
  */
@@ -14,7 +16,7 @@ class HeaderBag extends ParameterBag
     /**
      * HeaderBag constructor.
      *
-     * @param array $headers
+     * @param array $headers [optional] An associative array of headers.
      */
     public function __construct(array $headers = [])
     {
@@ -22,7 +24,7 @@ class HeaderBag extends ParameterBag
     }
 
     /**
-     * Get all headers.
+     * Retrieves all headers.
      *
      * @return array An associative array of headers.
      */
@@ -32,10 +34,10 @@ class HeaderBag extends ParameterBag
     }
 
     /**
-     * Get the value of a header.
+     * Retrieves the value of a header.
      *
      * @param string $key The header key.
-     * @param mixed $default The default value if the header is not set.
+     * @param mixed $default [optional] The default value if the header is not set.
      * @return mixed The header value or the default value if the header is not set.
      */
     public function get(string $key, $default = null)
@@ -44,7 +46,7 @@ class HeaderBag extends ParameterBag
     }
 
     /**
-     * Set a header.
+     * Sets a header.
      *
      * @param string $key The header key.
      * @param mixed $value The header value.
@@ -58,10 +60,10 @@ class HeaderBag extends ParameterBag
     }
 
     /**
-     * Check if a header exists.
+     * Checks if a header exists.
      *
      * @param string $key The header key.
-     * @return bool True if the header exists, false otherwise.
+     * @return bool true if the header exists, false otherwise.
      */
     public function has(string $key): bool
     {
@@ -69,11 +71,11 @@ class HeaderBag extends ParameterBag
     }
 
     /**
-     * Remove a header.
+     * Removes a header.
      *
      * @param string $key The header key.
      */
-    public function remove(string $key)
+    public function remove(string $key): void
     {
         parent::remove($key);
     }

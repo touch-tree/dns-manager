@@ -15,8 +15,9 @@ use ReflectionMethod;
 /**
  * The Router class provides a simple way to define and handle routes in the application.
  *
- * This class offers support for routes based on HTTP method, route naming,
- * and parameter extraction from URLs.
+ * This class provides support for routes based on HTTP method, route naming,
+ * and parameter extraction from URLs. It allows for route registration, naming,
+ * matching incoming requests to registered routes, and dispatching associated controller actions.
  *
  * @package Framework\Routing
  */
@@ -30,9 +31,9 @@ class Router
     private static RouteCollection $routes;
 
     /**
-     * Get every registered route as a RouteCollection of this application.
+     * Get the RouteCollection instance containing all registered routes.
      *
-     * @return RouteCollection
+     * @return RouteCollection The RouteCollection instance.
      */
     public static function routes(): RouteCollection
     {
@@ -44,11 +45,11 @@ class Router
     }
 
     /**
-     * Get URL for a named route.
+     * Get the URL for a named route with parameters applied.
      *
      * @param string $name The name of the route.
      * @param array $parameters Associative array of route parameters.
-     * @return string|null The URL for the named route with parameters applied.
+     * @return string|null The URL for the named route with parameters applied, or null if route not found.
      */
     public static function route(string $name, array $parameters = []): ?string
     {
@@ -68,11 +69,11 @@ class Router
     }
 
     /**
-     * Set a GET route.
+     * Register a GET route.
      *
      * @param string $uri The URI pattern for the route.
      * @param array $action An array representing the controller and method to be called for this route.
-     * @return Router
+     * @return Router The Router instance.
      */
     public static function get(string $uri, array $action): Router
     {
@@ -80,11 +81,11 @@ class Router
     }
 
     /**
-     * Set a POST route.
+     * Register a POST route.
      *
      * @param string $uri The URI pattern for the route.
-     * @param string[] $action An array representing the controller and method to be called for this route.
-     * @return Router
+     * @param array $action An array representing the controller and method to be called for this route.
+     * @return Router The Router instance.
      */
     public static function post(string $uri, array $action): Router
     {
@@ -96,8 +97,8 @@ class Router
      *
      * @param string $method The HTTP method for the route.
      * @param string $uri The URI pattern for the route.
-     * @param string[] $action An array representing the controller and method to be called for this route.
-     * @return Router
+     * @param array $action An array representing the controller and method to be called for this route.
+     * @return Router The Router instance.
      */
     private static function add_route(string $method, string $uri, array $action): Router
     {
@@ -110,24 +111,23 @@ class Router
      * Set a name for a route.
      *
      * @param string $name The name for the route.
-     * @return $this
+     * @return $this The current Router instance.
      *
      * @throws Error If a duplicate route name is detected.
      */
     public function name(string $name): Router
     {
         $route = self::routes()->all()[count(self::routes()->all()) - 1];
-
         $route->set_name($name);
 
         return $this;
     }
 
     /**
-     * Resolve the matching route and dispatch the associated controller action and parameters.
+     * Resolve the matching route and dispatch the associated controller action with parameters.
      *
      * @param Request $request The current request.
-     * @return View|RedirectResponse|JsonResponse|null True if a matching route was found and resolved, false otherwise.
+     * @return View|RedirectResponse|JsonResponse|null The result of invoking the controller method, or null if no route matches request.
      */
     public static function dispatch(Request $request)
     {
@@ -155,8 +155,7 @@ class Router
      * @param array $parameters Associative array of parameters.
      * @return View|RedirectResponse|JsonResponse|null The result of invoking the controller method.
      *
-     * @throws Error
-     * @throws ReflectionException
+     * @throws ReflectionException If an error occurs during reflection.
      */
     private static function resolve_controller(array $action, array $parameters)
     {
@@ -168,7 +167,7 @@ class Router
             $type = $param->getType();
 
             if (!$type) {
-                throw new Error('Type hint must be set for ' . $name . ' in ' . $param->getDeclaringClass()->name);
+                continue;
             }
 
             if ($type->getName() == Request::class) {
@@ -188,7 +187,7 @@ class Router
     }
 
     /**
-     * Get route parameters from the URL using the corresponding route.
+     * Get route parameters from the URL using the corresponding route pattern.
      *
      * @param string $route_url The URL pattern of the route.
      * @param string $url The actual URL.
@@ -206,10 +205,10 @@ class Router
     }
 
     /**
-     * Get route pattern.
+     * Get the regex pattern for the route URL.
      *
      * @param string $route_url The URL pattern of the route.
-     * @return string The regex pattern for the route.
+     * @return string The regex pattern for the route URL.
      */
     public static function get_pattern(string $route_url): string
     {

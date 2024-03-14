@@ -5,6 +5,9 @@ namespace Framework\Routing;
 /**
  * The Route class represents a singular route in the routing system.
  *
+ * This class encapsulates information about a single route, including its URI pattern,
+ * associated HTTP method, and the action to be taken when the route is matched.
+ *
  * @package Framework\Routing
  */
 class Route
@@ -12,33 +15,33 @@ class Route
     /**
      * The URI pattern for the route.
      *
-     * @var string $uri
+     * @var string
      */
     protected string $uri;
 
     /**
      * The HTTP method associated with the route.
      *
-     * @var string $method
+     * @var string
      */
     protected string $method;
 
     /**
      * The action to be taken when the route is matched.
      *
-     * @var array $action
+     * @var array
      */
     protected array $action;
 
     /**
-     * Route name
+     * The name of the route.
      *
      * @var string|null
      */
     protected ?string $name;
 
     /**
-     * Router constructor.
+     * Route constructor.
      *
      * @param string $uri The URI pattern for the route.
      * @param string $method The HTTP method associated with the route.
@@ -49,7 +52,6 @@ class Route
         $this->uri = $uri;
         $this->method = $method;
         $this->action = $action;
-
         $this->name = null;
     }
 
@@ -84,9 +86,9 @@ class Route
     }
 
     /**
-     * Set route name.
+     * Set the name of the route.
      *
-     * @param string $name
+     * @param string $name The name of the route.
      * @return $this
      */
     public function set_name(string $name): Route
@@ -97,9 +99,9 @@ class Route
     }
 
     /**
-     * Get route name.
+     * Get the name of the route.
      *
-     * @return string|null
+     * @return string|null The name of the route, or null if not set.
      */
     public function name(): ?string
     {

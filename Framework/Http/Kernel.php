@@ -6,8 +6,9 @@ use Framework\Foundation\View;
 use Framework\Routing\Router;
 
 /**
- * The Kernel class is the central component of our application responsible for handling HTTP requests
- * and preparing responses, including middleware processing and event emits.
+ * The Kernel class is the central HTTP component of the application.
+ *
+ * This class is responsible for handling HTTP requests and preparing responses, including middleware processing and event emits.
  *
  * @package Framework\Http
  */
@@ -23,7 +24,7 @@ class Kernel
     /**
      * Kernel constructor.
      *
-     * @param Router $router
+     * @param Router $router The router instance.
      */
     public function __construct(Router $router)
     {
@@ -31,10 +32,10 @@ class Kernel
     }
 
     /**
-     * Handle HTTP request.
+     * Handle an incoming HTTP request.
      *
      * @param Request $request The incoming HTTP request to be handled.
-     * @return Response|null
+     * @return Response|null The response to the request, or null if no response is generated.
      */
     public function handle(Request $request): ?Response
     {
@@ -65,7 +66,7 @@ class Kernel
      *
      * @param Request $request The HTTP request object.
      * @param View|RedirectResponse|JsonResponse|null $response The response to be prepared.
-     * @return Response|null
+     * @return Response|null The prepared response object, or null if no valid response is generated.
      */
     private function prepare_response(Request $request, $response): ?Response
     {

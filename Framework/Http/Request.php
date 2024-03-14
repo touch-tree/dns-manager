@@ -8,7 +8,9 @@ use Framework\Foundation\Validator;
 
 /**
  * The Request class represents an HTTP request entity and provides methods to work with query parameters.
- * It is designed to simplify the extraction of query parameters from a URL.
+ *
+ * This class provides methods to easier retrieve query parameters from a URL and provides
+ * methods for handling form data, validation, and accessing request-related information.
  *
  * @package Framework\Http
  */
@@ -31,7 +33,7 @@ class Request
     /**
      * Request constructor.
      *
-     * @return void
+     * @param Server $server The Server instance.
      */
     public function __construct(Server $server)
     {
@@ -42,7 +44,7 @@ class Request
      * Retrieve the value of a query parameter.
      *
      * @param string $parameter The name of the query parameter.
-     * @param string|null $default The default value if the parameter is not set.
+     * @param string|null $default [optional] The default value if the parameter is not set.
      * @return string|null The value of the query parameter or the default value.
      */
     public function get(string $parameter, ?string $default = null): ?string
@@ -54,7 +56,7 @@ class Request
      * Retrieve the value of a form post data parameter.
      *
      * @param string $parameter The name of the form post data parameter.
-     * @param string|null $default The default value if the parameter is not set.
+     * @param string|null $default [optional] The default value if the parameter is not set.
      * @return string|null The value of the form post data parameter or the default value.
      */
     public function input(string $parameter, ?string $default = null): ?string
@@ -86,7 +88,7 @@ class Request
     /**
      * Validate multiple parameters based on the given validation patterns.
      *
-     * @param array $rules An associative array where keys are parameter names and values are validation patterns e.g 'name' as 'required|string|max:255'.
+     * @param array $rules An associative array where keys are parameter names and values are validation patterns (e.g. ['name' => 'required|string|max:255']).
      * @return Validator The Validator instance.
      *
      * @throws Exception
@@ -134,9 +136,9 @@ class Request
     /**
      * Get the full request URI including query parameters.
      *
-     * @return mixed|string|null The full request URI.
+     * @return string|null The full request URI.
      */
-    public function request_uri()
+    public function request_uri(): ?string
     {
         return $this->server->get('REQUEST_URI');
     }
@@ -171,7 +173,7 @@ class Request
      */
     public function base_url(): string
     {
-        return $this->scheme() . ':' . '/' . '/' . $this->host() . '/';
+        return $this->scheme() . '://' . $this->host() . '/';
     }
 
     /**

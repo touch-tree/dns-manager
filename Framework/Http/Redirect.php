@@ -6,7 +6,8 @@ use Error;
 use Framework\Foundation\Session;
 
 /**
- * The Redirect class provides functionality for creating redirects with flash data.
+ * The Redirect class provides methods to redirect users to specific routes or URLs, creating redirects with flash data,
+ * redirect back to the previous page, and generate JSON responses.
  *
  * @package Framework\Http
  */
@@ -32,10 +33,10 @@ class Redirect
     }
 
     /**
-     * Redirect towards a specified route or URL.
+     * Redirect to a specified route or URL.
      *
-     * @param string $path
-     * @return RedirectResponse
+     * @param string $path The path or URL to redirect to.
+     * @return RedirectResponse The redirect response object.
      */
     public function to(string $path): RedirectResponse
     {
@@ -45,13 +46,13 @@ class Redirect
     }
 
     /**
-     * Set the path to the URL specified in the 'Referer' header or the Base URL if not present.
+     * Redirect back to the previous page or the base URL if no referer is provided.
      *
-     * This method is commonly used in web applications to redirect back to the previous page.
+     * This method is commonly used to redirect users back to the previous page.
      * It retrieves the URL from the 'Referer' header in the HTTP request headers.
-     * If the 'Referer' header is not present, it defaults to the Base URL.
+     * If the 'Referer' header is not present, it defaults to the base URL.
      *
-     * @return RedirectResponse
+     * @return RedirectResponse The redirect response object.
      */
     public function back(): RedirectResponse
     {
@@ -61,10 +62,10 @@ class Redirect
     }
 
     /**
-     * Return a JsonResponse object.
+     * Return a JsonResponse object with the provided data.
      *
-     * @param array $data
-     * @return JsonResponse
+     * @param array $data The data to be included in the JSON response.
+     * @return JsonResponse The JSON response object.
      */
     public function json(array $data): JsonResponse
     {

@@ -12,7 +12,9 @@
 |--------------------------------------------------------------------------
 */
 
+use Framework\Foundation\Application;
 use Framework\Foundation\Config;
+use Framework\Foundation\Container;
 use Framework\Foundation\Session;
 use Framework\Http\Kernel;
 
@@ -21,6 +23,8 @@ require_once 'Framework/helpers.php';
 require_once 'routes/web.php';
 
 Session::start();
+
+$app = new Application(__DIR__);
 
 Config::set_many(
     [

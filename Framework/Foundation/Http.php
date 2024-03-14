@@ -6,21 +6,22 @@ use Framework\Http\HeaderBag;
 
 /**
  * The Http class provides a simple interface for sending HTTP requests using cURL.
- * It allows you to set custom headers and handle responses.
+ *
+ * This class provides methods to set custom headers and handle responses.
  *
  * @package Framework\Foundation
  */
 class Http
 {
     /**
-     * Request headers.
+     * The request headers.
      *
      * @var HeaderBag
      */
     private HeaderBag $headers;
 
     /**
-     * Request response.
+     * The request response.
      *
      * @var bool|string
      */
@@ -35,7 +36,6 @@ class Http
     public static function set_headers(HeaderBag $headers): Http
     {
         $instance = new self();
-
         $instance->headers = $headers;
 
         return $instance;
@@ -64,7 +64,7 @@ class Http
     /**
      * Batch process cURL options.
      *
-     * @param mixed $curl The cURL resource.
+     * @param resource $curl The cURL resource.
      * @param array $options The cURL options to set.
      * @return void
      */
@@ -80,8 +80,8 @@ class Http
      *
      * @param string $method The HTTP method (POST, GET, etc.).
      * @param string $endpoint The API endpoint URL.
-     * @param array $data The data to send with the request.
-     * @return bool|string
+     * @param array $data [optional] The data to send with the request.
+     * @return bool|string The response from the server.
      */
     private function request(string $method, string $endpoint, array $data = [])
     {
@@ -120,7 +120,7 @@ class Http
      * Send a PATCH request.
      *
      * @param string $endpoint The API endpoint URL.
-     * @param array $data The data to send with the request.
+     * @param array $data [optional] The data to send with the request.
      * @return Http
      */
     public function patch(string $endpoint, array $data = []): Http
@@ -134,7 +134,7 @@ class Http
      * Send a POST request.
      *
      * @param string $endpoint The API endpoint URL.
-     * @param array $data The data to send with the request.
+     * @param array $data [optional] The data to send with the request.
      * @return Http
      */
     public function post(string $endpoint, array $data = []): Http
@@ -148,7 +148,7 @@ class Http
      * Send a GET request.
      *
      * @param string $endpoint The API endpoint URL.
-     * @param array $data The data to send with the request.
+     * @param array $data [optional] The data to send with the request.
      * @return Http
      */
     public function get(string $endpoint, array $data = []): Http
@@ -162,7 +162,7 @@ class Http
      * Send a PUT request.
      *
      * @param string $endpoint The API endpoint URL.
-     * @param array $data The data to send with the request.
+     * @param array $data [optional] The data to send with the request.
      * @return Http
      */
     public function put(string $endpoint, array $data = []): Http
@@ -176,7 +176,7 @@ class Http
      * Send a UPDATE request.
      *
      * @param string $endpoint The API endpoint URL.
-     * @param array $data The data to send with the request.
+     * @param array $data [optional] The data to send with the request.
      * @return Http
      */
     public function update(string $endpoint, array $data = []): Http
@@ -190,7 +190,7 @@ class Http
      * Send a DELETE request.
      *
      * @param string $endpoint The API endpoint URL.
-     * @param array $data The data to send with the request.
+     * @param array $data [optional] The data to send with the request.
      * @return Http
      */
     public function delete(string $endpoint, array $data = []): Http
@@ -203,7 +203,7 @@ class Http
     /**
      * Get the response as JSON.
      *
-     * @return array
+     * @return array The decoded JSON response.
      */
     public function json(): array
     {

@@ -7,7 +7,8 @@ use Framework\Foundation\Validator;
 
 /**
  * The FormRequest class represents a form request entity and extends the Base Request class.
- * It provides methods to handle and validate form data based on specified rules.
+ *
+ * This class provides methods to handle and validate form data based on specified rules.
  * You can define custom validation rules within this class for specific use cases.
  *
  * @package Framework\Http
@@ -17,7 +18,7 @@ class FormRequest extends Request
     /**
      * Get the validation rules for the form request.
      *
-     * @return array
+     * @return array [optional] An array of validation rules.
      */
     public function rules(): array
     {
@@ -31,7 +32,7 @@ class FormRequest extends Request
      * The validation errors are stored in the session's 'errors' key, and the input data
      * is flashed to the session for convenient retrieval in subsequent requests.
      *
-     * @param array $rules Set options to overwrite set options of custom rules (Optional).
+     * @param array $rules [optional] Set options to overwrite set options of custom rules.
      * @return Validator
      *
      * @throws Exception
@@ -39,6 +40,7 @@ class FormRequest extends Request
     public function validate(array $rules = []): Validator
     {
         $validator = parent::validate(empty($rules) ? $this->rules() : []);
+
         $errors = $validator->errors();
 
         if (!$errors->any()) {

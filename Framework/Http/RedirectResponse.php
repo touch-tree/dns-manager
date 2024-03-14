@@ -8,7 +8,9 @@ use Framework\Support\URL;
 use LogicException;
 
 /**
- * This RedirectResponse class represents a redirect response.
+ * The RedirectResponse class represents a redirect response.
+ *
+ * This class facilitates redirection to specific routes or URLs, including support for flash data.
  *
  * @package Framework\Http
  */
@@ -29,10 +31,10 @@ class RedirectResponse extends Response
     protected Session $session;
 
     /**
-     * Redirect constructor.
+     * RedirectResponse constructor.
      *
      * @param Session $session The session manager for storing flash data.
-     * @param int $status_code The status code for the redirect.
+     * @param int $status_code [optional] The status code for the redirect. Default is 301 (Moved Permanently).
      */
     public function __construct(Session $session, int $status_code = Response::HTTP_MOVED_PERMANENTLY)
     {
@@ -42,11 +44,10 @@ class RedirectResponse extends Response
     }
 
     /**
-     * Set the path to the URL specified in the 'Referer' header or the Base URL if not present.
+     * Redirect back to the previous page or the base URL if no referer is provided.
      *
-     * This method is commonly used in web applications to redirect back to the previous page.
-     * It retrieves the URL from the 'Referer' header in the HTTP request headers. If the 'Referer'
-     * header is not present, it defaults to the Base URL.
+     * This method retrieves the URL from the 'Referer' header in the HTTP request headers.
+     * If the 'Referer' header is not present, it defaults to the base URL.
      *
      * @return RedirectResponse
      */
@@ -118,6 +119,8 @@ class RedirectResponse extends Response
 
     /**
      * Perform the actual redirection and terminate the script.
+     *
+     * Sends the redirection header and exits the script execution.
      *
      * @return void
      */

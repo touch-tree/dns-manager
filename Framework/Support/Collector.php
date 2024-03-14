@@ -18,10 +18,10 @@ class Collector
     /**
      * Get an item from an array using 'dot' notation.
      *
-     * @param array $array
-     * @param string $key
-     * @param mixed $default
-     * @return mixed|null
+     * @param array $array The array from which to retrieve the item.
+     * @param string $key The key in dot notation.
+     * @param mixed $default [optional] The default value to return if the key is not found.
+     * @return mixed|null The value corresponding to the key, or the default value if the key is not found.
      */
     public static function get(array $array, string $key, $default = null)
     {
@@ -48,9 +48,9 @@ class Collector
     /**
      * Determine if the given key exists in the provided array.
      *
-     * @param array $array
-     * @param string $key
-     * @return bool
+     * @param array $array The array to check.
+     * @param string $key The key to check for.
+     * @return bool true if the key exists in the array, false otherwise.
      */
     protected static function exists(array $array, string $key): bool
     {
@@ -60,8 +60,8 @@ class Collector
     /**
      * Determine if the given value is array accessible.
      *
-     * @param mixed $value
-     * @return bool
+     * @param mixed $value The value to check.
+     * @return bool true if the value is array accessible, false otherwise.
      */
     protected static function accessible($value): bool
     {
@@ -71,10 +71,10 @@ class Collector
     /**
      * Set an array item to a given value using 'dot' notation.
      *
-     * @param array $array
-     * @param string $key
-     * @param mixed $value
-     * @return Collector
+     * @param array $array The array to modify.
+     * @param string $key The key in dot notation.
+     * @param mixed $value The value to set.
+     * @return $this
      */
     public static function set(array &$array, string $key, $value): Collector
     {
@@ -94,9 +94,9 @@ class Collector
     /**
      * Check if the given key exists in the provided array.
      *
-     * @param array $array
-     * @param string $key
-     * @return bool
+     * @param array $array The array to check.
+     * @param string $key The key to check for.
+     * @return bool true if the key exists in the array, false otherwise.
      */
     public static function has(array $array, string $key): bool
     {
@@ -106,10 +106,10 @@ class Collector
     /**
      * Add an element to an array using 'dot' notation if it doesn't exist.
      *
-     * @param array $array
-     * @param string $key
-     * @param mixed $value
-     * @return array
+     * @param array $array The array to modify.
+     * @param string $key The key in dot notation.
+     * @param mixed $value The value to add.
+     * @return array The modified array.
      */
     public static function add(array $array, string $key, $value): array
     {
@@ -123,9 +123,9 @@ class Collector
     /**
      * Get every item of the array except for a specified array of items.
      *
-     * @param array $array
-     * @param array|string $keys
-     * @return array
+     * @param array $array The array to filter.
+     * @param array|string $keys The keys to exclude.
+     * @return array The filtered array.
      */
     public static function except(array $array, $keys): array
     {
@@ -135,9 +135,9 @@ class Collector
     /**
      * Get a subset of the items from the given array.
      *
-     * @param array $array
-     * @param array|string $keys
-     * @return array
+     * @param array $array The array to filter.
+     * @param array|string $keys The keys to include.
+     * @return array The filtered array.
      */
     public static function only(array $array, $keys): array
     {
@@ -147,10 +147,10 @@ class Collector
     /**
      * Pluck an array of values from an array.
      *
-     * @param array $array
-     * @param string|array $value
-     * @param string|null $key
-     * @return array
+     * @param array $array The array to pluck from.
+     * @param string|array $value The value(s) to pluck.
+     * @param string|null $key [optional] The key to use as the array keys.
+     * @return array The plucked array.
      */
     public static function pluck(array $array, $value, string $key = null): array
     {
@@ -173,9 +173,9 @@ class Collector
     /**
      * Remove an array item from a given key using "dot" notation.
      *
-     * @param array $array
-     * @param string $key
-     * @return array
+     * @param array $array The array to modify.
+     * @param string $key The key in dot notation.
+     * @return array The modified array.
      */
     public static function forget(array &$array, string $key): array
     {
@@ -198,8 +198,8 @@ class Collector
     /**
      * Collapse an array of arrays into a single array.
      *
-     * @param array $array
-     * @return array
+     * @param array $array The array to collapse.
+     * @return array The collapsed array.
      */
     public static function collapse(array $array): array
     {
@@ -217,8 +217,8 @@ class Collector
     /**
      * Explode a key string into an array of segments using 'dot' notation.
      *
-     * @param string $key
-     * @return array
+     * @param string $key The key to explode.
+     * @return array The exploded key segments.
      */
     private static function explode_key(string $key): array
     {

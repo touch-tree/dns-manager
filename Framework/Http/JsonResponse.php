@@ -3,7 +3,9 @@
 namespace Framework\Http;
 
 /**
- * The JsonResponse class is responsible for wrapping up the object that is sent to a request in JSON format.
+ * The JsonResponse represents an HTTP response containing JSON data.
+ *
+ * This class is responsible for wrapping up data in JSON format and sending it as an HTTP response.
  *
  * @package Framework\Http
  */
@@ -13,7 +15,7 @@ class JsonResponse extends Response
      * JsonResponse constructor.
      *
      * @param array $data The data to be JSON-encoded and sent in the response.
-     * @param int $status_code The HTTP status code for the response. Default is 200 (OK).
+     * @param int $status_code [optional] The HTTP status code for the response. Default is 200 (OK).
      */
     public function __construct(array $data, int $status_code = Response::HTTP_OK)
     {
@@ -23,9 +25,11 @@ class JsonResponse extends Response
     /**
      * Sends the JSON response to the client.
      *
-     * Sets the 'Content-Type' header to 'application/json' and echoes the JSON-encoded content.
+     * This method sets the 'Content-Type' header to 'application/json' and echoes the JSON-encoded content.
+     *
+     * @return string The JSON-encoded content.
      */
-    public function send()
+    public function send(): string
     {
         return json_encode(parent::send());
     }
