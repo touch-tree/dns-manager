@@ -3,7 +3,7 @@
 A website management platform that provides DNS management, SSL and TLS configuration, pagerule configuration and URL forwarding and redirections
 to make it easier to manage websites. You can also preset certain settings so you don't have to configure settings that are default for each website.
 
-This application is build upon the [echtyushi/feather-boilerplate](https://github.com/echtyushi/feather-boilerplate/tree/master) framework.
+This application is build upon the [echtyushi/rosegold-boilerplate](https://github.com/echtyushi/rosegold-boilerplate/tree/master) framework.
 
 ## Requirements
 - PHP version 7.4
