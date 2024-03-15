@@ -3,7 +3,7 @@
 A website management platform that provides DNS management, SSL and TLS configuration, pagerule configuration and URL forwarding and redirections
 to make it easier to manage websites. You can also preset certain settings so you don't have to configure settings that are default for each website.
 
-This application is build upon the [echtyushi/framework-template](https://github.com/echtyushi/framework-template/tree/master) framework.
+This application is build upon the [echtyushi/framework-boilerplate](https://github.com/echtyushi/framework-boilerplate/tree/master) framework.
 
 ## Requirements
 - PHP version 7.4
@@ -35,5 +35,5 @@ For the `php.ini` we need to enable the extension opcache.
 
 ## Additional Notes
 
-- The api_token inside of `api.php` needs to have sufficient rights and permissions to make changes to zones. See [API token permissions](https://developers.cloudflare.com/fundamentals/api/reference/permissions/).
+- The api_token inside of `api.php` needs to have sufficient rights and permissions to make changes to zones. See [permissions](https://developers.cloudflare.com/fundamentals/api/reference/permissions/).
 - This application relies on opcache. See [opcache installation](https://www.php.net/manual/en/opcache.installation.php).
