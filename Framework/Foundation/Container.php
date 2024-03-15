@@ -61,11 +61,18 @@ class Container
     }
 
     /**
-     * Get an instance of the specified class.
+     * Get an instance of the specified class from the Container class.
      *
-     * @param string $abstract The fully qualified class name.
-     * @param array $parameters [optional] Parameters to override constructor parameters.
-     * @return object|null The resolved instance of the specified class. null if the class or Closure can't be resolved or found.
+     * This function acts as a convenient entry point to retrieve instances of
+     * classes from the application's Dependency Injection (DI) Container.
+     *
+     * @template T
+     * @param class-string<T>|null $abstract [optional] The fully qualified class name to resolve.
+     * @param array $parameters [optional] Parameters to override constructor parameters of the provided class or Closure.
+     * @return T|Container|null An instance of the specified class, or null if the instance cannot be resolved.
+     *
+     * @throws Error
+     * @see Container
      */
     public static function get(string $abstract, array $parameters = []): ?object
     {

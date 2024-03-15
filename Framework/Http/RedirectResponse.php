@@ -68,13 +68,7 @@ class RedirectResponse extends Response
      */
     public function route(string $path): RedirectResponse
     {
-        $route = route($path);
-
-        if (is_null($route)) {
-            throw new Error('Route is invalid: ' . $path);
-        }
-
-        $this->path = $route;
+        $this->path = route($path) ?: $path;
 
         return $this;
     }
