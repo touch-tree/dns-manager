@@ -3,6 +3,7 @@
 namespace Framework\Routing;
 
 use Framework\Http\Request;
+use Framework\Support\Collection;
 use Framework\Support\Url;
 
 /**
@@ -13,7 +14,7 @@ use Framework\Support\Url;
  *
  * @package Framework\Routing
  */
-class RouteCollection
+class RouteCollection extends Collection
 {
     /**
      * The routes registered in this collection.
@@ -48,10 +49,11 @@ class RouteCollection
     /**
      * Get a route from the collection by its name.
      *
-     * @param string $key The name of the route to retrieve.
+     * @param string $key
+     * @param null $default
      * @return Route|null The Route object if found, otherwise null.
      */
-    public function get(string $key): ?Route
+    public function get($key, $default = null): ?Route
     {
         foreach ($this->routes as $route) {
             if ($route->name() === $key) {
@@ -59,7 +61,7 @@ class RouteCollection
             }
         }
 
-        return null;
+        return $default;
     }
 
     /**
