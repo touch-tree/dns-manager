@@ -51,13 +51,15 @@ class Url
     /**
      * Get the base URL for the application.
      *
-     * @return string|null The base URL for the application. Returns relative path of document root to project directory if 'app_url' is not set.
+     * @return string|null The base URL for the application. Returns relative path of document root to project directory if 'app.url' is not set.
      */
     public static function app_url(): ?string
     {
-        $path = str_replace(server()->get('DOCUMENT_ROOT'), null, backslashes_to_slashes(base_path()));
+        $base = base_path();
+        $root = server('DOCUMENT_ROOT');
+        $path = str_replace($root, null, backslashes_to_slashes($base));
 
-        return $path ? request()->base_url() . $path : config('app.app_url');
+        return config('app.url') ?: request()->base_url() . $path;
     }
 
     /**

@@ -138,14 +138,22 @@ function route(string $name, array $parameters = []): ?string
 }
 
 /**
- * Get server.
+ * Get server value by key or retrieve the entire Server instance.
  *
- * @return Server
+ * @param string|null $key The key to retrieve from the server. If null, the entire Server instance is returned.
+ * @return mixed|Server If $key is provided, the value associated with that key from the server is returned. If $key is null, the entire Server instance is returned.
  */
-function server(): Server
+function server(string $key = null)
 {
-    return Application::get_instance()->get(Server::class);
+    $server = Application::get_instance()->get(Server::class);
+
+    if (is_null($key)) {
+        return $server;
+    }
+
+    return $server::get($key);
 }
+
 
 /**
  * Get the current request instance.
