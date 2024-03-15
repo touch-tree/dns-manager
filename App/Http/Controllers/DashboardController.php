@@ -141,8 +141,6 @@ class DashboardController
 
         $pagerule_input = $request->input('pagerule_forwarding_url');
 
-        // not all domains have pagerules so only validate if domain has pagerules
-
         if ($request->exists('pagerule_forwarding_url') && empty($pagerule_input)) {
             session()->put('errors.form.pagerule_forwarding_url', 'This field is required');
 
@@ -179,8 +177,6 @@ class DashboardController
         if (!$sub_dns) {
             add_error('update_sub_dns_record', 'Unable to update sub DNS record');
         }
-
-        // if domain has pagerules and the pagerule input is not empty
 
         if ($request->exists('pagerule_forwarding_url')) {
             $response = $this->pagerule_service->update_pagerules($site->id(),
