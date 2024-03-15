@@ -363,6 +363,8 @@ class DashboardController
                 ->with('message_type', 'error');
         }
 
+        Cache::clear();
+
         return back()
             ->with('message_header', 'Added site')
             ->with('message_content', 'Site added and setup is done.')
