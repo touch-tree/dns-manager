@@ -3,7 +3,7 @@
 namespace Framework\Routing;
 
 use Framework\Http\Request;
-use Framework\Support\URL;
+use Framework\Support\Url;
 
 /**
  * The RouteCollection class represents a collection of routes in the routing system.
@@ -71,7 +71,7 @@ class RouteCollection
     public function match(Request $request): ?Route
     {
         foreach ($this->routes as $route) {
-            $route_uri = URL::to($route->uri(), [], true);
+            $route_uri = Url::to($route->uri(), [], true);
 
             if ($request->method() === $route->method() && preg_match(app(Router::class)::get_pattern($route_uri), $request->path())) {
                 return $route;

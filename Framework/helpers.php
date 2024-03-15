@@ -24,7 +24,7 @@ use Framework\Http\Request;
 use Framework\Http\Response;
 use Framework\Http\Server;
 use Framework\Routing\Router;
-use Framework\Support\URL;
+use Framework\Support\Url;
 
 /**
  * Redirect to a specified route.
@@ -265,6 +265,21 @@ function base_path(string $path = null): string
 }
 
 /**
+ * Converts backslashes to slashes in a string.
+ *
+ * This function replaces all occurrences of backslashes with forward slashes (/)
+ * in the given string.
+ *
+ * @param string $input The input string to convert.
+ *
+ * @return string The input string with backslashes converted to slashes.
+ */
+function backslashes_to_slashes(string $input): string
+{
+    return str_replace(DIRECTORY_SEPARATOR, '/', $input);
+}
+
+/**
  * Generate a redirect response back to the previous page.
  *
  * This function creates a redirect response to the URL specified in the 'Referer' header
@@ -285,11 +300,11 @@ function back(): RedirectResponse
  * Generate a URL based on the given route.
  *
  * @param string|null $path [optional] The path for the URL.
- * @return URL|string The generated URL.
+ * @return Url|string The generated URL.
  */
 function url(string $path = null)
 {
-    return $path ? URL::to($path) : Application::get_instance()->get(URL::class);
+    return $path ? Url::route($path) : Application::get_instance()->get(Url::class);
 }
 
 /**
@@ -300,7 +315,7 @@ function url(string $path = null)
  */
 function asset(string $path): string
 {
-    return URL::to('/public/') . trim($path, '/');
+    return Url::to('/public/') . trim($path, '/');
 }
 
 /**

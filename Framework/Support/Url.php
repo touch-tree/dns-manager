@@ -2,8 +2,11 @@
 
 namespace Framework\Support;
 
+use App\Http\Controllers\DashboardController;
+use Framework\Foundation\Application;
 use Framework\Foundation\Config;
 use Framework\Http\Request;
+use Framework\Routing\Router;
 
 /**
  * The URL class represents a utility for generating and manipulating URLs.
@@ -14,8 +17,37 @@ use Framework\Http\Request;
  *
  * @package Framework\Support
  */
-class URL
+class Url
 {
+    /**
+     * Get the application's router.
+     *
+     * @return Router
+     */
+    protected static function router(): Router
+    {
+        return Application::get_instance()->get(Router::class);
+    }
+
+    /**
+     * Generate a URL for the given route name.
+     *
+     * @param string $route_name The name of the route.
+     * @param array $parameters [optional] Parameters to substitute into the route URI.
+     * @param bool $absolute [optional] Whether to generate an absolute URL (including scheme and host).
+     * @return string The generated URL.
+     */
+    public static function route(string $route_name, array $parameters = [], bool $absolute = true): string
+    {
+        $route_uri = self::router()::route($route_name, $parameters);
+
+        if ($absolute) {
+            $route_uri = request()->base_url() . ltrim($route_uri, '/');
+        }
+
+        return $route_uri;
+    }
+
     /**
      * Get the base URL for the application.
      *
@@ -23,9 +55,9 @@ class URL
      */
     public static function app_url(): ?string
     {
-        $url = config('app.app_url');
+        $path = str_replace(server()->get('DOCUMENT_ROOT'), null, backslashes_to_slashes(base_path()));
 
-        return !empty($url) ? $url : request()->base_url() . ltrim(dirname(server()->get('SCRIPT_NAME')), '/') . '/';
+        return $path ? request()->base_url() . $path : config('app.app_url');
     }
 
     /**

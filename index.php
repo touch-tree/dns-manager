@@ -14,13 +14,13 @@
 
 use Framework\Foundation\Application;
 use Framework\Foundation\Config;
-use Framework\Foundation\Container;
 use Framework\Foundation\Session;
 use Framework\Http\Kernel;
 
 require_once 'autoload.php';
 require_once 'Framework/helpers.php';
 require_once 'routes/web.php';
+require_once 'routes/api.php';
 
 Session::start();
 

@@ -26,5 +26,3 @@ Router::post('/domain/create/{id}', [DashboardController::class, 'create'])->nam
 Router::post('/domain/details/{id}/modal', [DashboardController::class, 'details_modal'])->name('domain.details.modal');
 
 Router::get('/cache/clear', [DashboardController::class, 'clear_cache'])->name('domain.clear');
-
-Router::get('/api/domain/sites', [DashboardController::class, 'sites'])->name('domain.sites');

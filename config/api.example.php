@@ -42,7 +42,7 @@ return [
     | The URL to the API. It specifies the base URL for making API requests.
     |
     */
-    'api_url' => 'https://api.cloudflare.com/client/v4',
+    'url' => 'https://api.cloudflare.com/client/v4',
 
     /*
     |--------------------------------------------------------------------------

@@ -11,8 +11,10 @@
 
 <p>Page not found.</p>
 
-<p>Tried to access: <?php echo url()->current(); ?></p>
-<p>Base URL: <?php echo url('/'); ?></p>
+<?php if (config('app.development_mode') === true) { ?>
+    <p>Tried to access: <?php echo url()->current(); ?></p>
+    <p>Base URL: <?php echo url()::app_url(); ?></p>
+<?php } ?>
 
 <?php echo view('partials.footer')->render(); ?>
 
