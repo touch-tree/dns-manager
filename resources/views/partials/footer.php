@@ -17,10 +17,10 @@
     $ = jQuery.noConflict();
 </script>
 
-<script src="<?php echo asset('js/form.js'); ?>"></script>
-<script src="<?php echo asset('js/blockui.js'); ?>"></script>
-<script src="<?php echo asset('js/modal.js'); ?>"></script>
-<script src="<?php echo asset('js/notification.js'); ?>"></script>
-<script src="<?php echo asset('js/popup.js'); ?>"></script>
-<script src="<?php echo asset('js/datatable.js'); ?>"></script>
+<script src="<?= asset('js/form.js'); ?>"></script>
+<script src="<?= asset('js/blockui.js'); ?>"></script>
+<script src="<?= asset('js/modal.js'); ?>"></script>
+<script src="<?= asset('js/notification.js'); ?>"></script>
+<script src="<?= asset('js/popup.js'); ?>"></script>
+<script src="<?= asset('js/datatable.js'); ?>"></script>
 

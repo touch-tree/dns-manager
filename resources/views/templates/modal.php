@@ -2,7 +2,7 @@
 
 <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"><?php echo $title ?? '' ?></h5>
+        <h5 class="modal-title" id="exampleModalLabel"><?= $title ?? '' ?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">
             <i class="fa-solid fa-x"></i>
@@ -11,7 +11,7 @@
     </div>
 
     <div class="modal-body">
-        <?php echo $content ?? '' ?>
+        <?= $content ?? '' ?>
     </div>
 
     <div class="modal-footer">
