@@ -13,7 +13,7 @@
 
 <?php if (config('app.development_mode') === true) { ?>
     <p>Tried to access: <?php echo url()->current(); ?></p>
-    <p>Base URL: <?php echo url()::app_url(); ?></p>
+    <p>Base URL: <?php echo url()::base_url(); ?></p>
 <?php } ?>
 
 <?php echo view('partials.footer')->render(); ?>

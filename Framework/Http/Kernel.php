@@ -58,7 +58,7 @@ class Kernel
      */
     protected function terminate(Request $request)
     {
-        $request->session()->forget(['flash', 'errors']);
+        $request->session->forget(['flash', 'errors']);
     }
 
     /**

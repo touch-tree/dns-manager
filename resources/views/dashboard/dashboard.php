@@ -63,7 +63,7 @@ use App\Models\Site;
                                 <td class="owner"><?php echo strtolower($domain->account()->name()); ?></td>
                                 <td>
                                     <?php
-                                    foreach ($domain->get_dns_records()->all() as $dns_record) {
+                                    foreach ($domain->dns_records()->all() as $dns_record) {
                                         echo $dns_record->name() . '<br>';
                                     }
                                     ?>

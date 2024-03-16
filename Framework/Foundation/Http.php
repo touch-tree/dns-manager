@@ -83,7 +83,7 @@ class Http
      * @param array $data [optional] The data to send with the request.
      * @return bool|string The response from the server.
      */
-    private function request(string $method, string $endpoint, array $data = [])
+    private function send_request(string $method, string $endpoint, array $data = [])
     {
         $curl = curl_init($endpoint);
         $headers = [];
@@ -125,7 +125,7 @@ class Http
      */
     public function patch(string $endpoint, array $data = []): Http
     {
-        $this->response = $this->request('PATCH', $endpoint, $data);
+        $this->response = $this->send_request('PATCH', $endpoint, $data);
 
         return $this;
     }
@@ -139,7 +139,7 @@ class Http
      */
     public function post(string $endpoint, array $data = []): Http
     {
-        $this->response = $this->request('POST', $endpoint, $data);
+        $this->response = $this->send_request('POST', $endpoint, $data);
 
         return $this;
     }
@@ -153,7 +153,7 @@ class Http
      */
     public function get(string $endpoint, array $data = []): Http
     {
-        $this->response = $this->request('GET', $endpoint, $data);
+        $this->response = $this->send_request('GET', $endpoint, $data);
 
         return $this;
     }
@@ -167,7 +167,7 @@ class Http
      */
     public function put(string $endpoint, array $data = []): Http
     {
-        $this->response = $this->request('PUT', $endpoint, $data);
+        $this->response = $this->send_request('PUT', $endpoint, $data);
 
         return $this;
     }
@@ -181,7 +181,7 @@ class Http
      */
     public function update(string $endpoint, array $data = []): Http
     {
-        $this->response = $this->request('UPDATE', $endpoint, $data);
+        $this->response = $this->send_request('UPDATE', $endpoint, $data);
 
         return $this;
     }
@@ -195,7 +195,7 @@ class Http
      */
     public function delete(string $endpoint, array $data = []): Http
     {
-        $this->response = $this->request('DELETE', $endpoint, $data);
+        $this->response = $this->send_request('DELETE', $endpoint, $data);
 
         return $this;
     }

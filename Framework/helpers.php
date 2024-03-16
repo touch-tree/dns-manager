@@ -97,11 +97,7 @@ function storage_path(string $path = null): string
  */
 function session(string $key = null, $value = null)
 {
-    static $session;
-
-    if (is_null($session)) {
-        $session = new Session();
-    }
+    $session = Application::get_instance()->get(Session::class);
 
     if (!is_null($key) && !is_null($value)) {
         $session->put($key, $value);
@@ -122,7 +118,9 @@ function session(string $key = null, $value = null)
  */
 function error(string $key): ?string
 {
-    return session()->get('errors.form.' . $key, [])[0] ?? null;
+    $errors = Session::get('errors.form.' . $key, []);
+
+    return reset($errors) ?? null;
 }
 
 /**
@@ -145,13 +143,7 @@ function route(string $name, array $parameters = []): ?string
  */
 function server(string $key = null)
 {
-    $server = Application::get_instance()->get(Server::class);
-
-    if (is_null($key)) {
-        return $server;
-    }
-
-    return $server::get($key);
+    return Application::get_instance()->get(Server::class)->get($key);
 }
 
 
@@ -166,13 +158,7 @@ function server(string $key = null)
  */
 function request(): Request
 {
-    static $request;
-
-    if (is_null($request)) {
-        $request = Application::get_instance()->get(Request::class);
-    }
-
-    return $request;
+    return Application::get_instance()->get(Request::class);
 }
 
 /**
@@ -188,7 +174,7 @@ function request(): Request
  */
 function old(string $key, ?string $default = null)
 {
-    return request()->old($key) ?? $default;
+    return Application::get_instance()->get(Request::class)->old($key) ?? $default;
 }
 
 /**
@@ -358,7 +344,7 @@ function find_object_by_properties(array $array, array $search): ?array
  */
 function add_error(string $key, string $value): void
 {
-    session()->put('errors.errors', array_merge(session()->get('errors.errors', []), [$key => $value]));
+    Session::put('errors.errors', array_merge(Session::get('errors.errors', []), [$key => $value]));
 }
 
 /**
@@ -371,5 +357,5 @@ function add_error(string $key, string $value): void
  */
 function retrieve_error_bag(): ParameterBag
 {
-    return new ParameterBag(session()->get('errors.errors', []));
+    return new ParameterBag(Session::get('errors.errors', []));
 }

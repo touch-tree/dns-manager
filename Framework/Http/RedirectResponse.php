@@ -24,23 +24,21 @@ class RedirectResponse extends Response
     protected ?string $path;
 
     /**
-     * The session manager for storing flash data.
-     *
-     * @var Session
-     */
-    protected Session $session;
-
-    /**
      * RedirectResponse constructor.
      *
-     * @param Session $session The session manager for storing flash data.
      * @param int $status_code [optional] The status code for the redirect. Default is 301 (Moved Permanently).
      */
-    public function __construct(Session $session, int $status_code = Response::HTTP_MOVED_PERMANENTLY)
+    public function __construct(int $status_code = Response::HTTP_MOVED_PERMANENTLY)
     {
-        parent::__construct(null, $status_code, request()->headers());
+        $headers = new HeaderBag();
 
-        $this->session = $session;
+        $headers
+            ->set('Content-Type', 'application/json')
+            ->set('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->set('Pragma', 'no-cache')
+            ->set('Expires', '0');
+
+        parent::__construct(null, $status_code, $headers);
     }
 
     /**
@@ -53,7 +51,7 @@ class RedirectResponse extends Response
      */
     public function back(): RedirectResponse
     {
-        $this->path = request()->headers()->get('referer') ?? Url::app_url();
+        $this->path = request()->headers()->get('referer') ?? Url::base_url();
 
         return $this;
     }
@@ -84,11 +82,7 @@ class RedirectResponse extends Response
      */
     public function with(string $key, $value): RedirectResponse
     {
-        if (is_null($this->path)) {
-            throw new LogicException('Cannot use with method without setting the path property');
-        }
-
-        $this->session->flash($key, $value);
+        session()->flash($key, $value);
 
         return $this;
     }
@@ -105,7 +99,7 @@ class RedirectResponse extends Response
     public function with_errors(array $errors): RedirectResponse
     {
         foreach ($errors as $key => $value) {
-            $_SESSION['errors']['form'][$key][] = $value;
+            session()->push('errors.form.' . $key, $value);
         }
 
         return $this;

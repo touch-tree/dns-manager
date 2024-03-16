@@ -18,14 +18,14 @@ class Application extends Container
      *
      * @var array<ServiceProvider>
      */
-    private static array $services = [];
+    private array $services = [];
 
     /**
      * The base path of this application.
      *
      * @var string
      */
-    private static string $base_path;
+    private string $base_path;
 
     /**
      * Application constructor.
@@ -34,7 +34,7 @@ class Application extends Container
      */
     public function __construct(string $base_path)
     {
-        self::$base_path = $base_path;
+        $this->base_path = $base_path;
 
         parent::__construct();
     }
@@ -47,7 +47,7 @@ class Application extends Container
      */
     public function base_path(?string $path = null): string
     {
-        return self::$base_path . DIRECTORY_SEPARATOR . ltrim($path);
+        return $this->base_path . DIRECTORY_SEPARATOR . ltrim($path);
     }
 
     /**
@@ -56,9 +56,9 @@ class Application extends Container
      * @param array<string> $services An array of service provider class names.
      * @return void
      */
-    public function register(array $services): void
+    public function register_services(array $services): void
     {
-        self::$services = $services;
+        $this->services = $services;
 
         foreach ($services as $service) {
             try {
@@ -80,8 +80,8 @@ class Application extends Container
      *
      * @return array<ServiceProvider> An array of registered service provider instances.
      */
-    public function get_services(): array
+    public function services(): array
     {
-        return self::$services;
+        return $this->services;
     }
 }

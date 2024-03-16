@@ -121,6 +121,27 @@ class Collector
     }
 
     /**
+     * Push an item onto the end of an array using 'dot' notation.
+     *
+     * @param array $array The array to modify.
+     * @param string $key The key in dot notation.
+     * @param mixed $value The value to push.
+     * @return array The modified array.
+     */
+    public static function push(array &$array, string $key, $value): array
+    {
+        $segments = self::explode_key($key);
+
+        foreach ($segments as $segment) {
+            $array = &$array[$segment];
+        }
+
+        $array[array_pop($segments)][] = $value;
+
+        return $array;
+    }
+
+    /**
      * Get every item of the array except for a specified array of items.
      *
      * @param array $array The array to filter.

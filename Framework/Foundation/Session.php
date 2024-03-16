@@ -2,6 +2,7 @@
 
 namespace Framework\Foundation;
 
+use Error;
 use Framework\Support\Collector;
 
 /**
@@ -55,6 +56,26 @@ class Session
     }
 
     /**
+     * Push a value onto the end of an array using 'dot' notation.
+     *
+     * @param string $key The key in 'dot' notation.
+     * @param mixed $value The value to push onto the array.
+     * @return Session The current Session instance.
+     *
+     * @throws Error If the session value at the specified key is not an array.
+     */
+    public function push(string $key, $value): Session
+    {
+        if (!is_array($this->get($key))) {
+            throw new Error('Session value at ' . $key . ' is not an array');
+        }
+
+        Collector::push($_SESSION, $key, $value);
+
+        return $this;
+    }
+
+    /**
      * Set a key-value pair or multiple key-value pairs in the session using 'dot' notation.
      *
      * @param string|array $key The key or array of key-value pairs to set in the session.
@@ -68,8 +89,8 @@ class Session
         }
 
         if (is_array($key) && is_null($value)) {
-            foreach ($key as $_key => $value) {
-                Collector::set($_SESSION, $_key, $value);
+            foreach ($key as $k => $v) {
+                Collector::set($_SESSION, $k, $v);
             }
         }
 
@@ -96,8 +117,8 @@ class Session
     public function forget($key): Session
     {
         if (is_array($key)) {
-            foreach ($key as $_key) {
-                Collector::forget($_SESSION, $_key);
+            foreach ($key as $k) {
+                Collector::forget($_SESSION, $k);
             }
         }
 

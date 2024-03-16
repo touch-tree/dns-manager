@@ -19,7 +19,7 @@ class Server
      * @param string|null $default The default value if the server variable is not set. Default is null.
      * @return mixed|string|null The value of the server variable or the default value.
      */
-    public function get(string $key, ?string $default = null)
+    public static function get(string $key, ?string $default = null)
     {
         return $_SERVER[$key] ?? $default;
     }

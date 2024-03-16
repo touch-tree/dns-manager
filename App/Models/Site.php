@@ -475,7 +475,7 @@ class Site
      *
      * @return Collection<Record>
      */
-    public function get_dns_records(): Collection
+    public function dns_records(): Collection
     {
         return $this->dns_records;
     }
@@ -524,7 +524,7 @@ class Site
     {
         $record_names = [];
 
-        foreach ($this->get_dns_records()->all() as $record) {
+        foreach ($this->dns_records()->all() as $record) {
             $record_names[] = $record->name();
         }
 

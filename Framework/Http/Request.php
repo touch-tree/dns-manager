@@ -28,16 +28,24 @@ class Request
      *
      * @var HeaderBag
      */
-    public HeaderBag $headers;
+    private HeaderBag $headers;
+
+    /**
+     * Session instance.
+     *
+     * @var Session
+     */
+    public Session $session;
 
     /**
      * Request constructor.
      *
      * @param Server $server The Server instance.
      */
-    public function __construct(Server $server)
+    public function __construct(Server $server, Session $session)
     {
         $this->server = $server;
+        $this->session = $session;
     }
 
     /**
@@ -96,7 +104,6 @@ class Request
     public function validate(array $rules): Validator
     {
         $validator = new Validator($this->all(), $rules);
-
         $validator->validate();
 
         return $validator;
@@ -109,7 +116,7 @@ class Request
      */
     public function flash(): Session
     {
-        return $this->session()->flash('form', $_POST);
+        return $this->session->flash('form', $_POST);
     }
 
     /**
@@ -120,7 +127,7 @@ class Request
      */
     public function old(string $key)
     {
-        return $this->session()->get('flash.' . $key);
+        return $this->session->get('flash.' . $key);
     }
 
     /**
@@ -164,16 +171,26 @@ class Request
     }
 
     /**
-     * Get the base URL of the current request.
+     * Get the port number from the request's URL.
      *
-     * This method constructs and returns the base URL, including the scheme (HTTP or HTTPS)
-     * and HTTP host, from the current request object, formatted as a URL.
-     *
-     * @return string The base URL formatted as a URL.
+     * @return int|null The port number, or null if not present.
      */
-    public function base_url(): string
+    public function port(): ?int
     {
-        return $this->scheme() . '://' . $this->host() . '/';
+        return parse_url($this->request_uri(), PHP_URL_PORT);
+    }
+
+    /**
+     * Get the root URL of the application.
+     *
+     * @param bool $include_port [optional] Whether to include the port in the URL.
+     * @return string The root URL.
+     */
+    public function root(bool $include_port = false): string
+    {
+        $port = $include_port ? ':' . $this->port() : '';
+
+        return $this->scheme() . '://' . $this->host() . $port . '/';
     }
 
     /**
@@ -208,15 +225,5 @@ class Request
         }
 
         return $this->headers;
-    }
-
-    /**
-     * Return the session object.
-     *
-     * @return Session The Session instance.
-     */
-    public function session(): Session
-    {
-        return session();
     }
 }

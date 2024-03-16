@@ -42,7 +42,6 @@ class Validator
     {
         $this->data = $data;
         $this->rules = $rules;
-
         $this->errors = new ParameterBag();
     }
 

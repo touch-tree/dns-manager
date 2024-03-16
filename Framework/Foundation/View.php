@@ -45,7 +45,6 @@ class View
     {
         $this->data = $data;
         $this->path = $path;
-
         $this->headers = new HeaderBag();
     }
 

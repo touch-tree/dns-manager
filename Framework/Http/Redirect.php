@@ -40,7 +40,7 @@ class Redirect
      */
     public function to(string $path): RedirectResponse
     {
-        $response = new RedirectResponse($this->session);
+        $response = new RedirectResponse();
 
         return $response->route($path);
     }
@@ -56,7 +56,7 @@ class Redirect
      */
     public function back(): RedirectResponse
     {
-        $response = new RedirectResponse($this->session);
+        $response = new RedirectResponse();
 
         return $response->back();
     }

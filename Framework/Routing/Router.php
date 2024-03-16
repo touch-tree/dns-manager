@@ -53,9 +53,7 @@ class Router
      */
     public static function route(string $name, array $parameters = []): ?string
     {
-        $route = self::routes()->get($name);
-
-        if (is_null($route)) {
+        if (is_null($route = self::routes()->get($name))) {
             return null;
         }
 

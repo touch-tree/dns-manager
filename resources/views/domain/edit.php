@@ -44,7 +44,7 @@ use App\Models\Site;
                         <label for="root_cname_target" class="text-input-column">
                             Root CNAME target:
                             <input type="text" name="root_cname_target" id="root_cname_target"
-                                   value="<?php echo $domain->get_dns_records()->get($domain->name())->content(); ?>">
+                                   value="<?php echo $domain->dns_records()->get($domain->name())->content(); ?>">
                             <?php if (error('root_cname_target')) { ?>
                                 <span class="validation-text error"><?php echo error('root_cname_target') ?></span>
                             <?php } ?>
@@ -53,7 +53,7 @@ use App\Models\Site;
                         <label for="sub_cname_target" class="text-input-column">
                             Sub CNAME target:
                             <input type="text" name="sub_cname_target" id="sub_cname_target"
-                                   value="<?php echo $domain->get_dns_records()->get('www.' . $domain->name())->content(); ?>">
+                                   value="<?php echo $domain->dns_records()->get('www.' . $domain->name())->content(); ?>">
                             <?php if (error('sub_cname_target')) { ?>
                                 <span class="validation-text error"><?php echo error('sub_cname_target') ?></span>
                             <?php } ?>

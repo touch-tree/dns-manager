@@ -19,7 +19,15 @@ class JsonResponse extends Response
      */
     public function __construct(array $data, int $status_code = Response::HTTP_OK)
     {
-        parent::__construct($data, $status_code, request()->headers()->set('Content-Type', 'application/json'));
+        $headers = new HeaderBag();
+
+        $headers
+            ->set('Content-Type', 'application/json')
+            ->set('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->set('Pragma', 'no-cache')
+            ->set('Expires', '0');
+
+        parent::__construct($data, $status_code, $headers);
     }
 
     /**

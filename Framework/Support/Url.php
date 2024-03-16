@@ -42,7 +42,7 @@ class Url
         $route_uri = self::router()::route($route_name, $parameters);
 
         if ($absolute) {
-            $route_uri = request()->base_url() . ltrim($route_uri, '/');
+            $route_uri = request()->root() . ltrim($route_uri, '/');
         }
 
         return $route_uri;
@@ -53,13 +53,9 @@ class Url
      *
      * @return string|null The base URL for the application. Returns relative path of document root to project directory if 'app.url' is not set.
      */
-    public static function app_url(): ?string
+    public static function base_url(): ?string
     {
-        $base = base_path();
-        $root = server('DOCUMENT_ROOT');
-        $path = str_replace($root, null, backslashes_to_slashes($base));
-
-        return config('app.url') ?: request()->base_url() . $path;
+        return config('app.url') ?: request()->root() . str_replace(server('DOCUMENT_ROOT'), null, backslashes_to_slashes(base_path()));
     }
 
     /**
@@ -72,7 +68,7 @@ class Url
      */
     public static function to(string $path, array $parameters = [], bool $exclude_host = false): string
     {
-        $url = self::app_url() . ltrim($path, '/');
+        $url = self::base_url() . ltrim($path, '/');
 
         if (!empty($parameters)) {
             $url .= '?' . http_build_query($parameters);
@@ -97,7 +93,7 @@ class Url
      */
     public static function current(): string
     {
-        return request()->base_url() . ltrim(request()->path(), '/');
+        return request()->root() . ltrim(request()->path(), '/');
     }
 }
 

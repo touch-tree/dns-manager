@@ -3,6 +3,7 @@
 namespace Framework\Http;
 
 use Exception;
+use Framework\Foundation\Session;
 use Framework\Foundation\Validator;
 
 /**
@@ -39,15 +40,9 @@ class FormRequest extends Request
      */
     public function validate(array $rules = []): Validator
     {
-        $validator = parent::validate(empty($rules) ? $this->rules() : []);
+        $validator = parent::validate($rules ?: $this->rules());
 
-        $errors = $validator->errors();
-
-        if (!$errors->any()) {
-            session()->forget(['errors', 'flash']);
-        }
-
-        session()->put('errors.form', $errors->all());
+        $this->session->put('errors.form', $validator->errors()->all());
 
         return $validator;
     }
