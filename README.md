@@ -10,7 +10,7 @@ This application is build upon the [echtyushi/framework-boilerplate](https://git
 - opcache for PHP 7.4
 
 ## Installation
-First, navigate to your webserver's document root and clone this repo:
+First, navigate to your webserver's document root and clone this repository:
 
     git clone https://github.com/echtyushi/cloudflare-panel
 
