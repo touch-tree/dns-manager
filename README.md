@@ -1,9 +1,9 @@
-# @cloudflare-panel
+# @cloudflare-dashboard
 
-A website management platform that provides DNS management, SSL/TLS configuration, pagerule configuration and URL forwarding and redirections
-to make it easier to manage websites. You can also preset certain settings so you don't have to configure settings that are default for each website.
+A domain management platform that provides DNS management, SSL/TLS configuration, pagerule configuration and URL forwarding and redirection to make it easier to add and manage sites. You can also preset certain settings so you don't have to configure settings that are default for each website.
 
-This application is build upon the [echtyushi/framework-boilerplate](https://github.com/echtyushi/framework-boilerplate/tree/master) framework.
+> [!NOTE]
+> This application is build upon the [echtyushi/framework-boilerplate](https://github.com/echtyushi/framework-boilerplate/tree/master) framework.
 
 ## Requirements
 - PHP version 7.4
@@ -12,7 +12,7 @@ This application is build upon the [echtyushi/framework-boilerplate](https://git
 ## Installation
 First, navigate to your webserver's document root and clone this repository:
 
-    git clone https://github.com/echtyushi/cloudflare-panel
+    git clone https://github.com/echtyushi/cloudflare-dashboard
 
 ## Credentials
 
