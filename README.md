@@ -11,7 +11,7 @@ This application is build upon the [echtyushi/framework-boilerplate](https://git
 ## Installation
 First, navigate to your webserver's document root and clone this repository:
 
-    git clone https://github.com/echtyushi/cloudflare-panel
+    git clone https://github.com/echtyushi/cloudflare-dashboard
 
 ## Credentials
 
