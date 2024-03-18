@@ -142,7 +142,7 @@ class DashboardController
         $pagerule_input = $request->input('pagerule_forwarding_url');
 
         if ($request->exists('pagerule_forwarding_url') && empty($pagerule_input)) {
-            session()->put('errors.form.pagerule_forwarding_url', 'This field is required');
+            session()->push('errors.form.pagerule_forwarding_url', 'This field is required');
 
             return back();
         }
@@ -177,6 +177,7 @@ class DashboardController
         if (!$sub_dns) {
             add_error('update_sub_dns_record', 'Unable to update sub DNS record');
         }
+        dd($_SESSION);
 
         if ($request->exists('pagerule_forwarding_url')) {
             $response = $this->pagerule_service->update_pagerules($site->id(),
@@ -184,6 +185,7 @@ class DashboardController
                     'forwarding_url' => $request->input('pagerule_forwarding_url')
                 ]
             );
+            dd($_SESSION);
 
             if (!$response) {
                 add_error('update_pagerules_forwarding_url', 'Unable to update forwarding URL for every pagerule.');
