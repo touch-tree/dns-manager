@@ -299,19 +299,19 @@ class DashboardController
         $this->site_repository->save($site);
 
         if (!$this->site_service->set_ssl($site->id(), 'flexible')) {
-            add_error('set_ssl', 'Unable to set SSL to flexible');
+            session()->push('flash.errors', 'Unable to set SSL to flexible');
         }
 
         if (!$this->site_service->set_pseudo_ip($site->id(), 'overwrite_header')) {
-            add_error('set_pseudo_ip', 'Unable to set pseudo IP to overwrite header');
+            session()->push('flash.errors', 'Unable to set pseudo IP to overwrite header');
         }
 
         if (!$this->site_service->set_https($site->id(), 'on')) {
-            add_error('set_https', 'Unable to turn on HTTPS');
+            session()->push('flash.errors', 'Unable to turn on HTTPS');
         }
 
         if (!$this->record_service->reset_dns_records($site->id())) {
-            add_error('reset_dns_records', 'Encountered some issues resetting DNS records due to being unable to delete some DNS records');
+            session()->push('flash.errors', 'Encountered some issues resetting DNS records due to being unable to delete some DNS records');
         }
 
         $root_dns = $this->record_service->add_dns_record($site->id(),
