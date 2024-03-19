@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <?= view('partials.header')->render(); ?>
+    <?php echo view('partials.header')->render(); ?>
 
     <title>Page not found</title>
 </head>
@@ -12,11 +12,11 @@
 <p>Page not found.</p>
 
 <?php if (config('app.development_mode') === true) { ?>
-    <p>Tried to access: <?= url()->current(); ?></p>
-    <p>Base URL: <?= url()::base_url(); ?></p>
+    <p>Tried to access: <?php echo url()->current(); ?></p>
+    <p>Base URL: <?php echo url()::base_url(); ?></p>
 <?php } ?>
 
-<?= view('partials.footer')->render(); ?>
+<?php echo view('partials.footer')->render(); ?>
 
 </body>
 
