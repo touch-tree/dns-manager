@@ -135,8 +135,10 @@ class DashboardController
      */
     public function update(UpdateRequest $request, string $id): RedirectResponse
     {
+        $back = false;
+
         if ($request->validate()->errors()->any()) {
-            return back();
+            $back = true;
         }
 
         $pagerule_input = $request->input('pagerule_forwarding_url');
@@ -144,6 +146,10 @@ class DashboardController
         if ($request->exists('pagerule_forwarding_url') && empty($pagerule_input)) {
             session()->push('errors.form.pagerule_forwarding_url', 'This field is required');
 
+            $back = true;
+        }
+
+        if ($back) {
             return back();
         }
 
@@ -164,7 +170,7 @@ class DashboardController
         );
 
         if (!$root_dns) {
-            add_error('update_root_dns_record', 'Unable to update root DNS record');
+            session()->push('flash.errors', 'Unable to update root DNS record');
         }
 
         $sub_dns = $this->record_service->update_dns_record($site->id(),
@@ -175,9 +181,8 @@ class DashboardController
         );
 
         if (!$sub_dns) {
-            add_error('update_sub_dns_record', 'Unable to update sub DNS record');
+            session()->push('flash.errors', 'Unable to update sub DNS record');
         }
-        dd($_SESSION);
 
         if ($request->exists('pagerule_forwarding_url')) {
             $response = $this->pagerule_service->update_pagerules($site->id(),
@@ -185,14 +190,13 @@ class DashboardController
                     'forwarding_url' => $request->input('pagerule_forwarding_url')
                 ]
             );
-            dd($_SESSION);
 
             if (!$response) {
-                add_error('update_pagerules_forwarding_url', 'Unable to update forwarding URL for every pagerule.');
+                session()->push('flash.errors', 'Unable to update forwarding URL for every pagerule.');
             }
         }
 
-        if (retrieve_error_bag()->any()) {
+        if (session()->get('flash.errors')) {
             return back()
                 ->with('message_header', 'Problems with updating site')
                 ->with('message_content', 'Failed update request.')
@@ -318,7 +322,7 @@ class DashboardController
         );
 
         if (!$root_dns) {
-            add_error('add_root_dns_record', 'Unable to add root DNS record');
+            session()->push('flash.errors', 'Unable to add root DNS record');
         }
 
         $sub_dns = $this->record_service->add_dns_record($site->id(),
@@ -329,11 +333,11 @@ class DashboardController
         );
 
         if (!$sub_dns) {
-            add_error('add_sub_dns_record', 'Unable to add sub DNS record');
+            session()->push('flash.errors', 'Unable to add sub DNS record');
         }
 
         if (!$this->pagerule_service->reset_pagerules($site->id())) {
-            add_error('reset_pagerules', 'Encountered some issues resetting pagerules due to being unable to delete some pagerules');
+            session()->push('flash.errors', 'Encountered some issues resetting pagerules due to being unable to delete some pagerules');
         }
 
         $pagerule = $this->pagerule_service->add_pagerule($site->id(),
@@ -344,7 +348,7 @@ class DashboardController
         );
 
         if (!$pagerule) {
-            add_error('pagerule', 'Unable to add pagerule URL');
+            session()->push('flash.errors', 'Unable to add pagerule URL');
         }
 
         $pagerule_full = $this->pagerule_service->add_pagerule($site->id(),
@@ -355,13 +359,13 @@ class DashboardController
         );
 
         if (!$pagerule_full) {
-            add_error('pagerule', 'Unable to add full pagerule URL');
+            session()->push('flash.errors', 'Unable to add full pagerule URL');
         }
 
-        if (retrieve_error_bag()->any()) {
+        if (session()->get('flash.errors')) {
             return back()
                 ->with('message_header', 'Encountered issues with site setup')
-                ->with('message_content', 'Site is added, but setup encountered some issues.')
+                ->with('message_content', 'Site is added, but setup encountered some issues . ')
                 ->with('message_type', 'error');
         }
 
@@ -369,7 +373,7 @@ class DashboardController
 
         return back()
             ->with('message_header', 'Added site')
-            ->with('message_content', 'Site added and setup is done.')
+            ->with('message_content', 'Site added and setup is done . ')
             ->with('message_type', 'success');
     }
 
