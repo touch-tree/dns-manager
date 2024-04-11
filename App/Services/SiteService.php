@@ -5,10 +5,10 @@ namespace App\Services;
 use App\Models\Account;
 use App\Models\Plan;
 use App\Models\Site;
-use Framework\Foundation\ServiceProvider;
+use Framework\Component\Service;
 use Framework\Support\Collection;
 
-class SiteService extends ServiceProvider
+class SiteService extends Service
 {
     /**
      * CloudflareService instance.

@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Models\Pagerule;
+use Framework\Component\Service;
 use Framework\Http\Response;
 use Framework\Support\Collection;
 
-class PageruleService
+class PageruleService extends Service
 {
     /**
      * CloudflareService instance.

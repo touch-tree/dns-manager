@@ -6,6 +6,9 @@
 |--------------------------------------------------------------------------
 |
 | This file contains configuration settings for your application,
+| including the base URL, project directory, development mode, and API details.
+| Ensure that the provided API token and client ID have the necessary permissions.
+|
 | For more information, refer to the config function in Base.php.
 |
 |--------------------------------------------------------------------------

@@ -10,12 +10,14 @@ use App\Services\PageruleService;
 use App\Services\RecordService;
 use App\Services\SiteService;
 use Exception;
-use Framework\Foundation\View;
+use Framework\Component\View;
 use Framework\Http\JsonResponse;
 use Framework\Http\RedirectResponse;
-use Framework\Support\Cache;
+use Framework\Routing\Controller;
+use Framework\Support\Collection;
+use Framework\Support\Helpers\Cache;
 
-class DashboardController
+class DashboardController extends Controller
 {
     /**
      * SiteService instance.
@@ -130,26 +132,16 @@ class DashboardController
      * @param UpdateRequest $request
      * @param string $id
      * @return RedirectResponse
-     *
-     * @throws Exception
      */
     public function update(UpdateRequest $request, string $id): RedirectResponse
     {
-        $back = false;
-
-        if ($request->validate()->errors()->any()) {
-            $back = true;
-        }
+        $request->validate();
 
         $pagerule_input = $request->input('pagerule_forwarding_url');
 
         if ($request->exists('pagerule_forwarding_url') && empty($pagerule_input)) {
             session()->push('errors.form.pagerule_forwarding_url', 'This field is required');
 
-            $back = true;
-        }
-
-        if ($back) {
             return back();
         }
 
@@ -260,9 +252,7 @@ class DashboardController
      */
     public function create(CreateRequest $request): RedirectResponse
     {
-        if ($request->validate()->errors()->any()) {
-            return back();
-        }
+        $request->validate();
 
         $response = $this->site_service->add_site(
             [
@@ -272,7 +262,9 @@ class DashboardController
         );
 
         if (!empty($response['errors'])) {
-            if (find_object_by_properties($response['errors'], ['code' => '1061'])) {
+            $errors = new Collection($response['errors']);
+
+            if ($errors->contains(fn($error) => $error['code'] === '1061')) {
                 return back()->with_errors(
                     [
                         'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
@@ -280,7 +272,7 @@ class DashboardController
                 );
             }
 
-            if (find_object_by_properties($response['errors'], ['code' => '1105'])) {
+            if ($errors->contains(fn($error) => $error['code'] === '1105')) {
                 return back()->with_errors(
                     [
                         'domain' => 'You attempted to add this domain too many times within a short period. Wait at least 3 hours and try adding it again.'
@@ -387,8 +379,10 @@ class DashboardController
     {
         $response = $this->site_service->check_nameservers($id);
 
-        if (!empty($response['errors'])) {
-            if (find_object_by_properties($response['errors'], ['code' => '1224'])) {
+        $errors = new Collection($response['errors']);
+
+        if (!$errors->is_empty()) {
+            if ($errors->contains(fn($error) => $error['code'] === '1224')) {
                 return back()
                     ->with('message_header', 'Unable to check nameservers')
                     ->with('message_content', 'This request cannot be made because it can only be called once an hour')

@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use Framework\Foundation\Http;
-use Framework\Foundation\ServiceProvider;
+use Framework\Component\Http;
+use Framework\Component\Service;
 use Framework\Http\HeaderBag;
 
-class CloudflareService extends ServiceProvider
+class CloudflareService extends Service
 {
     /**
      * Http instance.

@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Models\Record;
-use Framework\Foundation\ServiceProvider;
+use Framework\Component\Service;
 use Framework\Support\Collection;
 
-class RecordService extends ServiceProvider
+class RecordService extends Service
 {
     /**
      * CloudflareService instance.

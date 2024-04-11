@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Site;
 use App\Services\SiteService;
-use Framework\Support\Cache;
+use Framework\Support\Helpers\Cache;
 use Framework\Support\Collection;
 
 class SiteRepository

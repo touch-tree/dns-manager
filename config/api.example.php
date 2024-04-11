@@ -13,15 +13,15 @@
 return [
 
     /*
-     |--------------------------------------------------------------------------
-     | API Token
-     |--------------------------------------------------------------------------
-     |
-     | The API token for authentication. Make sure the token contains the
-     | necessary permissions for the application to function properly.
-     |
-     */
-    'api_token' => '',
+    |--------------------------------------------------------------------------
+    | API Token
+    |--------------------------------------------------------------------------
+    |
+    | The API token for authentication. Make sure the token contains the
+    | necessary permissions for the application to function properly.
+    |
+    */
+    'token' => '',
 
     /*
     |--------------------------------------------------------------------------
@@ -32,7 +32,7 @@ return [
     | permissions over every account and zone to avoid conflicts.
     |
     */
-    'api_client_id' => '',
+    'client_id' => '',
 
     /*
     |--------------------------------------------------------------------------
