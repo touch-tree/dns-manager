@@ -245,8 +245,6 @@ class DashboardController extends Controller
      *
      * @param CreateRequest $request Form request.
      * @return RedirectResponse
-     *
-     * @throws Exception
      */
     public function create(CreateRequest $request): RedirectResponse
     {
