@@ -13,6 +13,6 @@
 */
 
 use App\Http\Controllers\DashboardController;
-use Framework\Support\Helpers\Route;
+use Framework\Support\Helpers\Router;
 
-Route::get('/api/domain/sites', [DashboardController::class, 'sites'])->name('domain.sites');
+Router::get('/api/domain/sites', [DashboardController::class, 'sites'])->name('domain.sites');

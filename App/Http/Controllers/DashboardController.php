@@ -135,8 +135,6 @@ class DashboardController extends Controller
      */
     public function update(UpdateRequest $request, string $id): RedirectResponse
     {
-        $request->validate();
-
         $pagerule_input = $request->input('pagerule_forwarding_url');
 
         if ($request->exists('pagerule_forwarding_url') && empty($pagerule_input)) {
@@ -252,8 +250,6 @@ class DashboardController extends Controller
      */
     public function create(CreateRequest $request): RedirectResponse
     {
-        $request->validate();
-
         $response = $this->site_service->add_site(
             [
                 'name' => $request->input('domain'),
