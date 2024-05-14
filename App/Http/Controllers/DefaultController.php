@@ -137,7 +137,7 @@ class DefaultController extends Controller
     {
         $pagerule_input = $request->input('pagerule_forwarding_url');
 
-        if ($request->exists('pagerule_forwarding_url') && empty($pagerule_input)) {
+        if (empty($pagerule_input) && $request->exists('pagerule_forwarding_url')) {
             session()->push('errors.form.pagerule_forwarding_url', 'This field is required');
 
             return back();
@@ -221,6 +221,10 @@ class DefaultController extends Controller
     public function details_modal(string $id): View
     {
         $domain = $this->site_repository->get($id);
+
+        if (!$domain) {
+            return view('errors.404');
+        }
 
         return view(resource_path('views/templates/modal.php'),
             [
