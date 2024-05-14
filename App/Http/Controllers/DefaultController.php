@@ -92,9 +92,9 @@ class DefaultController extends Controller
         Cache::clear();
 
         return back()
-            ->with('message_header', 'Cache has been cleared')
-            ->with('message_content', 'Cleared server-side cache and requested refreshed entries.')
-            ->with('message_type', 'success');
+            ->with('notification.header', 'Cache has been cleared')
+            ->with('notification.content', 'Cleared server-side cache and requested refreshed entries.')
+            ->with('notification.type', 'success');
     }
 
     /**
@@ -151,9 +151,9 @@ class DefaultController extends Controller
 
         if (!$site) {
             return back()
-                ->with('message_header', 'Unable to resolve site option')
-                ->with('message_content', 'No zone found with given id')
-                ->with('message_type', 'error');
+                ->with('notification.header', 'Unable to resolve site option')
+                ->with('notification.content', 'No zone found with given id')
+                ->with('notification.type', 'error');
         }
 
         $root_dns = $this->record_service->update_dns_record($site->id(),
@@ -192,15 +192,15 @@ class DefaultController extends Controller
 
         if (session()->get('flash.errors')) {
             return back()
-                ->with('message_header', 'Problems with updating site')
-                ->with('message_content', 'Failed update request.')
-                ->with('message_type', 'error');
+                ->with('notification.header', 'Problems with updating site')
+                ->with('notification.content', 'Failed update request.')
+                ->with('notification.type', 'error');
         }
 
         return back()
-            ->with('message_header', 'Updated site')
-            ->with('message_content', 'Site was updated successfully')
-            ->with('message_type', 'success');
+            ->with('notification.header', 'Updated site')
+            ->with('notification.content', 'Site was updated successfully')
+            ->with('notification.type', 'success');
     }
 
     /**
@@ -283,9 +283,9 @@ class DefaultController extends Controller
             }
 
             return back()
-                ->with('message_header', 'Unable to add site')
-                ->with('message_content', 'Unable to add site due to an internal server error.')
-                ->with('message_type', 'error');
+                ->with('notification.header', 'Unable to add site')
+                ->with('notification.content', 'Unable to add site due to an internal server error.')
+                ->with('notification.type', 'error');
         }
 
         $site = $response['result'];
@@ -358,17 +358,17 @@ class DefaultController extends Controller
 
         if (session()->get('flash.errors')) {
             return back()
-                ->with('message_header', 'Encountered issues with site setup')
-                ->with('message_content', 'Site is added, but setup encountered some issues . ')
-                ->with('message_type', 'error');
+                ->with('notification.header', 'Encountered issues with site setup')
+                ->with('notification.content', 'Site is added, but setup encountered some issues . ')
+                ->with('notification.type', 'error');
         }
 
         Cache::clear();
 
         return back()
-            ->with('message_header', 'Added site')
-            ->with('message_content', 'Site added and setup is done . ')
-            ->with('message_type', 'success');
+            ->with('notification.header', 'Added site')
+            ->with('notification.content', 'Site added and setup is done . ')
+            ->with('notification.type', 'success');
     }
 
     /**
@@ -386,20 +386,20 @@ class DefaultController extends Controller
         if (!$errors->is_empty()) {
             if ($errors->contains(fn($error) => $error['code'] === '1224')) {
                 return back()
-                    ->with('message_header', 'Unable to check nameservers')
-                    ->with('message_content', 'This request cannot be made because it can only be called once an hour')
-                    ->with('message_type', 'error');
+                    ->with('notification.header', 'Unable to check nameservers')
+                    ->with('notification.content', 'This request cannot be made because it can only be called once an hour')
+                    ->with('notification.type', 'error');
             }
 
             return back()
-                ->with('message_header', 'Checking nameservers failed')
-                ->with('message_content', 'Failed to send check nameservers request')
-                ->with('message_type', 'error');
+                ->with('notification.header', 'Checking nameservers failed')
+                ->with('notification.content', 'Failed to send check nameservers request')
+                ->with('notification.type', 'error');
         }
 
         return back()
-            ->with('message_header', 'Started checking nameservers')
-            ->with('message_content', 'Nameserver check started successfully')
-            ->with('message_type', 'success');
+            ->with('notification.header', 'Started checking nameservers')
+            ->with('notification.content', 'Nameserver check started successfully')
+            ->with('notification.type', 'success');
     }
 }

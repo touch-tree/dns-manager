@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="<?php echo asset('css/app.css'); ?>">
 
 <div id="notification-data"
-     data-message-header="<?php echo addslashes(session('flash.message_header')); ?>"
-     data-message-content="<?php echo addslashes(session('flash.message_content')); ?>"
-     data-message-type="<?php echo addslashes(session('flash.message_type')); ?>">
+     data-notification-header="<?php echo addslashes(session('flash.notification.header')); ?>"
+     data-notification-content="<?php echo addslashes(session('flash.notification.content')); ?>"
+     data-notification-type="<?php echo addslashes(session('flash.notification.type')); ?>">
 </div>

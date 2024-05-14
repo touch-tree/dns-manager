@@ -1,8 +1,8 @@
 $(document).ready(function () {
     let $notification = $('#notification-data');
 
-    if ($notification.data('message-header')) {
-        const $n = $('<div class="notification ' + $notification.data('message-type') + '">' + '<div class="notification__header">' + $notification.data('message-header') + '</div>' + '<div class="notification__content">' + $notification.data('message-content') + '</div>' + '</div>');
+    if ($notification.data('notification-header')) {
+        const $n = $('<div class="notification ' + $notification.data('notification-type') + '">' + '<div class="notification__header">' + $notification.data('notification-header') + '</div>' + '<div class="notification__content">' + $notification.data('notification-content') + '</div>' + '</div>');
 
         $('body').append($n);
 
