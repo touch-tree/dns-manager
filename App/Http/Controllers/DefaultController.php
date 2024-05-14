@@ -123,6 +123,10 @@ class DefaultController extends Controller
     {
         $site = $this->site_repository->get($id);
 
+        if (!$site) {
+            return view('errors.404');
+        }
+
         return view('domain.edit')->with('domain', $site);
     }
 
