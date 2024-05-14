@@ -17,7 +17,7 @@ use Framework\Routing\Controller;
 use Framework\Support\Collection;
 use Framework\Support\Helpers\Cache;
 
-class DashboardController extends Controller
+class DefaultController extends Controller
 {
     /**
      * SiteService instance.
@@ -55,7 +55,7 @@ class DashboardController extends Controller
     private PageruleService $pagerule_service;
 
     /**
-     * DashboardController constructor.
+     * DefaultController constructor.
      *
      * @return void
      */

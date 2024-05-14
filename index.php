@@ -29,7 +29,7 @@ $app->set_config_path(base_path('config'));
 |--------------------------------------------------------------------------
 |
 | Here you register your configurations and setting your application's
-| Service Providers. These registrations will be used to bootstrap the
+| services. These registrations will be used to bootstrap the
 | application.
 |
 |--------------------------------------------------------------------------
