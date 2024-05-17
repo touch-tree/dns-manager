@@ -9,13 +9,12 @@ use App\Services\CloudflareService;
 use App\Services\PageruleService;
 use App\Services\RecordService;
 use App\Services\SiteService;
-use Exception;
 use Framework\Component\View;
 use Framework\Http\JsonResponse;
 use Framework\Http\RedirectResponse;
 use Framework\Routing\Controller;
 use Framework\Support\Collection;
-use Framework\Support\Helpers\Cache;
+use Framework\Support\Facades\Cache;
 
 class DefaultController extends Controller
 {

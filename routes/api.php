@@ -13,6 +13,6 @@
 */
 
 use App\Http\Controllers\DefaultController;
-use Framework\Support\Helpers\Router;
+use Framework\Support\Facades\Router;
 
 Router::get('/api/domain/sites', [DefaultController::class, 'sites'])->name('domain.sites');

@@ -13,7 +13,7 @@
 */
 
 use App\Http\Controllers\DefaultController;
-use Framework\Support\Helpers\Router;
+use Framework\Support\Facades\Router;
 
 Router::get('/', [DefaultController::class, 'dashboard'])->name('dashboard');
 Router::get('/domain/add', [DefaultController::class, 'add'])->name('domain.add');
