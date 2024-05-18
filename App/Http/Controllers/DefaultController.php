@@ -138,7 +138,7 @@ class DefaultController extends Controller
      */
     public function update(UpdateRequest $request, string $id): RedirectResponse
     {
-        $pagerule_input = $request->input('pagerule_forwarding_url');
+        $pagerule_input = $request->post('pagerule_forwarding_url');
 
         if (empty($pagerule_input) && $request->exists('pagerule_forwarding_url')) {
             session()->push('errors.form.pagerule_forwarding_url', 'This field is required');
@@ -149,16 +149,19 @@ class DefaultController extends Controller
         $site = $this->site_repository->get($id);
 
         if (!$site) {
-            return back()
-                ->with('notification.header', 'Unable to resolve site option')
-                ->with('notification.content', 'No zone found with given id')
-                ->with('notification.type', 'error');
+            return back()->with([
+                'notification' => [
+                    'header' => 'Unable to resolve site option',
+                    'content' => 'No zone found with given id',
+                    'type' => 'error',
+                ]
+            ]);
         }
 
         $root_dns = $this->record_service->update_dns_record($site->id(),
             [
                 'name' => $site->name(),
-                'content' => $request->input('root_cname_target'),
+                'content' => $request->post('root_cname_target'),
             ]
         );
 
@@ -169,7 +172,7 @@ class DefaultController extends Controller
         $sub_dns = $this->record_service->update_dns_record($site->id(),
             [
                 'name' => 'www.' . $site->name(),
-                'content' => $request->input('sub_cname_target'),
+                'content' => $request->post('sub_cname_target'),
             ]
         );
 
@@ -180,7 +183,7 @@ class DefaultController extends Controller
         if ($request->exists('pagerule_forwarding_url')) {
             $response = $this->pagerule_service->update_pagerules($site->id(),
                 [
-                    'forwarding_url' => $request->input('pagerule_forwarding_url')
+                    'forwarding_url' => $request->post('pagerule_forwarding_url')
                 ]
             );
 
@@ -196,10 +199,13 @@ class DefaultController extends Controller
                 ->with('notification.type', 'error');
         }
 
-        return back()
-            ->with('notification.header', 'Updated site')
-            ->with('notification.content', 'Site was updated successfully')
-            ->with('notification.type', 'success');
+        return back()->with([
+            'notification' => [
+                'header' => 'Updated site',
+                'content' => 'Site was updated successfully',
+                'type' => 'success',
+            ]
+        ]);
     }
 
     /**
@@ -257,7 +263,7 @@ class DefaultController extends Controller
     {
         $response = $this->site_service->add_site(
             [
-                'name' => $request->input('domain'),
+                'name' => $request->post('domain'),
                 'account_id' => config('api.client_id')
             ]
         );
@@ -310,7 +316,7 @@ class DefaultController extends Controller
         $root_dns = $this->record_service->add_dns_record($site->id(),
             [
                 'name' => '@',
-                'content' => $request->input('root_cname_target'),
+                'content' => $request->post('root_cname_target'),
             ]
         );
 
@@ -321,7 +327,7 @@ class DefaultController extends Controller
         $sub_dns = $this->record_service->add_dns_record($site->id(),
             [
                 'name' => 'www',
-                'content' => $request->input('sub_cname_target'),
+                'content' => $request->post('sub_cname_target'),
             ]
         );
 
@@ -335,8 +341,8 @@ class DefaultController extends Controller
 
         $pagerule = $this->pagerule_service->add_pagerule($site->id(),
             [
-                'url' => $request->input('pagerule_url'),
-                'forwarding_url' => $request->input('pagerule_forwarding_url')
+                'url' => $request->post('pagerule_url'),
+                'forwarding_url' => $request->post('pagerule_forwarding_url')
             ]
         );
 
@@ -346,8 +352,8 @@ class DefaultController extends Controller
 
         $pagerule_full = $this->pagerule_service->add_pagerule($site->id(),
             [
-                'url' => $request->input('pagerule_full_url'),
-                'forwarding_url' => $request->input('pagerule_forwarding_url')
+                'url' => $request->post('pagerule_full_url'),
+                'forwarding_url' => $request->post('pagerule_forwarding_url')
             ]
         );
 

@@ -9,7 +9,7 @@
 
 <body>
 
-<?php echo view('partials.addons')->render(); ?>
+<?php render_view('partials.addons'); ?>
 
 <div class="center-wrap">
     <div class="dashboard-container main-container">
