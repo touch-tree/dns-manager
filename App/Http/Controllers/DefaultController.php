@@ -90,10 +90,11 @@ class DefaultController extends Controller
     {
         Cache::clear();
 
-        return back()
-            ->with('notification.header', 'Cache has been cleared')
-            ->with('notification.content', 'Cleared server-side cache and requested refreshed entries.')
-            ->with('notification.type', 'success');
+        return redirect('dashboard')->with('notification', [
+            'header' => 'Cache has been cleared',
+            'content' => 'Cleared server-side cache and requested refreshed entries.',
+            'type' => 'success'
+        ]);
     }
 
     /**
@@ -149,62 +150,53 @@ class DefaultController extends Controller
         $site = $this->site_repository->get($id);
 
         if (!$site) {
-            return back()->with([
-                'notification' => [
-                    'header' => 'Unable to resolve site option',
-                    'content' => 'No zone found with given id',
-                    'type' => 'error',
-                ]
+            return back()->with('notification', [
+                'header' => 'Unable to resolve site option',
+                'content' => 'No zone found with given id',
+                'type' => 'error',
             ]);
         }
 
-        $root_dns = $this->record_service->update_dns_record($site->id(),
-            [
-                'name' => $site->name(),
-                'content' => $request->post('root_cname_target'),
-            ]
-        );
+        $root_dns = $this->record_service->update_dns_record($site->id(), [
+            'name' => $site->name(),
+            'content' => $request->post('root_cname_target'),
+        ]);
 
         if (!$root_dns) {
             session()->push('flash.errors', 'Unable to update root DNS record');
         }
 
-        $sub_dns = $this->record_service->update_dns_record($site->id(),
-            [
-                'name' => 'www.' . $site->name(),
-                'content' => $request->post('sub_cname_target'),
-            ]
-        );
+        $sub_dns = $this->record_service->update_dns_record($site->id(), [
+            'name' => 'www.' . $site->name(),
+            'content' => $request->post('sub_cname_target'),
+        ]);
 
         if (!$sub_dns) {
             session()->push('flash.errors', 'Unable to update sub DNS record');
         }
 
         if ($request->exists('pagerule_forwarding_url')) {
-            $response = $this->pagerule_service->update_pagerules($site->id(),
-                [
-                    'forwarding_url' => $request->post('pagerule_forwarding_url')
-                ]
-            );
+            $response = $this->pagerule_service->update_pagerules($site->id(), [
+                'forwarding_url' => $request->post('pagerule_forwarding_url')
+            ]);
 
             if (!$response) {
                 session()->push('flash.errors', 'Unable to update forwarding URL for every pagerule.');
             }
         }
 
-        if (session()->get('flash.errors')) {
-            return back()
-                ->with('notification.header', 'Problems with updating site')
-                ->with('notification.content', 'Failed update request.')
-                ->with('notification.type', 'error');
+        if (session('flash.errors')) {
+            return back()->with('notification', [
+                'header' => 'Problems with updating site',
+                'content' => 'Failed update request.',
+                'type' => 'error'
+            ]);
         }
 
-        return back()->with([
-            'notification' => [
-                'header' => 'Updated site',
-                'content' => 'Site was updated successfully',
-                'type' => 'success',
-            ]
+        return back()->with('notification', [
+            'header' => 'Updated site',
+            'content' => 'Site was updated successfully',
+            'type' => 'success',
         ]);
     }
 
@@ -235,12 +227,14 @@ class DefaultController extends Controller
             return view('errors.404');
         }
 
-        return view(resource_path('views/templates/modal.php'),
-            [
-                'title' => 'Details for ' . $domain->name(),
-                'content' => view(resource_path('views/domain/details.content.php'), ['domain' => $domain])->render()
-            ]
-        );
+        $content = view(resource_path('views/domain/details.content.php'), [
+            'domain' => $domain
+        ]);
+
+        return view(resource_path('views/templates/modal.php'), [
+            'title' => 'Details for ' . $domain->name(),
+            'content' => $content->render()
+        ]);
     }
 
     /**
@@ -261,36 +255,31 @@ class DefaultController extends Controller
      */
     public function create(CreateRequest $request): RedirectResponse
     {
-        $response = $this->site_service->add_site(
-            [
-                'name' => $request->post('domain'),
-                'account_id' => config('api.client_id')
-            ]
-        );
+        $response = $this->site_service->add_site([
+            'name' => $request->post('domain'),
+            'account_id' => config('api.client_id')
+        ]);
 
         if (!empty($response['errors'])) {
             $errors = new Collection($response['errors']);
 
             if ($errors->contains(fn($error) => $error['code'] === '1061')) {
-                return back()->with_errors(
-                    [
-                        'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
-                    ]
-                );
+                return back()->with_errors([
+                    'domain' => 'There is another site with the same domain name, unable to have duplicate sites under the same domain name.'
+                ]);
             }
 
             if ($errors->contains(fn($error) => $error['code'] === '1105')) {
-                return back()->with_errors(
-                    [
-                        'domain' => 'You attempted to add this domain too many times within a short period. Wait at least 3 hours and try adding it again.'
-                    ]
-                );
+                return back()->with_errors([
+                    'domain' => 'You attempted to add this domain too many times within a short period. Wait at least 3 hours and try adding it again.'
+                ]);
             }
 
-            return back()
-                ->with('notification.header', 'Unable to add site')
-                ->with('notification.content', 'Unable to add site due to an internal server error.')
-                ->with('notification.type', 'error');
+            return back()->with('notification', [
+                'header' => 'Unable to add site',
+                'content' => 'Unable to add site due to an internal server error.',
+                'type' => 'error'
+            ]);
         }
 
         $site = $response['result'];
@@ -313,23 +302,19 @@ class DefaultController extends Controller
             session()->push('flash.errors', 'Encountered some issues resetting DNS records due to being unable to delete some DNS records');
         }
 
-        $root_dns = $this->record_service->add_dns_record($site->id(),
-            [
-                'name' => '@',
-                'content' => $request->post('root_cname_target'),
-            ]
-        );
+        $root_dns = $this->record_service->add_dns_record($site->id(), [
+            'name' => '@',
+            'content' => $request->post('root_cname_target'),
+        ]);
 
         if (!$root_dns) {
             session()->push('flash.errors', 'Unable to add root DNS record');
         }
 
-        $sub_dns = $this->record_service->add_dns_record($site->id(),
-            [
-                'name' => 'www',
-                'content' => $request->post('sub_cname_target'),
-            ]
-        );
+        $sub_dns = $this->record_service->add_dns_record($site->id(), [
+            'name' => 'www',
+            'content' => $request->post('sub_cname_target'),
+        ]);
 
         if (!$sub_dns) {
             session()->push('flash.errors', 'Unable to add sub DNS record');
@@ -339,41 +324,39 @@ class DefaultController extends Controller
             session()->push('flash.errors', 'Encountered some issues resetting pagerules due to being unable to delete some pagerules');
         }
 
-        $pagerule = $this->pagerule_service->add_pagerule($site->id(),
-            [
-                'url' => $request->post('pagerule_url'),
-                'forwarding_url' => $request->post('pagerule_forwarding_url')
-            ]
-        );
+        $pagerule = $this->pagerule_service->add_pagerule($site->id(), [
+            'url' => $request->post('pagerule_url'),
+            'forwarding_url' => $request->post('pagerule_forwarding_url')
+        ]);
 
         if (!$pagerule) {
             session()->push('flash.errors', 'Unable to add pagerule URL');
         }
 
-        $pagerule_full = $this->pagerule_service->add_pagerule($site->id(),
-            [
-                'url' => $request->post('pagerule_full_url'),
-                'forwarding_url' => $request->post('pagerule_forwarding_url')
-            ]
-        );
+        $pagerule_full = $this->pagerule_service->add_pagerule($site->id(), [
+            'url' => $request->post('pagerule_full_url'),
+            'forwarding_url' => $request->post('pagerule_forwarding_url')
+        ]);
 
         if (!$pagerule_full) {
             session()->push('flash.errors', 'Unable to add full pagerule URL');
         }
 
-        if (session()->get('flash.errors')) {
-            return back()
-                ->with('notification.header', 'Encountered issues with site setup')
-                ->with('notification.content', 'Site is added, but setup encountered some issues . ')
-                ->with('notification.type', 'error');
+        if (session('flash.errors')) {
+            return back()->with('notification', [
+                'header' => 'Encountered issues with site setup',
+                'content' => 'Site is added, but setup encountered some issues.',
+                'type' => 'error'
+            ]);
         }
 
         Cache::clear();
 
-        return back()
-            ->with('notification.header', 'Added site')
-            ->with('notification.content', 'Site added and setup is done . ')
-            ->with('notification.type', 'success');
+        return back()->with('notification', [
+            'header' => 'Added site',
+            'content' => 'Site added and setup is done.',
+            'type' => 'success',
+        ]);
     }
 
     /**
@@ -390,21 +373,24 @@ class DefaultController extends Controller
 
         if (!$errors->is_empty()) {
             if ($errors->contains(fn($error) => $error['code'] === '1224')) {
-                return back()
-                    ->with('notification.header', 'Unable to check nameservers')
-                    ->with('notification.content', 'This request cannot be made because it can only be called once an hour')
-                    ->with('notification.type', 'error');
+                return back()->with('notification', [
+                    'header' => 'Unable to check nameservers',
+                    'content' => 'This request cannot be made because it can only be called once an hour',
+                    'type' => 'error'
+                ]);
             }
 
-            return back()
-                ->with('notification.header', 'Checking nameservers failed')
-                ->with('notification.content', 'Failed to send check nameservers request')
-                ->with('notification.type', 'error');
+            return back()->with('notification', [
+                'header' => 'Checking nameservers failed',
+                'content' => 'Failed to send check nameservers request',
+                'type' => 'error'
+            ]);
         }
 
-        return back()
-            ->with('notification.header', 'Started checking nameservers')
-            ->with('notification.content', 'Nameserver check started successfully')
-            ->with('notification.type', 'success');
+        return back()->with('notification', [
+            'header' => 'Started checking nameservers',
+            'content' => 'Nameserver check started successfully',
+            'type' => 'success',
+        ]);
     }
 }
