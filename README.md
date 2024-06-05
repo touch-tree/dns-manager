@@ -2,9 +2,6 @@
 
 A domain management platform that provides DNS management, SSL/TLS configuration, pagerule configuration and URL forwarding and redirection to make it easier to add and manage sites. You can also preset certain settings so you don't have to configure settings that are default for each website.
 
-> [!NOTE]
-> This application is made using the [weavable/weave](https://github.com/weavable/weave) framework.
-
 ## Requirements
 - PHP version 7.4
 - opcache for PHP 7.4
@@ -12,7 +9,7 @@ A domain management platform that provides DNS management, SSL/TLS configuration
 ## Installation
 First, navigate to your webserver's document root and clone this repository:
 
-    git clone https://github.com/echtejosh/site-manager
+    git clone https://github.com/dlt-media/site-manager
 
 ## Credentials
 
