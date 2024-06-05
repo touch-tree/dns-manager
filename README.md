@@ -5,7 +5,7 @@
 ## Installation
 First, navigate to your webserver's document root and clone this repository:
 
-    git clone https://github.com/dlt-media/site-manager
+    git clone https://github.com/dlt-media/dns-manager
 
 ## Credentials
 
