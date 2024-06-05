@@ -1,4 +1,4 @@
-# Site Manager
+## About Me
 
 A domain management platform that provides DNS management, SSL/TLS configuration, pagerule configuration and URL forwarding and redirection to make it easier to add and manage sites. You can also preset certain settings so you don't have to configure settings that are default for each website.
 
